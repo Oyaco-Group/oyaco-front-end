@@ -1,9 +1,13 @@
-import Layout from "@/pages/layout.jsx";
+import DashboardPage from "./dashboard/index.jsx";
+import Layout from "./layout.jsx";
 
-export default function dashboard() {
+const Main = () => {
   return (
     <main>
       <Layout />
+      <DashboardPage />
     </main>
   );
-}
+};
+
+export default Main;

@@ -1,14 +1,15 @@
-import React from "react";
-import NavbarHeader from "@/components/style-components/navbar";
-import SidebarLeft from "@/components/style-components/sidebar";
+import Navbar from "../components/style-components/navbar";
+import SidebarMenu from "../components/style-components/sidebar";
 
-export default function Layout(props) {
+const Layout = (props) => {
   const { children } = props;
   return (
     <div>
-      <NavbarHeader />
-      <SidebarLeft />
+      <Navbar />
+      <SidebarMenu />
       {children}
     </div>
   );
-}
+};
+
+export default Layout;
