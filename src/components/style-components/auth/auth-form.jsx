@@ -1,4 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import InputField from "@/components/style-components/form/input-field";
+import TextareaField from "@/components/style-components/form/textarea-field";
+import SelectField from "@/components/style-components/form/select-field";
+import CheckboxField from "@/components/style-components/form/checkbox-field";
+import Button from "@/components/style-components/button";
+import { ToastSuccess, ToastDanger } from "@/components/style-components/toast"; // Pastikan path sesuai dengan struktur proyek Anda
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -10,16 +17,8 @@ const AuthForm = ({ type }) => {
     agree: false,
   });
 
-  useEffect(() => {
-    const selectElement = document.getElementById("role");
-    if (selectElement) {
-      if (formData.role === "") {
-        selectElement.classList.add("text-gray-400");
-      } else {
-        selectElement.classList.remove("text-gray-400");
-      }
-    }
-  }, [formData.role]);
+  const [users, setUsers] = useState([]);
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -29,9 +28,65 @@ const AuthForm = ({ type }) => {
     });
   };
 
+  const handleRegister = () => {
+    const existingUser = users.find((user) => user.email === formData.email);
+    if (existingUser) {
+      // Email sudah terdaftar
+      return false;
+    }
+    setUsers([...users, formData]);
+    return true;
+  };
+
+  const handleLogin = () => {
+    const user = users.find(
+      (user) =>
+        user.username === formData.username &&
+        user.password === formData.password,
+    );
+    return user;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic here
+    if (type === "register") {
+      const registered = handleRegister();
+      if (registered) {
+        // Tampilkan toast registrasi berhasil
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+          address: "",
+          role: "",
+          agree: false,
+        });
+        toastSuccess("Registration successful!");
+      } else {
+        // Tampilkan toast email sudah terdaftar
+        toastDanger("Email is already registered!");
+      }
+    } else {
+      const user = handleLogin();
+      if (user) {
+        // Tampilkan toast login berhasil
+        toastSuccess("Login successful!");
+        router.push("/dashboard");
+      } else {
+        // Tampilkan toast kredensial tidak valid
+        toastDanger("Invalid credentials");
+      }
+    }
+  };
+
+  const toastSuccess = (message) => {
+    // Tampilkan toast success, misalnya dengan menggunakan komponen ToastSuccess
+    return <ToastSuccess message={message} />;
+  };
+
+  const toastDanger = (message) => {
+    // Tampilkan toast danger, misalnya dengan menggunakan komponen ToastDanger
+    return <ToastDanger message={message} />;
   };
 
   return (
@@ -44,101 +99,61 @@ const AuthForm = ({ type }) => {
           {type === "login" ? "Login to continue" : "Create a new account"}
         </p>
       </div>
-      <div className="mb-5">
-        <input
-          type="text"
-          id="username"
-          value={formData.username}
-          onChange={handleChange}
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Username"
-          required
-        />
-      </div>
+      <InputField
+        id="username"
+        type="text"
+        value={formData.username}
+        onChange={handleChange}
+        placeholder="Username"
+      />
       {type === "register" && (
-        <div className="mb-5">
-          <input
-            type="email"
-            id="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="block w-full rounded-lg border border-gray-400 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Email"
-            required
-          />
-        </div>
-      )}
-      <div className="mb-5">
-        <input
-          type="password"
-          id="password"
-          value={formData.password}
+        <InputField
+          id="email"
+          type="email"
+          value={formData.email}
           onChange={handleChange}
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Password"
-          required
+          placeholder="Email"
         />
-      </div>
+      )}
+      <InputField
+        id="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="Password"
+      />
       {type === "register" && (
         <>
-          <div className="mb-5">
-            <textarea
-              id="address"
-              rows="4"
-              value={formData.address}
-              onChange={handleChange}
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Write your address here..."
-            ></textarea>
-          </div>
-          <div className="mb-5">
-            <select
-              id="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-400 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Choose a role account</option>
-              <option value="admin" className="text-gray-900">
-                Admin
-              </option>
-              <option value="user" className="text-gray-900">
-                User
-              </option>
-            </select>
-          </div>
-          <div className="mb-6 flex items-start">
-            <div className="flex h-5 items-center">
-              <input
-                id="agree"
-                type="checkbox"
-                checked={formData.agree}
-                onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-400 bg-gray-50"
-                required
-              />
-            </div>
-            <label
-              htmlFor="agree"
-              className="ms-2 text-sm font-medium text-white"
-            >
-              I agree with the{" "}
-              <a href="#" className="text-blue-800 hover:underline">
-                terms and conditions.
-              </a>
-            </label>
-          </div>
+          <TextareaField
+            id="address"
+            rows="4"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Write your address here..."
+          />
+          <SelectField
+            id="role"
+            value={formData.role}
+            onChange={handleChange}
+            options={[
+              { value: "admin", label: "Admin" },
+              { value: "user", label: "User" },
+            ]}
+            placeholder="Choose a role account"
+          />
+          <CheckboxField
+            id="agree"
+            checked={formData.agree}
+            onChange={handleChange}
+            label="I agree with the"
+            link="#"
+          />
         </>
       )}
       <div
         className={`flex ${type === "login" ? "justify-center" : "justify-end"}`}
       >
-        <button
-          type="submit"
-          className="w-full rounded-lg bg-amber-500 px-6 py-4 text-center text-sm font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-500 sm:w-auto"
-        >
-          {type === "login" ? "LOGIN" : "REGISTER"}
-        </button>
+        <Button type="submit">{type === "login" ? "LOGIN" : "REGISTER"}</Button>
       </div>
     </form>
   );
