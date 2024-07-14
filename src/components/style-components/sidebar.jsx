@@ -23,13 +23,17 @@ const SidebarMenu = () => {
         <ul className="mt-2 flex h-full flex-col space-y-2">
           <div className="flex-grow">
             <Menu href="/dashboard" title="Dashboard" />
-            <Menu href="/users" title="Users" />
+            <Menu href="/user" title="User" />
             <SidebarDropdown label="Inventory" items={inventoryItems} />
             <SidebarDropdown label="Transaction" items={transactionItems} />
             <Menu href="/orders" title="Order" />
           </div>
           <div className="mt-auto">
-            <Menu href="/login" title="Log out" className="text-red-500 hover:text-red-700" />
+            <Menu
+              href="/login"
+              title="Log out"
+              className="text-red-500 hover:text-red-700"
+            />
           </div>
         </ul>
       </div>

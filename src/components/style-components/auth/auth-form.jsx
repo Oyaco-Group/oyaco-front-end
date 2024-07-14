@@ -5,7 +5,7 @@ import TextareaField from "@/components/style-components/form/textarea-field";
 import SelectField from "@/components/style-components/form/select-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
-import { ToastSuccess, ToastDanger } from "@/components/style-components/toast"; // Pastikan path sesuai dengan struktur proyek Anda
+import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
