@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+.text-red-important {
+  color: red !important;
+}
+
+.text-red-important:hover {
+  color: white !important;
+}
