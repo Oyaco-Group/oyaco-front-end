@@ -1,7 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import InputField from "@/components/style-components/form/input-field";
+import TextareaField from "@/components/style-components/form/textarea-field";
+import Button from "@/components/style-components/button";
+import { AiOutlineDelete } from "react-icons/ai";
 
 const Modal = ({ isOpen, onClose, modalEditUser }) => {
+  const [formData, setFormData] = useState({
+    image: "",
+    name: "",
+    email: "",
+    password: "",
+    address: "",
+  });
+
+  console.log(formData.image);
+
+  useEffect(() => {
+    if (modalEditUser) {
+      setFormData({
+        image: modalEditUser.image_url || "",
+        name: modalEditUser.name || "",
+        email: modalEditUser.email || "",
+        password: modalEditUser.password || "",
+        address: modalEditUser.address || "",
+      });
+    }
+  }, [modalEditUser]);
+
   if (!isOpen) return null;
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const defaultImage =
+    "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-2180848911.jpg";
 
   return (
     <div
@@ -9,7 +46,7 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md rounded-lg bg-white shadow dark:bg-gray-700"
+        className="relative w-full max-w-md rounded-2xl bg-white shadow dark:bg-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -35,16 +72,64 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           <span className="sr-only">Close modal</span>
         </button>
         <div className="p-4 text-center md:p-5">
-          <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Editing User: {modalEditUser ? modalEditUser.name : ""}
-          </h3>
-          <button
-            type="button"
-            className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800"
-            onClick={onClose}
-          >
-            Close
-          </button>
+          <h1 className="mb-5 text-xl font-normal text-gray-500">
+            Edit Profile
+          </h1>
+
+          <img
+            class="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
+            src={formData.image || "/avatar.png"}
+            alt="Bonnie image"
+          />
+
+          <h1 className="mb-4 flex items-start font-normal">Personal</h1>
+          <InputField
+            id="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Username"
+            className="text-gray-400"
+          />
+          <InputField
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="text-gray-400"
+          />
+          <InputField
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            className="text-gray-400"
+          />
+          <TextareaField
+            id="address"
+            rows="4"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Write your address here..."
+            className="text-gray-400"
+          />
+          <div className="flex justify-center gap-4">
+            <Button
+              type="button"
+              className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
+              size="md"
+              onClick={onClose}
+            >
+              <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
+              Delete
+            </Button>
+
+            <Button type="button" onClick={onClose}>
+              Save Changes
+            </Button>
+          </div>
         </div>
       </div>
     </div>
