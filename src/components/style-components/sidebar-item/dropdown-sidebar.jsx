@@ -18,7 +18,7 @@ const SidebarDropdown = ({ label, items }) => {
     <li className="my-2">
       <button
         type="button"
-        className="group flex w-full items-center rounded-lg p-2 text-base text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+        className="group flex w-full items-center rounded-lg p-2 text-base text-gray-900 transition duration-75 hover:bg-blue-50 dark:text-white dark:hover:bg-gray-700"
         aria-controls="dropdown-example"
         onClick={toggleDropdown}
       >
@@ -49,7 +49,7 @@ const SidebarDropdown = ({ label, items }) => {
           <li key={index}>
             <button
               onClick={() => handleItemClick(item.href)}
-              className="group my-2 flex w-full items-center rounded-lg p-2 pl-11 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              className="group my-2 flex w-full items-center rounded-lg p-2 pl-11 text-gray-900 transition duration-75 hover:bg-blue-50"
             >
               {item.label}
             </button>

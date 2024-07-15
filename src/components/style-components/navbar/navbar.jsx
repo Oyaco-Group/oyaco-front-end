@@ -1,5 +1,5 @@
-import SearchBar from "@/components/style-components/searchbar";
-import UserMenu from "@/components/style-components/user-menu";
+import SearchBar from "@/components/style-components/navbar/searchbar";
+import UserMenu from "@/components/style-components/navbar/profile-menu";
 
 const Navbar = () => {
   return (
@@ -48,7 +48,7 @@ const Navbar = () => {
               </div>
             </div>
             {/* Search bar navbar */}
-            <SearchBar />
+            <SearchBar className="w-full max-w-lg" />
             <UserMenu />
           </div>
         </div>

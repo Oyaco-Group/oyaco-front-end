@@ -16,10 +16,10 @@ const SidebarMenu = () => {
   return (
     <aside
       id="logo-sidebar"
-      className="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform sm:translate-x-0 dark:border-gray-700 dark:bg-gray-800"
+      className="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform sm:translate-x-0"
       aria-label="Sidebar"
     >
-      <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm dark:bg-gray-800">
+      <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm">
         <ul className="mt-2 flex h-full flex-col space-y-2">
           <div className="flex-grow">
             <Menu href="/dashboard" title="Dashboard" />
