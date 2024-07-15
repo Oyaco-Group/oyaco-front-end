@@ -1,12 +1,23 @@
-import Navbar from "../components/style-components/navbar";
+import { usePathname } from "next/navigation";
+import Navbar from "../components/style-components/navbar/navbar";
 import SidebarMenu from "../components/style-components/sidebar";
 
 const Layout = (props) => {
   const { children } = props;
+
+  const pathname = usePathname();
+
+  const isAuthPath = ["/login", "/register"].includes(pathname);
+  console.log(isAuthPath);
+
   return (
-    <div>
-      <Navbar />
-      <SidebarMenu />
+    <div className="h-screen">
+      {!isAuthPath && (
+        <>
+          <Navbar />
+          <SidebarMenu />
+        </>
+      )}
       {children}
     </div>
   );

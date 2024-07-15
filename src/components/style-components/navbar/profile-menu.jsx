@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const UserMenu = () => {
+const ProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -63,7 +63,7 @@ const UserMenu = () => {
                     href="#"
                     className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
-                    Sign out
+                    Log out
                   </a>
                 </li>
               </ul>
@@ -75,4 +75,4 @@ const UserMenu = () => {
   );
 };
 
-export default UserMenu;
+export default ProfileMenu;

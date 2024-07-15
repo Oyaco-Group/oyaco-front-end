@@ -10,7 +10,6 @@ const Button = ({ children, onClick, className, size = "md" }) => {
   const handleClick = (e) => {
     if (onClick) {
       onClick(e);
-      console.log("test");
     }
   };
 
