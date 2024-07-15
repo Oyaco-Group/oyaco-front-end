@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ isOpen, onClose, editingUser }) => {
+const Modal = ({ isOpen, onClose, modalEditUser }) => {
   if (!isOpen) return null;
 
   return (
@@ -36,7 +36,7 @@ const Modal = ({ isOpen, onClose, editingUser }) => {
         </button>
         <div className="p-4 text-center md:p-5">
           <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Editing User: {editingUser ? editingUser.name : ""}
+            Editing User: {modalEditUser ? modalEditUser.name : ""}
           </h3>
           <button
             type="button"

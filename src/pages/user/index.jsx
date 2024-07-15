@@ -22,9 +22,8 @@ const UserPage = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
+  const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
 
   useEffect(() => {
@@ -49,7 +48,6 @@ const UserPage = () => {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        setIsLoading(false);
       });
   }, []);
 
@@ -84,28 +82,27 @@ const UserPage = () => {
   };
 
   const handleEdit = (user) => {
-    setEditingUser(user);
+    setModalEditUser(user);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingUser(null);
+    setModalEditUser(null);
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
       <div className="p-4 sm:ml-64">
         <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
-          <h1 className="my-4 text-4xl text-gray-800">List User</h1>
-          <div className="relative overflow-x-auto sm:rounded-lg">
+          <h1 className="mt-4 text-2xl text-gray-800">User management</h1>
+          <p className="mb-6 text-sm font-light text-gray-400">
+            Manage your list user
+          </p>
+          <div className="relative overflow-x-auto">
             <div className="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
               <div className="flex-column flex flex-wrap items-center">
-                <p className="mr-2 font-light">Select role : </p>
+                <p className="font-ligh text-md mr-2">Select role : </p>
                 <Dropdown options={options} onSelect={handleDropdownSelect} />
               </div>
               <div className="flex items-center space-x-10">
@@ -123,7 +120,7 @@ const UserPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        editingUser={editingUser}
+        modalEditUser={modalEditUser}
       />
     </div>
   );
