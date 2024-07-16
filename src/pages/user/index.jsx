@@ -4,6 +4,7 @@ import Dropdown from "@/components/style-components/dropdown";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Modal from "@/components/style-components/modal";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import { fetchUserData } from "@/utils/fetchData";
 
 const UserPage = () => {
   const columns = [
@@ -29,30 +30,36 @@ const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(
-      "https://f0052b42-ecd6-4c80-b3c3-193425202d45.mock.pstmn.io/api/users",
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (Array.isArray(data.data)) {
-          const formattedData = data.data.map((user, index) => ({
-            no: index + 1,
-            name: user.name,
-            address: user.address,
-            role: user.user_role,
-            ...user,
-          }));
-          setOriginalData(formattedData);
-          setFilteredData(formattedData);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-        setIsLoading(false);
-      });
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const userData = await fetchUserData();
+      const processedData = processUserData(userData);
+      setOriginalData(processedData);
+      setFilteredData(processedData);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const processUserData = (data) => {
+    if (Array.isArray(data)) {
+      return data.map((user, index) => ({
+        no: index + 1,
+        name: user.name,
+        address: user.address,
+        role: user.user_role,
+        ...user,
+      }));
+    } else {
+      throw new Error("Invalid data format from server");
+    }
+  };
 
   const handleDropdownSelect = (option) => {
     setSelectedRole(option.value);
@@ -103,8 +110,11 @@ const UserPage = () => {
         </p>
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-            <div className="flex items-center space-x-10">
+            <div className="flex items-center gap-4">
+              <p>Select role: </p>
               <Dropdown options={options} onSelect={handleDropdownSelect} />
+            </div>
+            <div>
               <SearchBar
                 className="w-72"
                 onChange={handleSearchChange}

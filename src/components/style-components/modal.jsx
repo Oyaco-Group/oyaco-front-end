@@ -26,14 +26,14 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
   // Update formData and tempData when modalEditUser changes
   useEffect(() => {
     if (modalEditUser) {
-      const updatedData = {
+      setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
         password: modalEditUser.password || "",
         address: modalEditUser.address || "",
-      };
+      });
     }
   }, [modalEditUser]);
 
