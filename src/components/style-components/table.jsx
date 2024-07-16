@@ -31,8 +31,12 @@ const Table = ({ columns, data, onEdit }) => {
                   {columns.map((column, colIndex) => (
                     <td key={colIndex} className="whitespace-nowrap px-6 py-4">
                       {column.field === "action" ? (
-                        <Button onClick={() => onEdit(row)} size="sm">
-                          Edit
+                        <Button
+                          className="bg-blue-400 hover:bg-blue-500"
+                          onClick={() => onEdit(row)}
+                          size="sm"
+                        >
+                          Info
                         </Button>
                       ) : column.render ? (
                         column.render(row[column.field], row)
