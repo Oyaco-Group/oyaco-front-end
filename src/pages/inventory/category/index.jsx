@@ -1,3 +1,5 @@
+import Table from "@/components/style-components/table";
+
 const CategoryPage = () => {
   return (
     <div>

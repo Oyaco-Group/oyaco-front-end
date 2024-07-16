@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
-import SelectField from "@/components/style-components/form/select-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
 import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
@@ -31,7 +30,6 @@ const AuthForm = ({ type }) => {
   const handleRegister = () => {
     const existingUser = users.find((user) => user.email === formData.email);
     if (existingUser) {
-      // Email sudah terdaftar
       return false;
     }
     setUsers([...users, formData]);
@@ -52,7 +50,6 @@ const AuthForm = ({ type }) => {
     if (type === "register") {
       const registered = handleRegister();
       if (registered) {
-        // Tampilkan toast registrasi berhasil
         setFormData({
           username: "",
           email: "",
@@ -63,29 +60,24 @@ const AuthForm = ({ type }) => {
         });
         toastSuccess("Registration successful!");
       } else {
-        // Tampilkan toast email sudah terdaftar
         toastDanger("Email is already registered!");
       }
     } else {
       const user = handleLogin();
       if (user) {
-        // Tampilkan toast login berhasil
         toastSuccess("Login successful!");
         router.push("/dashboard");
       } else {
-        // Tampilkan toast kredensial tidak valid
         toastDanger("Invalid credentials");
       }
     }
   };
 
   const toastSuccess = (message) => {
-    // Tampilkan toast success, misalnya dengan menggunakan komponen ToastSuccess
     return <ToastSuccess message={message} />;
   };
 
   const toastDanger = (message) => {
-    // Tampilkan toast danger, misalnya dengan menggunakan komponen ToastDanger
     return <ToastDanger message={message} />;
   };
 
@@ -130,16 +122,6 @@ const AuthForm = ({ type }) => {
             value={formData.address}
             onChange={handleChange}
             placeholder="Write your address here..."
-          />
-          <SelectField
-            id="role"
-            value={formData.role}
-            onChange={handleChange}
-            options={[
-              { value: "admin", label: "Admin" },
-              { value: "user", label: "User" },
-            ]}
-            placeholder="Choose a role account"
           />
           <CheckboxField
             id="agree"
