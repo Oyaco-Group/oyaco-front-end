@@ -4,7 +4,7 @@ import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
 
-const Modal = ({ isOpen, onClose, modalEditUser }) => {
+const Modal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [formData, setFormData] = useState({
     id: "",
     image: "",
@@ -23,7 +23,6 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
     address: "",
   });
 
-  // Update formData and tempData when modalEditUser changes
   useEffect(() => {
     if (modalEditUser) {
       setTempData({
@@ -37,14 +36,6 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
     }
   }, [modalEditUser]);
 
-  useEffect(() => {
-    console.log("Formdata updated:", formData);
-  }, [formData]);
-
-  useEffect(() => {
-    console.log("Temporary data updated:", tempData);
-  }, [tempData]);
-
   const handleChange = useCallback((e) => {
     const { id, value } = e.target;
     setTempData((prevData) => ({
@@ -53,16 +44,24 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
     }));
   }, []);
 
-  const handleDelete = useCallback(() => {
-    console.log("Data deleted:", modalEditUser);
-    onClose();
-  }, [modalEditUser, onClose]);
+  const handleDelete = async () => {
+    try {
+      console.log("Data deleted:", modalEditUser);
+      onClose();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
-  const handleSaveChanges = useCallback(() => {
-    setFormData(tempData);
-    console.log("Changes saved:", tempData);
-    onClose();
-  }, [tempData, onClose]);
+  const handleSaveChanges = async () => {
+    try {
+      console.log("Changes saved:", tempData);
+      onClose();
+      fetchData();
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
 
   const defaultImage = "/avatar.png";
 
@@ -107,7 +106,7 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           <img
             className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
             src={tempData.image || defaultImage}
-            alt={formData.name}
+            alt={tempData.name}
           />
 
           <h1 className="mb-4 flex items-start font-normal">Personal</h1>

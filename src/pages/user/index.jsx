@@ -50,6 +50,7 @@ const UserPage = () => {
   const processUserData = (data) => {
     if (Array.isArray(data)) {
       return data.map((user, index) => ({
+        id: user.id,
         no: index + 1,
         name: user.name,
         address: user.address,
@@ -134,6 +135,7 @@ const UserPage = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         modalEditUser={modalEditUser}
+        fetchData={fetchData}
       />
     </div>
   );
