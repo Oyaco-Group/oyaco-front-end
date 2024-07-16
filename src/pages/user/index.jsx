@@ -3,6 +3,7 @@ import Table from "@/components/style-components/table";
 import Dropdown from "@/components/style-components/dropdown";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Modal from "@/components/style-components/modal";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
 
 const UserPage = () => {
   const columns = [
@@ -25,6 +26,7 @@ const UserPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(
@@ -48,6 +50,7 @@ const UserPage = () => {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
+        setIsLoading(false);
       });
   }, []);
 
@@ -92,29 +95,29 @@ const UserPage = () => {
   };
 
   return (
-    <div>
-      <div className="p-4 sm:ml-64">
-        <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
-          <h1 className="mt-4 text-2xl text-gray-800">User management</h1>
-          <p className="mb-6 text-sm font-light text-gray-400">
-            Manage your list user
-          </p>
-          <div className="relative overflow-x-auto">
-            <div className="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-              <div className="flex-column flex flex-wrap items-center">
-                <p className="font-ligh text-md mr-2">Select role : </p>
-                <Dropdown options={options} onSelect={handleDropdownSelect} />
-              </div>
-              <div className="flex items-center space-x-10">
-                <SearchBar
-                  className="w-72"
-                  onChange={handleSearchChange}
-                  value={searchUser}
-                />
-              </div>
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 text-2xl text-gray-800">User management</h1>
+        <p className="mb-6 text-sm font-light text-gray-400">
+          Manage your list user
+        </p>
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
+            <div className="flex items-center space-x-10">
+              <Dropdown options={options} onSelect={handleDropdownSelect} />
+              <SearchBar
+                className="w-72"
+                onChange={handleSearchChange}
+                value={searchUser}
+              />
             </div>
-            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
           </div>
+          <div className="flex items-center justify-center">
+            {isLoading && <SpinnerLoad />}
+          </div>
+          {!isLoading && (
+            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+          )}
         </div>
       </div>
       <Modal
