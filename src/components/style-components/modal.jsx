@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
@@ -6,6 +6,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 const Modal = ({ isOpen, onClose, modalEditUser }) => {
   const [formData, setFormData] = useState({
+    id: "",
     image: "",
     name: "",
     email: "",
@@ -13,11 +14,20 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
     address: "",
   });
 
-  console.log(formData.image);
+  const [tempData, setTempData] = useState({
+    id: "",
+    image: "",
+    name: "",
+    email: "",
+    password: "",
+    address: "",
+  });
 
+  // Update formData and tempData when modalEditUser changes
   useEffect(() => {
     if (modalEditUser) {
-      setFormData({
+      setTempData({
+        id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
@@ -27,18 +37,36 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
     }
   }, [modalEditUser]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    console.log("Formdata updated:", formData);
+  }, [formData]);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    console.log("Temporary data updated:", tempData);
+  }, [tempData]);
+
+  const handleChange = useCallback((e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
+    setTempData((prevData) => ({
       ...prevData,
       [id]: value,
     }));
-  };
+  }, []);
 
-  const defaultImage =
-    "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-2180848911.jpg";
+  const handleDelete = useCallback(() => {
+    console.log("Data deleted:", modalEditUser);
+    onClose();
+  }, [modalEditUser, onClose]);
+
+  const handleSaveChanges = useCallback(() => {
+    setFormData(tempData);
+    console.log("Changes saved:", tempData);
+    onClose();
+  }, [tempData, onClose]);
+
+  const defaultImage = "/avatar.png";
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -77,16 +105,16 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           </h1>
 
           <img
-            class="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
-            src={formData.image || "/avatar.png"}
-            alt="Bonnie image"
+            className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
+            src={tempData.image || defaultImage}
+            alt={formData.name}
           />
 
           <h1 className="mb-4 flex items-start font-normal">Personal</h1>
           <InputField
             id="name"
             type="text"
-            value={formData.name}
+            value={tempData.name}
             onChange={handleChange}
             placeholder="Username"
             className="text-gray-400"
@@ -94,7 +122,7 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           <InputField
             id="email"
             type="email"
-            value={formData.email}
+            value={tempData.email}
             onChange={handleChange}
             placeholder="Email"
             className="text-gray-400"
@@ -102,7 +130,7 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           <InputField
             id="password"
             type="password"
-            value={formData.password}
+            value={tempData.password}
             onChange={handleChange}
             placeholder="Password"
             className="text-gray-400"
@@ -110,7 +138,7 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
           <TextareaField
             id="address"
             rows="4"
-            value={formData.address}
+            value={tempData.address}
             onChange={handleChange}
             placeholder="Write your address here..."
             className="text-gray-400"
@@ -120,13 +148,13 @@ const Modal = ({ isOpen, onClose, modalEditUser }) => {
               type="button"
               className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
               size="md"
-              onClick={onClose}
+              onClick={handleDelete}
             >
               <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
               Delete
             </Button>
 
-            <Button type="button" onClick={onClose}>
+            <Button type="button" onClick={handleSaveChanges}>
               Save Changes
             </Button>
           </div>

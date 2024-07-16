@@ -3,6 +3,8 @@ import Table from "@/components/style-components/table";
 import Dropdown from "@/components/style-components/dropdown";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Modal from "@/components/style-components/modal";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import { fetchUserData } from "@/utils/fetchData";
 
 const UserPage = () => {
   const columns = [
@@ -25,31 +27,39 @@ const UserPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(
-      "https://f0052b42-ecd6-4c80-b3c3-193425202d45.mock.pstmn.io/api/users",
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (Array.isArray(data.data)) {
-          const formattedData = data.data.map((user, index) => ({
-            no: index + 1,
-            name: user.name,
-            address: user.address,
-            role: user.user_role,
-            ...user,
-          }));
-          setOriginalData(formattedData);
-          setFilteredData(formattedData);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const userData = await fetchUserData();
+      const processedData = processUserData(userData);
+      setOriginalData(processedData);
+      setFilteredData(processedData);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const processUserData = (data) => {
+    if (Array.isArray(data)) {
+      return data.map((user, index) => ({
+        no: index + 1,
+        name: user.name,
+        address: user.address,
+        role: user.user_role,
+        ...user,
+      }));
+    } else {
+      throw new Error("Invalid data format from server");
+    }
+  };
 
   const handleDropdownSelect = (option) => {
     setSelectedRole(option.value);
@@ -92,29 +102,32 @@ const UserPage = () => {
   };
 
   return (
-    <div>
-      <div className="p-4 sm:ml-64">
-        <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
-          <h1 className="mt-4 text-2xl text-gray-800">User management</h1>
-          <p className="mb-6 text-sm font-light text-gray-400">
-            Manage your list user
-          </p>
-          <div className="relative overflow-x-auto">
-            <div className="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-              <div className="flex-column flex flex-wrap items-center">
-                <p className="font-ligh text-md mr-2">Select role : </p>
-                <Dropdown options={options} onSelect={handleDropdownSelect} />
-              </div>
-              <div className="flex items-center space-x-10">
-                <SearchBar
-                  className="w-72"
-                  onChange={handleSearchChange}
-                  value={searchUser}
-                />
-              </div>
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 text-2xl text-gray-800">User management</h1>
+        <p className="mb-6 text-sm font-light text-gray-400">
+          Manage your list user
+        </p>
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
+            <div className="flex items-center gap-4">
+              <p>Select role: </p>
+              <Dropdown options={options} onSelect={handleDropdownSelect} />
             </div>
-            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+            <div>
+              <SearchBar
+                className="w-72"
+                onChange={handleSearchChange}
+                value={searchUser}
+              />
+            </div>
           </div>
+          <div className="flex items-center justify-center">
+            {isLoading && <SpinnerLoad />}
+          </div>
+          {!isLoading && (
+            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+          )}
         </div>
       </div>
       <Modal
