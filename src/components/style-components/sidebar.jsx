@@ -25,11 +25,11 @@ const SidebarMenu = () => {
 
   const transactionItems = [
     {
-      label: "In coming",
+      label: "Incoming",
       href: "/transactions/incoming",
     },
     {
-      label: "Out going",
+      label: "Outgoing",
       href: "/transactions/outgoing",
     },
   ];
