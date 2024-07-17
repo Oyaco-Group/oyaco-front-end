@@ -1,6 +1,3 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 

@@ -1,19 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
+import { updateUser, deleteUser } from "@/utils/dataTest";
+import { toast } from "react-toastify";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
-    id: modalEditUser?.id || "",
-    image: modalEditUser?.image_url || "",
-    name: modalEditUser?.name || "",
-    email: modalEditUser?.email || "",
-    password: modalEditUser?.password || "",
-    address: modalEditUser?.address || "",
+    id: "",
+    image: "",
+    name: "",
+    email: "",
+    password: "",
+    address: "",
   });
+
+  useEffect(() => {
+    if (modalEditUser) {
+      setTempData({
+        id: modalEditUser.id || "",
+        image: modalEditUser.image_url || "",
+        name: modalEditUser.name || "",
+        email: modalEditUser.email || "",
+        password: modalEditUser.password || "",
+        address: modalEditUser.address || "",
+      });
+    }
+  }, [modalEditUser]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -25,30 +40,34 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      console.log("Data deleted:", modalEditUser);
+      await deleteUser(tempData.id);
+      toast.success("User deleted successfully");
       onClose();
+      fetchData();
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error("Failed to delete user");
     }
   };
 
   const handleSaveChanges = async () => {
     try {
-      console.log("Changes saved:", tempData);
+      await updateUser(tempData);
+      toast.success("Changes saved successfully");
       onClose();
       fetchData();
+      console.log("Data sent to server:", tempData);
     } catch (error) {
       console.error("Error updating user data:", error);
+      toast.error("Failed to save changes");
     }
   };
-
-  const defaultImage = "/avatar.png";
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Profile">
       <img
         className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
-        src={tempData.image || defaultImage}
+        src={tempData.image || "/avatar.png"}
         alt={tempData.name}
       />
       <h1 className="mb-4 flex items-start font-normal">Personal</h1>

@@ -1,23 +1,19 @@
+// UserPage.jsx
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData } from "@/utils/dataTest";
+import { fetchUserData, deleteUser } from "@/utils/dataTest";
 import EditProfileModal from "@/pages/user/edit";
+import { toast } from "react-toastify";
 
 const UserPage = () => {
   const columns = [
     { field: "no", label: "No" },
     { field: "name", label: "Name" },
     { field: "address", label: "Address" },
-    { field: "role", label: "Role" },
+    { field: "user_role", label: "Role" },
     { field: "action", label: "Action" },
-  ];
-
-  const options = [
-    { value: "", label: "All role" },
-    { value: "admin", label: "Admin" },
-    { value: "user", label: "User" },
   ];
 
   const [originalData, setOriginalData] = useState([]);
@@ -39,29 +35,13 @@ const UserPage = () => {
     try {
       setIsLoading(true);
       const userData = await fetchUserData();
-      console.log(userData);
-      const processedData = processUserData(userData);
-      setOriginalData(processedData);
-      setFilteredData(processedData);
+      const roleUserData = userData.filter((user) => user.user_role === "user");
+      setOriginalData(roleUserData);
+      setFilteredData(roleUserData); // Initialize filteredData with roleUserData
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching user data:", error);
-    }
-  };
-
-  const processUserData = (data) => {
-    if (Array.isArray(data)) {
-      return data.map((user, index) => ({
-        id: user.id,
-        no: index + 1,
-        name: user.name,
-        address: user.address,
-        role: user.user_role,
-        ...user,
-      }));
-    } else {
-      throw new Error("Invalid data format from server");
     }
   };
 
@@ -71,7 +51,7 @@ const UserPage = () => {
   };
 
   const filterUsers = (valueSearch) => {
-    let filteredUsers = originalData;
+    let filteredUsers = filteredData; // Use filteredData instead of originalData
 
     if (valueSearch) {
       filteredUsers = filteredUsers.filter(
@@ -86,6 +66,21 @@ const UserPage = () => {
   const handleEdit = (user) => {
     setModalEditUser(user);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (userId) => {
+    try {
+      await deleteUser(userId);
+      toast.success("User deleted successfully");
+
+      // Update originalData and filteredData after deletion
+      const updatedData = originalData.filter((user) => user.id !== userId);
+      setOriginalData(updatedData);
+      setFilteredData(updatedData);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user");
+    }
   };
 
   const closeModal = () => {
@@ -114,7 +109,12 @@ const UserPage = () => {
             {isLoading && <SpinnerLoad />}
           </div>
           {!isLoading && (
-            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+            <Table
+              columns={columns}
+              data={filteredData}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </div>
       </div>
