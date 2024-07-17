@@ -37,7 +37,7 @@ const UserPage = () => {
       const userData = await fetchUserData();
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
-      setFilteredData(userData);
+      setFilteredData(roleUserData); // Initialize filteredData with roleUserData
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -51,7 +51,7 @@ const UserPage = () => {
   };
 
   const filterUsers = (valueSearch) => {
-    let filteredUsers = originalData;
+    let filteredUsers = filteredData; // Use filteredData instead of originalData
 
     if (valueSearch) {
       filteredUsers = filteredUsers.filter(
@@ -70,8 +70,13 @@ const UserPage = () => {
 
   const handleDelete = async (userId) => {
     try {
+      await deleteUser(userId);
       toast.success("User deleted successfully");
-      fetchData();
+
+      // Update originalData and filteredData after deletion
+      const updatedData = originalData.filter((user) => user.id !== userId);
+      setOriginalData(updatedData);
+      setFilteredData(updatedData);
     } catch (error) {
       console.error("Error deleting user:", error);
       toast.error("Failed to delete user");
@@ -106,7 +111,7 @@ const UserPage = () => {
           {!isLoading && (
             <Table
               columns={columns}
-              data={filteredData} // Pass filteredData to Table component
+              data={filteredData}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />

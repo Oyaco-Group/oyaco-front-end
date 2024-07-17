@@ -1,4 +1,3 @@
-// src/pages/user/edit.jsx
 import React, { useState, useEffect } from "react";
 import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/input-field";
@@ -57,6 +56,7 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       toast.success("Changes saved successfully");
       onClose();
       fetchData();
+      console.log("Data sent to server:", tempData);
     } catch (error) {
       console.error("Error updating user data:", error);
       toast.error("Failed to save changes");
