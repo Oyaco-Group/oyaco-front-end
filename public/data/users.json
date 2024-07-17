@@ -2,49 +2,73 @@
   {
     "id": 1,
     "name": "Leanne Graham",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Kulas Light, Apt. 556, Gwenborough",
-    "user_role": "admin"
+    "user_role": "admin",
+    "image_url": "https://randomuser.me/api/portraits/women/1.jpg"
   },
   {
     "id": 2,
     "name": "Ervin Howell",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Victor Plains, Suite 879, Wisokyburgh",
-    "user_role": "user"
+    "user_role": "user",
+    "image_url": "https://randomuser.me/api/portraits/men/2.jpg"
   },
   {
     "id": 3,
     "name": "Clementine Bauch",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Douglas Extension, Suite 847, McKenziehaven",
-    "user_role": "admin"
+    "user_role": "admin",
+    "image_url": "https://randomuser.me/api/portraits/women/3.jpg"
   },
   {
     "id": 4,
     "name": "Patricia Lebsack",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Hoeger Mall, Apt. 692, South Elvis",
-    "user_role": "user"
+    "user_role": "user",
+    "image_url": "https://randomuser.me/api/portraits/women/4.jpg"
   },
   {
     "id": 5,
     "name": "Chelsey Dietrich",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Skiles Walks, Suite 351, Roscoeview",
-    "user_role": "admin"
+    "user_role": "admin",
+    "image_url": "https://randomuser.me/api/portraits/women/5.jpg"
   },
   {
     "id": 6,
     "name": "Mrs. Dennis Schulist",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Norberto Crossing, Apt. 950, South Christy",
-    "user_role": "user"
+    "user_role": "user",
+    "image_url": "https://randomuser.me/api/portraits/women/6.jpg"
   },
   {
     "id": 7,
     "name": "Kurtis Weissnat",
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "address": "Rex Trail, Suite 280, Howemouth",
-    "user_role": "admin"
+    "user_role": "admin",
+    "image_url": "https://randomuser.me/api/portraits/men/7.jpg"
   },
   {
     "id": 8,
+    "email": "Oyaco@mail.com",
+    "password": "oyaco123",
     "name": "Nicholas Runolfsdottir V",
     "address": "Ellsworth Summit, Suite 729, Aliyaview",
-    "user_role": "user"
+    "user_role": "user",
+    "image_url": "https://randomuser.me/api/portraits/men/8.jpg"
   }
 ]
