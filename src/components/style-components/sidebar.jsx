@@ -1,16 +1,37 @@
+import React from "react";
 import Menu from "@/components/style-components/sidebar-item/menu-sidebar";
 import SidebarDropdown from "@/components/style-components/sidebar-item/dropdown-sidebar";
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { TbHomeDot } from "react-icons/tb";
+import { MdInventory } from "react-icons/md";
+import { RiShoppingBagLine } from "react-icons/ri";
+import { LuWarehouse } from "react-icons/lu";
 
 const SidebarMenu = () => {
   const inventoryItems = [
-    { label: "Products", href: "/inventory/products" },
-    { label: "Category", href: "/inventory/category" },
-    { label: "Inventory Balance", href: "/inventory/balance" },
+    {
+      label: "Products",
+      href: "/inventory/products",
+    },
+    {
+      label: "Category",
+      href: "/inventory/category",
+    },
+    {
+      label: "Inventory Balance",
+      href: "/inventory/balance",
+    },
   ];
 
   const transactionItems = [
-    { label: "In coming", href: "/transactions/incoming" },
-    { label: "Out going", href: "/transactions/outgoing" },
+    {
+      label: "In coming",
+      href: "/transactions/incoming",
+    },
+    {
+      label: "Out going",
+      href: "/transactions/outgoing",
+    },
   ];
 
   return (
@@ -20,18 +41,39 @@ const SidebarMenu = () => {
       aria-label="Sidebar"
     >
       <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm">
-        <ul className="mt-2 flex h-full flex-col space-y-2">
+        <ul className="mt-5 flex h-full flex-col space-y-2">
           <div className="flex-grow">
-            <Menu href="/dashboard" title="Dashboard" />
-            <Menu href="/user" title="User" />
-            <SidebarDropdown label="Inventory" items={inventoryItems} />
-            <SidebarDropdown label="Transaction" items={transactionItems} />
-            <Menu href="/orders" title="Order" />
+            <Menu
+              href="/dashboard"
+              title="Dashboard"
+              icon={<TbHomeDot className="text-xl" />}
+            />
+            <Menu
+              href="/user"
+              title="User"
+              icon={<AiOutlineUser className="text-xl" />}
+            />
+            <SidebarDropdown
+              label="Inventory"
+              items={inventoryItems}
+              icon={<MdInventory className="text-xl text-blue-500" />}
+            />
+            <SidebarDropdown
+              label="Transaction"
+              items={transactionItems}
+              icon={<LuWarehouse className="text-xl text-blue-400" />}
+            />
+            <Menu
+              href="/orders"
+              title="Order"
+              icon={<RiShoppingBagLine className="text-xl" />}
+            />
           </div>
           <div className="mt-auto">
             <Menu
               href="/login"
               title="Log out"
+              icon={<AiOutlineLogout className="text-xl text-red-600" />}
               className="text-red-500 hover:text-red-700"
             />
           </div>

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
-import Dropdown from "@/components/style-components/dropdown";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import Modal from "@/components/style-components/modal";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData } from "@/utils/fetchData";
+import { fetchUserData } from "@/utils/dataTest";
+import EditProfileModal from "@/pages/user/edit";
 
 const UserPage = () => {
   const columns = [
@@ -21,7 +20,6 @@ const UserPage = () => {
     { value: "user", label: "User" },
   ];
 
-  const [selectedRole, setSelectedRole] = useState("");
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,10 +31,15 @@ const UserPage = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    filterUsers(searchUser);
+  }, [searchUser, originalData]);
+
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const userData = await fetchUserData();
+      console.log(userData);
       const processedData = processUserData(userData);
       setOriginalData(processedData);
       setFilteredData(processedData);
@@ -62,25 +65,13 @@ const UserPage = () => {
     }
   };
 
-  const handleDropdownSelect = (option) => {
-    setSelectedRole(option.value);
-    filterUsers(option.value, searchUser);
-  };
-
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchUser(value);
-    filterUsers(selectedRole, value);
   };
 
-  const filterUsers = (role, valueSearch) => {
+  const filterUsers = (valueSearch) => {
     let filteredUsers = originalData;
-
-    if (role) {
-      filteredUsers = filteredUsers.filter(
-        (user) => user.role.toLowerCase() === role,
-      );
-    }
 
     if (valueSearch) {
       filteredUsers = filteredUsers.filter(
@@ -111,13 +102,9 @@ const UserPage = () => {
         </p>
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-            <div className="flex items-center gap-4">
-              <p>Select role: </p>
-              <Dropdown options={options} onSelect={handleDropdownSelect} />
-            </div>
             <div>
               <SearchBar
-                className="w-72"
+                className="ml-2 w-72"
                 onChange={handleSearchChange}
                 value={searchUser}
               />
@@ -131,7 +118,7 @@ const UserPage = () => {
           )}
         </div>
       </div>
-      <Modal
+      <EditProfileModal
         isOpen={isModalOpen}
         onClose={closeModal}
         modalEditUser={modalEditUser}

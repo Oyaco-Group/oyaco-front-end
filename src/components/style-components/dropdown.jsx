@@ -22,7 +22,16 @@ const Dropdown = ({ options, onSelect }) => {
         type="button"
       >
         <span className="sr-only">Action button</span>
-        {selectedOption ? selectedOption.label : "Select.."}
+        {selectedOption ? (
+          <>
+            {selectedOption.icon && (
+              <span className="mr-2">{selectedOption.icon}</span>
+            )}
+            {selectedOption.label}
+          </>
+        ) : (
+          "Select..."
+        )}
         <svg
           className={`ms-2.5 h-2.5 w-2.5 ${isOpen ? "rotate-180 transform" : ""}`}
           aria-hidden="true"
@@ -49,8 +58,9 @@ const Dropdown = ({ options, onSelect }) => {
               <li key={index}>
                 <button
                   onClick={() => handleSelectOption(option)}
-                  className="block w-full px-4 py-2 text-left hover:bg-blue-50 dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="flex w-full items-center px-4 py-2 text-left hover:bg-blue-50 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
+                  {option.icon && <span className="mr-2">{option.icon}</span>}
                   {option.label}
                 </button>
               </li>

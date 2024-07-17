@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Leanne Graham",
+    "address": "Kulas Light, Apt. 556, Gwenborough",
+    "user_role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Ervin Howell",
+    "address": "Victor Plains, Suite 879, Wisokyburgh",
+    "user_role": "user"
+  },
+  {
+    "id": 3,
+    "name": "Clementine Bauch",
+    "address": "Douglas Extension, Suite 847, McKenziehaven",
+    "user_role": "admin"
+  },
+  {
+    "id": 4,
+    "name": "Patricia Lebsack",
+    "address": "Hoeger Mall, Apt. 692, South Elvis",
+    "user_role": "user"
+  },
+  {
+    "id": 5,
+    "name": "Chelsey Dietrich",
+    "address": "Skiles Walks, Suite 351, Roscoeview",
+    "user_role": "admin"
+  },
+  {
+    "id": 6,
+    "name": "Mrs. Dennis Schulist",
+    "address": "Norberto Crossing, Apt. 950, South Christy",
+    "user_role": "user"
+  },
+  {
+    "id": 7,
+    "name": "Kurtis Weissnat",
+    "address": "Rex Trail, Suite 280, Howemouth",
+    "user_role": "admin"
+  },
+  {
+    "id": 8,
+    "name": "Nicholas Runolfsdottir V",
+    "address": "Ellsworth Summit, Suite 729, Aliyaview",
+    "user_role": "user"
+  }
+]
