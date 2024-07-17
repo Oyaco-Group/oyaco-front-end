@@ -16,7 +16,7 @@ const Button = ({ children, onClick, className, size = "md" }) => {
   return (
     <button
       onClick={handleClick}
-      className={`${className} rounded-lg bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-500 ${sizeClasses[size]} text-white`}
+      className={`${className} rounded-lg bg-amber-500 hover:bg-amber-600 ${sizeClasses[size]} text-white`}
     >
       {children}
     </button>
