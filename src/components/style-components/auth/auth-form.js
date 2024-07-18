@@ -1,10 +1,12 @@
+// src/components/style-components/auth-form.js
 import { useState } from "react";
 import { useRouter } from "next/router";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
-import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
+// import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
+import { register } from "@/fetching/auth"; // Import fungsi register
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -12,11 +14,9 @@ const AuthForm = ({ type }) => {
     email: "",
     password: "",
     address: "",
-    role: "",
     agree: false,
   });
 
-  const [users, setUsers] = useState([]);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -27,59 +27,36 @@ const AuthForm = ({ type }) => {
     });
   };
 
-  const handleRegister = () => {
-    const existingUser = users.find((user) => user.email === formData.email);
-    if (existingUser) {
-      return false;
-    }
-    setUsers([...users, formData]);
-    return true;
-  };
-
-  const handleLogin = () => {
-    const user = users.find(
-      (user) =>
-        user.username === formData.username &&
-        user.password === formData.password,
-    );
-    return user;
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (type === "register") {
-      const registered = handleRegister();
-      if (registered) {
+      try {
+        const response = await register(formData);
+        console.log(response);
+        // toastSuccess("Registration successful!");
         setFormData({
           username: "",
           email: "",
           password: "",
           address: "",
-          role: "",
           agree: false,
         });
-        toastSuccess("Registration successful!");
-      } else {
-        toastDanger("Email is already registered!");
+        router.push("/login"); // Arahkan ke halaman login atau halaman lain
+      } catch (error) {
+        console.log(error);
       }
     } else {
-      const user = handleLogin();
-      if (user) {
-        toastSuccess("Login successful!");
-        router.push("/dashboard");
-      } else {
-        toastDanger("Invalid credentials");
-      }
+      // Handle login
     }
   };
 
-  const toastSuccess = (message) => {
-    return <ToastSuccess message={message} />;
-  };
+  // const toastSuccess = (message) => {
+  //   return <ToastSuccess message={message} />;
+  // };
 
-  const toastDanger = (message) => {
-    return <ToastDanger message={message} />;
-  };
+  // const toastDanger = (message) => {
+  //   return <ToastDanger message={message} />;
+  // };
 
   return (
     <form className="w-1/2" onSubmit={handleSubmit}>
