@@ -23,6 +23,8 @@ const UserPage = () => {
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [lengthSearch,setLengthSearch] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -53,14 +55,21 @@ const UserPage = () => {
   const filterUsers = (valueSearch) => {
     let filteredUsers = filteredData; // Use filteredData instead of originalData
 
+    if(lengthSearch > valueSearch.length) {
+      filteredUsers = originalData;
+    }
+
     if (valueSearch) {
       filteredUsers = filteredUsers.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-          user.address.toLowerCase().includes(valueSearch.toLowerCase()),
-      );
+        user.address.toLowerCase().includes(valueSearch.toLowerCase()),
+      );  
+      setFilteredData(filteredUsers);
+      setLengthSearch(valueSearch.length);
+    }  else {
+      setFilteredData(originalData)
     }
-    setFilteredData(filteredUsers);
   };
 
   const handleEdit = (user) => {
