@@ -10,10 +10,11 @@ import { register, login } from "@/fetching/auth";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     address: "",
+    user_role: "user",
     agree: false,
   });
 
@@ -35,10 +36,11 @@ const AuthForm = ({ type }) => {
         console.log(response);
         // toastSuccess("Registration successful!");
         setFormData({
-          username: "",
+          name: "",
           email: "",
           password: "",
           address: "",
+          user_role: "user",
           agree: false,
         });
         router.push("/login");
@@ -76,9 +78,9 @@ const AuthForm = ({ type }) => {
       </div>
       {type === "register" && (
         <InputField
-          id="username"
+          id="name"
           type="text"
-          value={formData.username}
+          value={formData.name}
           onChange={handleChange}
           placeholder="Username"
         />
