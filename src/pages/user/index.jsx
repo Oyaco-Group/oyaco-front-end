@@ -1,27 +1,21 @@
+// UserPage.jsx
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
-import Dropdown from "@/components/style-components/dropdown";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import Modal from "@/components/style-components/modal";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData } from "@/utils/fetchData";
+import { fetchUserData, deleteUser } from "@/utils/dataTest";
+import EditProfileModal from "@/pages/user/edit";
+import { toast } from "react-toastify";
 
 const UserPage = () => {
   const columns = [
     { field: "no", label: "No" },
     { field: "name", label: "Name" },
     { field: "address", label: "Address" },
-    { field: "role", label: "Role" },
+    { field: "user_role", label: "Role" },
     { field: "action", label: "Action" },
   ];
 
-  const options = [
-    { value: "", label: "All role" },
-    { value: "admin", label: "Admin" },
-    { value: "user", label: "User" },
-  ];
-
-  const [selectedRole, setSelectedRole] = useState("");
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,17 +23,23 @@ const UserPage = () => {
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [lengthSearch,setLengthSearch] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    filterUsers(searchUser);
+  }, [searchUser, originalData]);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const userData = await fetchUserData();
-      const processedData = processUserData(userData);
-      setOriginalData(processedData);
-      setFilteredData(processedData);
+      const roleUserData = userData.filter((user) => user.user_role === "user");
+      setOriginalData(roleUserData);
+      setFilteredData(roleUserData); // Initialize filteredData with roleUserData
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -47,54 +47,49 @@ const UserPage = () => {
     }
   };
 
-  const processUserData = (data) => {
-    if (Array.isArray(data)) {
-      return data.map((user, index) => ({
-        id: user.id,
-        no: index + 1,
-        name: user.name,
-        address: user.address,
-        role: user.user_role,
-        ...user,
-      }));
-    } else {
-      throw new Error("Invalid data format from server");
-    }
-  };
-
-  const handleDropdownSelect = (option) => {
-    setSelectedRole(option.value);
-    filterUsers(option.value, searchUser);
-  };
-
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchUser(value);
-    filterUsers(selectedRole, value);
   };
 
-  const filterUsers = (role, valueSearch) => {
-    let filteredUsers = originalData;
+  const filterUsers = (valueSearch) => {
+    let filteredUsers = filteredData; // Use filteredData instead of originalData
 
-    if (role) {
-      filteredUsers = filteredUsers.filter(
-        (user) => user.role.toLowerCase() === role,
-      );
+    if(lengthSearch > valueSearch.length) {
+      filteredUsers = originalData;
     }
 
     if (valueSearch) {
       filteredUsers = filteredUsers.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-          user.address.toLowerCase().includes(valueSearch.toLowerCase()),
-      );
+        user.address.toLowerCase().includes(valueSearch.toLowerCase()),
+      );  
+      setFilteredData(filteredUsers);
+      setLengthSearch(valueSearch.length);
+    }  else {
+      setFilteredData(originalData)
     }
-    setFilteredData(filteredUsers);
   };
 
   const handleEdit = (user) => {
     setModalEditUser(user);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (userId) => {
+    try {
+      await deleteUser(userId);
+      toast.success("User deleted successfully");
+
+      // Update originalData and filteredData after deletion
+      const updatedData = originalData.filter((user) => user.id !== userId);
+      setOriginalData(updatedData);
+      setFilteredData(updatedData);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user");
+    }
   };
 
   const closeModal = () => {
@@ -111,13 +106,9 @@ const UserPage = () => {
         </p>
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-            <div className="flex items-center gap-4">
-              <p>Select role: </p>
-              <Dropdown options={options} onSelect={handleDropdownSelect} />
-            </div>
             <div>
               <SearchBar
-                className="w-72"
+                className="ml-2 w-72"
                 onChange={handleSearchChange}
                 value={searchUser}
               />
@@ -127,11 +118,16 @@ const UserPage = () => {
             {isLoading && <SpinnerLoad />}
           </div>
           {!isLoading && (
-            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+            <Table
+              columns={columns}
+              data={filteredData}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </div>
       </div>
-      <Modal
+      <EditProfileModal
         isOpen={isModalOpen}
         onClose={closeModal}
         modalEditUser={modalEditUser}

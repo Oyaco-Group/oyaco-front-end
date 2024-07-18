@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-const SidebarDropdown = ({ label, items }) => {
+const SidebarDropdown = ({ label, items, icon }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -22,6 +22,7 @@ const SidebarDropdown = ({ label, items }) => {
         aria-controls="dropdown-example"
         onClick={toggleDropdown}
       >
+        {icon && <span className="mr-2 text-xl">{icon}</span>}
         <span className="ms-3 flex-1 whitespace-nowrap text-left rtl:text-right">
           {label}
         </span>
@@ -51,6 +52,11 @@ const SidebarDropdown = ({ label, items }) => {
               onClick={() => handleItemClick(item.href)}
               className="group my-2 flex w-full items-center rounded-lg p-2 pl-11 text-gray-900 transition duration-75 hover:bg-blue-50"
             >
+              {item.icon && (
+                <span className="mr-2 text-xl font-bold text-blue-400">
+                  {item.icon}
+                </span>
+              )}
               {item.label}
             </button>
           </li>

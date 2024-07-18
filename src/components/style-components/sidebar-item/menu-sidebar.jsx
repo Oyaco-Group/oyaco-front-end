@@ -1,20 +1,23 @@
 import { useRouter } from "next/router";
 
-const Menu = (props) => {
-  const { href, title, className } = props;
+const Menu = ({ href, title, icon, className }) => {
   const router = useRouter();
 
   const handleClick = (e) => {
     e.preventDefault();
     router.push(href);
   };
+
   return (
     <li>
       <a
         href={href}
         onClick={handleClick}
-        className={`group my-2 flex items-center rounded-lg p-2 text-gray-900 hover:bg-blue-50 ${className}`}
+        className={`group my-2 flex items-center rounded-lg p-2 text-gray-600 hover:bg-blue-50 ${className}`}
       >
+        {icon && (
+          <span className="mr-2 text-xl font-bold text-blue-400">{icon}</span>
+        )}
         <span className="ms-3">{title}</span>
       </a>
     </li>
