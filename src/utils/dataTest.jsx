@@ -11,12 +11,12 @@ export const fetchUserData = async () => {
 
 export const updateUser = async (userData) => {
   try {
+    console.log("Data to be sent:", userData); // Console log data sebelum pengiriman
     const users = await fetchUserData();
     const updatedUsers = users.map((user) =>
       user.id === userData.id ? { ...user, ...userData } : user,
     );
-    console.log("Updated Users:", updatedUsers); // Log updated users
-    throw new Error("updateUser function is not implemented for JSON file");
+    await axios.put("/data/users.json", { users: updatedUsers });
   } catch (error) {
     throw error;
   }
