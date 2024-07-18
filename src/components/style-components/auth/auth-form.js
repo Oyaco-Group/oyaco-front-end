@@ -6,7 +6,7 @@ import TextareaField from "@/components/style-components/form/textarea-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
 // import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
-import { register } from "@/fetching/auth"; // Import fungsi register
+import { register, login } from "@/fetching/auth";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -41,22 +41,28 @@ const AuthForm = ({ type }) => {
           address: "",
           agree: false,
         });
-        router.push("/login"); // Arahkan ke halaman login atau halaman lain
+        router.push("/login");
       } catch (error) {
         console.log(error);
       }
-    } else {
-      // Handle login
+    } else if (type === "login") {
+      try {
+        const { email, password } = formData;
+        if (!email || !password) {
+          throw new Error("Please input both email and password");
+        }
+        const response = await login({ email, password });
+        console.log(response);
+        // Simpan token ke localStorage atau state management
+        localStorage.setItem("token", response.data);
+        // toastSuccess("Login successful!");
+        router.push("/dashboard");
+      } catch (error) {
+        console.log(error.message);
+        // toastDanger(error.message);
+      }
     }
   };
-
-  // const toastSuccess = (message) => {
-  //   return <ToastSuccess message={message} />;
-  // };
-
-  // const toastDanger = (message) => {
-  //   return <ToastDanger message={message} />;
-  // };
 
   return (
     <form className="w-1/2" onSubmit={handleSubmit}>
@@ -68,22 +74,22 @@ const AuthForm = ({ type }) => {
           {type === "login" ? "Login to continue" : "Create a new account"}
         </p>
       </div>
-      <InputField
-        id="username"
-        type="text"
-        value={formData.username}
-        onChange={handleChange}
-        placeholder="Username"
-      />
       {type === "register" && (
         <InputField
-          id="email"
-          type="email"
-          value={formData.email}
+          id="username"
+          type="text"
+          value={formData.username}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder="Username"
         />
       )}
+      <InputField
+        id="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Email"
+      />
       <InputField
         id="password"
         type="password"

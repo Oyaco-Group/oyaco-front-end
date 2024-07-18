@@ -10,4 +10,14 @@ const register = async (userData) => {
   }
 };
 
-export { register };
+const login = async (userData) => {
+  try {
+    const response = await instance.post("/auth/login", userData);
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Something went wrong");
+  }
+};
+
+export { register, login };
