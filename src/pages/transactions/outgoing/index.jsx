@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Table from "@/components/style-components/table";
+import TableOrder from "@/components/style-components/TableOrder";
+import { useState, useEffect } from "react";
 import Dropdown from "@/components/style-components/dropdown";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
 import SearchBar from "@/components/style-components/navbar/searchbar";
@@ -17,6 +17,19 @@ const TransactionOutgoingPage = () => {
     { field: "expiration_date", label: "Expiration Date" },
     { field: "action", label: "Action" },
   ];
+
+  const [transaction, setTransaction] = useState([]);
+
+  const fetchOutgoingTransaction = async () => {
+    try {
+      const data = await getAllTransactions();
+      setTransaction(data.data);
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    fetchOutgoingTransaction();
+  });
 
   return (
     <div>
@@ -41,12 +54,8 @@ const TransactionOutgoingPage = () => {
                 <Button> Create Transaction </Button>
               </div>
             </div>
-            <div className="flex items-center justify-center">
-              {/* {isLoading && <SpinnerLoad />} */}
-            </div>
-            {/* {!isLoading && (
-            <Table columns={a} data={a} onEdit={a} />
-          )} */}
+            <div className="flex items-center justify-center"></div>
+            <TableOrder columns={columns} data={transaction} />
           </div>
         </div>
       </div>
