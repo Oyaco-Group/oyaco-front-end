@@ -6,10 +6,15 @@ const getAllOrder = async() => {
         method : "GET",
         url : '/order/getorder'
     })
-    return response.data
+    return response.data;
 }
 
-const getOrderById = async() => {
+const getOrderById = async(id) => {
+    const response = await instance({
+        method : 'GET',
+        url : `order/getoneorder/${id}`
+    })
+    return response.data;
 
 }
 
