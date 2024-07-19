@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchCategory } from "@/fetching/category";
+import EditCategoryModal from "@/pages/inventory/category/edit";
+import {
+  fetchCategory,
+  editCategory,
+  deleteCategory,
+} from "@/fetching/category";
 
 const CategoryPage = () => {
   const columns = [
@@ -14,6 +19,8 @@ const CategoryPage = () => {
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalEditCategory, setModalEditCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +71,16 @@ const CategoryPage = () => {
     setFilteredData(filteredCategory);
   };
 
+  const handleEdit = (category) => {
+    setModalEditCategory(category);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalEditCategory(null);
+  };
+
   return (
     <div className='p-4 sm:ml-64'>
       <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
@@ -79,9 +96,19 @@ const CategoryPage = () => {
           <div className='flex items-center justify-center'>
             {isLoading && <SpinnerLoad />}
           </div>
-          {!isLoading && <Table columns={columns} data={filteredData} />}
+          {!isLoading && (
+            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+          )}
         </div>
       </div>
+      <EditCategoryModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        modalEditCategory={modalEditCategory}
+        fetchData={fetchData}
+        onSave={editCategory}
+        onDelete={deleteCategory}
+      />
     </div>
   );
 };
