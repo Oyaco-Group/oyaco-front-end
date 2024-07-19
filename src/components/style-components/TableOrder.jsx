@@ -28,7 +28,10 @@ const TableOrder = ({ columns, data = [], onEdit }) => {
                       className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                   >
                     <td className="whitespace-nowrap px-6 py-4">
-                      <Button className="bg-orange-400 hover:bg-orange-500" size="sm" onClick={()=>onEdit()}>
+                      <Button className="bg-orange-400 hover:bg-orange-500" size="sm" onClick={(e)=>{
+                          console.log(e.target.value)
+                          onEdit(order.id)
+                        }}>
                         {order.id}
                       </Button>
                     </td>
