@@ -87,11 +87,13 @@ const CategoryPage = () => {
         <h1 className="mb-4 mt-4 text-2xl text-gray-800">List Category</h1>
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
-            <SearchBar
-              className="w-72"
-              onChange={handleSearchChange}
-              value={searchCategory}
-            />
+            <div>
+              <SearchBar
+                className="w-72"
+                onChange={handleSearchChange}
+                value={searchCategory}
+              />
+            </div>
           </div>
           <div className="flex items-center justify-center">
             {isLoading && <SpinnerLoad />}
