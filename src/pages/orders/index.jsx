@@ -1,6 +1,5 @@
-
 import TableOrder from "@/components/style-components/TableOrder";
-import { getAllOrder } from "@/fetching/order";
+import { getAllOrder, getOrderById } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Dropdown from "@/components/style-components/dropdown";
@@ -13,6 +12,8 @@ const OrderPage = () => {
   const [order, setOrder] = useState([]);
   const [loading,setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [id, setId] = useState();
+  const [detailOrder, setDetailOrder] = useState({});
 
   const fetchOrder = async() => {
     try {
@@ -25,8 +26,21 @@ const OrderPage = () => {
     }
   }
 
-  function openModal() {
+  const fetchDetail = async(id) => {
+    try {
+      const data = await getOrderById(id);
+      setDetailOrder(data.data);
+
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  function openModal(id) {
     setIsOpen(true);
+    setId(id);
+    fetchDetail(id);
+    console.log(detailOrder);
   }
   function closeModal() {
     setIsOpen(false);
@@ -35,7 +49,7 @@ const OrderPage = () => {
 
   useEffect(() => {
     fetchOrder();
-    setLoading(true)
+    setLoading(true);
   }, [order,isOpen])
 
   const columns = [
@@ -69,11 +83,13 @@ const OrderPage = () => {
             <TableOrder columns={columns} data={order} onEdit={openModal}/>
         </div>
 
-        <DetailOrder onClose={closeModal} isOpen={isOpen}/>
-      </div>
+        <DetailOrder onClose={closeModal} isOpen={isOpen} data={detailOrder}/>
+        </div>
+
 
 
   );
+
 
 };
 

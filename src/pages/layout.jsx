@@ -8,7 +8,6 @@ const Layout = (props) => {
   const pathname = usePathname();
 
   const isAuthPath = ["/login", "/register"].includes(pathname);
-  console.log(isAuthPath);
 
   return (
     <div className="h-screen">
