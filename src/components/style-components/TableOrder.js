@@ -32,7 +32,10 @@ const TableOrder = ({ columns, data = [], onEdit }) => {
                     <Button
                       className="bg-orange-400 hover:bg-orange-500"
                       size="sm"
-                      onClick={() => onEdit()}
+                      onClick={(e) => {
+                        console.log(e.target.value);
+                        onEdit(order.id);
+                      }}
                     >
                       {order.id}
                     </Button>
