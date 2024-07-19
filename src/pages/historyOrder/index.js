@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchOrderData } from "@/fetching/orderHistory";
-import OrderHistoryTable from "@/components/OrderHistoryTable";
+import OrderHistoryTable from "@/components/orderHistoryTable";
 
 export async function getServerSideProps({ params }) {
   const { id } = params;

@@ -1,4 +1,4 @@
-import DashboardPage from "./dashboard/index.jsx";
+import DashboardPage from "./dashboard/index.js";
 
 const Main = () => {
   return (

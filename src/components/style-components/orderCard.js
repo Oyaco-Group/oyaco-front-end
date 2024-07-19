@@ -1,4 +1,3 @@
-
 const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
   const formatISODate = (isoDateString) => {
     // Mendapatkan bagian-bagian tanggal dari string ISO 8601
@@ -47,43 +46,45 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
   };
 
   return (
-    <div className="flex items-center bg-white dark:bg-gray-800 max-w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 mb-4">
-      <div className="flex-shrink-0 mr-4 ml-10">
+    <div className="mb-4 flex max-w-full items-center overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+      <div className="ml-10 mr-4 flex-shrink-0">
         <img
-          className="h-16 w-16 object-cover rounded-full"
+          className="h-16 w-16 rounded-full object-cover"
           src="http://www.w3.org/2000/svg"
           alt="Order Image"
         />
       </div>
       <div className="w-full p-4">
-        <div className="font-bold text-xl mb-2">Order ID: {order.id}</div>
-        <p className="text-gray-700 text-base">User ID: {order.user_id}</p>
-        <p className="text-gray-700 text-base">
+        <div className="mb-2 text-xl font-bold">Order ID: {order.id}</div>
+        <p className="text-base text-gray-700">User ID: {order.user_id}</p>
+        <p className="text-base text-gray-700">
           Payment Type: {order.payment_type}
         </p>
-        <p className="text-gray-700 text-base">
+        <p className="text-base text-gray-700">
           Order Status: {order.order_status}
         </p>
-        <p className="text-gray-700 text-base">
+        <p className="text-base text-gray-700">
           Buyer Status: {order.buyer_status}
         </p>
-        <p className="text-gray-700 text-base">Created At: {formatISODate(order.created_at)}</p>
+        <p className="text-base text-gray-700">
+          Created At: {formatISODate(order.created_at)}
+        </p>
       </div>
-      <div className="p-4 flex justify-end">
+      <div className="flex justify-end p-4">
         <button
-          className="bg-black hover:bg-gray-800 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="mr-8 rounded bg-black px-4 py-1 text-sm font-bold text-white hover:bg-gray-800"
           onClick={handleOrderDetail}
         >
           Detail
         </button>
         <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="mr-8 rounded bg-red-500 px-4 py-1 text-sm font-bold text-white hover:bg-red-700"
           onClick={handleComplaint}
         >
           Complaint
         </button>
         <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="mr-8 rounded bg-green-500 px-4 py-1 text-sm font-bold text-white hover:bg-green-700"
           onClick={handleUpdateStatus}
         >
           Status

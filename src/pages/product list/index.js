@@ -10,4 +10,4 @@ const ProductListPage = () => {
   );
 };
 
-export default TransactionIncomingPage;
+export default ProductListPage;

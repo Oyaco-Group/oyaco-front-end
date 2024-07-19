@@ -35,7 +35,7 @@ const TransactionOutgoingPage = () => {
     <div>
       <div className="p-4 sm:ml-64">
         <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
-          <h1 className="mt-4 mb-6 text-2xl text-gray-800">
+          <h1 className="mb-6 mt-4 text-2xl text-gray-800">
             {" "}
             Outgoing Transaction{" "}
           </h1>

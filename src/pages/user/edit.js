@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Modal from "@/components/style-components/modal";
+import Modal from "@/components/style-components/modal.js";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
