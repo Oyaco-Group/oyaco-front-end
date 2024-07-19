@@ -81,13 +81,32 @@ const OrderPage = () => {
           </div>
         </div>
             <TableOrder columns={columns} data={order} onEdit={openModal}/>
+        <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+          <h1 className="mt-4 text-2xl text-gray-800">Order List</h1>
+          <p className="mb-6 text-sm font-light text-gray-400">
+            Manage Order List
+          </p>
+          <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-around space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
+            <Dropdown/>
+
+            <button className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              >Add Order
+            </button>
+
+          </div>
+        </div>
+            <TableOrder columns={columns} data={order} onEdit={openModal}/>
         </div>
 
         <DetailOrder onClose={closeModal} isOpen={isOpen} data={detailOrder}/>
       </div>
 
 
+
+
   );
+
 
 };
 

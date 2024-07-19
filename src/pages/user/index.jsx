@@ -1,4 +1,3 @@
-// UserPage.jsx
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
@@ -23,7 +22,7 @@ const UserPage = () => {
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const [lengthSearch,setLengthSearch] = useState(0);
+  const [lengthSearch, setLengthSearch] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -39,7 +38,6 @@ const UserPage = () => {
       const userData = await fetchUserData();
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
-      setFilteredData(roleUserData); // Initialize filteredData with roleUserData
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -53,23 +51,25 @@ const UserPage = () => {
   };
 
   const filterUsers = (valueSearch) => {
-    let filteredUsers = filteredData; // Use filteredData instead of originalData
+    let filteredUsers = originalData;
 
-    if(lengthSearch > valueSearch.length) {
+    if (lengthSearch > valueSearch.length) {
       filteredUsers = originalData;
     }
 
     if (valueSearch) {
-      filteredUsers = filteredUsers.filter(
+      filteredUsers = originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-        user.address.toLowerCase().includes(valueSearch.toLowerCase()),
-      );  
+          user.address.toLowerCase().includes(valueSearch.toLowerCase()),
+      );
       setFilteredData(filteredUsers);
       setLengthSearch(valueSearch.length);
-    }  else {
-      setFilteredData(originalData)
+    } else {
+      setFilteredData(originalData);
     }
+
+    setFilteredData(filteredUsers);
   };
 
   const handleEdit = (user) => {
@@ -82,10 +82,10 @@ const UserPage = () => {
       await deleteUser(userId);
       toast.success("User deleted successfully");
 
-      // Update originalData and filteredData after deletion
       const updatedData = originalData.filter((user) => user.id !== userId);
       setOriginalData(updatedData);
-      setFilteredData(updatedData);
+
+      filterUsers(searchUser);
     } catch (error) {
       console.error("Error deleting user:", error);
       toast.error("Failed to delete user");
