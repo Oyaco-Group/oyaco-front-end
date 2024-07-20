@@ -5,7 +5,7 @@ import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
-// import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
+import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
 
 const AuthForm = ({ type }) => {
@@ -33,8 +33,8 @@ const AuthForm = ({ type }) => {
     if (type === "register") {
       try {
         const response = await register(formData);
-        console.log(response);
-        // toastSuccess("Registration successful!");
+        // console.log(response);
+        toast.success(response.message);
         setFormData({
           name: "",
           email: "",
@@ -45,10 +45,19 @@ const AuthForm = ({ type }) => {
         });
         router.push("/login");
       } catch (error) {
-        console.log(error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          console.log(error.response.data.message);
+        } else {
+          toast.error(error.message);
+        }
       }
     } else if (type === "login") {
       try {
+        console.log(formData);
         const { email, password } = formData;
         if (!email || !password) {
           throw new Error("Please input both email and password");

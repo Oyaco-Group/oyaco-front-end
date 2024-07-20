@@ -61,7 +61,7 @@ const UserPage = () => {
       filteredUsers = originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-          user.address.toLowerCase().includes(valueSearch.toLowerCase()),
+          user.address.toLowerCase().includes(valueSearch.toLowerCase())
       );
       setFilteredData(filteredUsers);
       setLengthSearch(valueSearch.length);
@@ -87,8 +87,7 @@ const UserPage = () => {
 
       filterUsers(searchUser);
     } catch (error) {
-      console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+      toast.error(error.message);
     }
   };
 
