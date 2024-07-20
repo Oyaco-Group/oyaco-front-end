@@ -6,8 +6,13 @@ import { TbHomeDot } from "react-icons/tb";
 import { MdInventory } from "react-icons/md";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { LuWarehouse } from "react-icons/lu";
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/router";
 
 const SidebarMenu = () => {
+  const { logout } = useAuth();
+  const router = useRouter();
+
   const inventoryItems = [
     {
       label: "Products",
@@ -33,6 +38,12 @@ const SidebarMenu = () => {
       href: "/transactions/outgoing",
     },
   ];
+
+  const handleLogout = () => {
+    // console.log("click");
+    logout();
+    router.push("/login");
+  };
 
   return (
     <aside
@@ -71,10 +82,11 @@ const SidebarMenu = () => {
           </div>
           <div className="mt-auto">
             <Menu
-              href="/login"
+              href="#"
               title="Log out"
               icon={<AiOutlineLogout className="text-xl text-red-600" />}
               className="text-red-500 hover:text-red-700"
+              onClick={handleLogout}
             />
           </div>
         </ul>
