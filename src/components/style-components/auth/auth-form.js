@@ -1,6 +1,6 @@
-// src/components/style-components/auth-form.js
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useAuth } from "@/context/auth-context";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
@@ -14,10 +14,11 @@ const AuthForm = ({ type }) => {
     email: "",
     password: "",
     address: "",
-    user_role: "user",
+    user_role: "",
     agree: false,
   });
 
+  const { login: loginUser } = useAuth();
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -30,17 +31,21 @@ const AuthForm = ({ type }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Jika tipe adalah "register", tambahkan user_role ke formData
+    const submitData =
+      type === "register" ? { ...formData, user_role: "user" } : formData;
+
     if (type === "register") {
       try {
-        const response = await register(formData);
-        // console.log(response);
+        const response = await register(submitData); // Kirim submitData yang sudah diubah
         toast.success(response.message);
         setFormData({
           name: "",
           email: "",
           password: "",
           address: "",
-          user_role: "user",
+          user_role: "user", // Reset ke default value
           agree: false,
         });
         router.push("/login");
@@ -50,27 +55,27 @@ const AuthForm = ({ type }) => {
           error.response.data &&
           error.response.data.message
         ) {
-          console.log(error.response.data.message);
+          toast.error(error.response.data.message);
         } else {
           toast.error(error.message);
         }
       }
     } else if (type === "login") {
       try {
-        console.log(formData);
         const { email, password } = formData;
         if (!email || !password) {
           throw new Error("Please input both email and password");
         }
         const response = await login({ email, password });
-        console.log(response);
-        // Simpan token ke localStorage atau state management
-        localStorage.setItem("token", response.data);
-        // toastSuccess("Login successful!");
+        const { token, user } = response.data;
+
+        // Simpan token dan data pengguna ke context dan localStorage
+        loginUser(user, token);
+
+        toast.success(response.message);
         router.push("/dashboard");
       } catch (error) {
-        console.log(error.message);
-        // toastDanger(error.message);
+        toast.error(error.message);
       }
     }
   };
