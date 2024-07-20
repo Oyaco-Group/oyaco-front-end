@@ -1,11 +1,11 @@
 const spinnerLoad = () => {
   return (
     <div>
-      <div className="b flex h-56 w-56 items-center justify-center rounded-lg">
+      <div class="b flex h-56 w-56 items-center justify-center rounded-lg">
         <div role="status">
           <svg
             aria-hidden="true"
-            className="h-10 w-10 animate-spin fill-blue-400 text-gray-200"
+            class="h-10 w-10 animate-spin fill-blue-400 text-gray-200"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@ const spinnerLoad = () => {
               fill="currentFill"
             />
           </svg>
-          <span className="sr-only">Loading...</span>
+          <span class="sr-only">Loading...</span>
         </div>
       </div>
     </div>

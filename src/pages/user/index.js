@@ -22,6 +22,8 @@ const UserPage = () => {
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [lengthSearch, setLengthSearch] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -36,30 +38,38 @@ const UserPage = () => {
       const userData = await fetchUserData();
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
-      setFilteredUser(roleUserData);
-    } catch (error) {
-      toast.error("Failed to fetch user data");
-      console.error("Error fetching user data:", error);
-    } finally {
       setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching user data:", error);
     }
   };
 
   const handleSearchChange = (event) => {
-    setSearchUser(event.target.value);
+    const value = event.target.value;
+    setSearchUser(value);
   };
 
   const filterUsers = (valueSearch) => {
+    let filteredUsers = originalData;
+
+    if (lengthSearch > valueSearch.length) {
+      filteredUsers = originalData;
+    }
+
     if (valueSearch) {
-      const filteredUsers = originalData.filter(
+      filteredUsers = originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
           user.address.toLowerCase().includes(valueSearch.toLowerCase())
       );
       setFilteredUser(filteredUsers);
+      setLengthSearch(valueSearch.length);
     } else {
       setFilteredUser(originalData);
     }
+
+    setFilteredUser(filteredUsers);
   };
 
   const handleEdit = (user) => {
@@ -74,10 +84,10 @@ const UserPage = () => {
 
       const updatedData = originalData.filter((user) => user.id !== userId);
       setOriginalData(updatedData);
-      setFilteredUser(updatedData);
+
+      filterUsers(searchUser);
     } catch (error) {
-      toast.error("Failed to delete user");
-      console.error("Error deleting user:", error);
+      toast.error(error.message);
     }
   };
 
