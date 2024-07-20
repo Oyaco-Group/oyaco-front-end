@@ -3,15 +3,11 @@ import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
 import EditCategoryModal from "@/pages/inventory/category/edit";
-import AddCategoryModal from "@/pages/inventory/category/add";
 import {
   fetchCategory,
-  createCategory,
   editCategory,
   deleteCategory,
 } from "@/fetching/category";
-import Button from "@/components/style-components/button";
-import { FaPlus } from "react-icons/fa6";
 
 const CategoryPage = () => {
   const columns = [
@@ -24,7 +20,6 @@ const CategoryPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [modalEditCategory, setModalEditCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -86,32 +81,19 @@ const CategoryPage = () => {
     setModalEditCategory(null);
   };
 
-  const openAddModal = () => {
-    setIsAddModalOpen(true);
-  };
-
-  const closeAddModal = () => {
-    setIsAddModalOpen(false);
-  };
-
   return (
     <div className='p-4 sm:ml-64'>
       <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
-        <h1 className='mt-4 mb-4 text-2xl text-gray-800'>List Category</h1>
+        <h1 className='mb-4 mt-4 text-2xl text-gray-800'>List Category</h1>
         <div className='relative overflow-x-auto'>
           <div className='flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900'>
-            <SearchBar
-              className='w-72'
-              onChange={handleSearchChange}
-              value={searchCategory}
-            />
-            <Button
-              className='bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
-              onClick={openAddModal}
-            >
-              <FaPlus />
-              Add Category
-            </Button>
+            <div>
+              <SearchBar
+                className='w-72'
+                onChange={handleSearchChange}
+                value={searchCategory}
+              />
+            </div>
           </div>
           <div className='flex items-center justify-center'>
             {isLoading && <SpinnerLoad />}
@@ -128,11 +110,6 @@ const CategoryPage = () => {
         fetchData={fetchData}
         onSave={editCategory}
         onDelete={deleteCategory}
-      />
-      <AddCategoryModal
-        isOpen={isAddModalOpen}
-        onClose={closeAddModal}
-        fetchData={fetchData}
       />
     </div>
   );

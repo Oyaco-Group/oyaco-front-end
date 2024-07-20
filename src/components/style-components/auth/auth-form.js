@@ -1,22 +1,24 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useAuth } from "@/context/auth-context";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
-import { ToastSuccess, ToastDanger } from "@/components/style-components/toast";
+import { toast } from "react-toastify";
+import { register, login } from "@/fetching/auth";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     address: "",
-    role: "",
+    user_role: "",
     agree: false,
   });
 
-  const [users, setUsers] = useState([]);
+  const { login: loginUser } = useAuth();
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -27,58 +29,55 @@ const AuthForm = ({ type }) => {
     });
   };
 
-  const handleRegister = () => {
-    const existingUser = users.find((user) => user.email === formData.email);
-    if (existingUser) {
-      return false;
-    }
-    setUsers([...users, formData]);
-    return true;
-  };
-
-  const handleLogin = () => {
-    const user = users.find(
-      (user) =>
-        user.username === formData.username &&
-        user.password === formData.password,
-    );
-    return user;
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Jika tipe adalah "register", tambahkan user_role ke formData
+    const submitData =
+      type === "register" ? { ...formData, user_role: "user" } : formData;
+
     if (type === "register") {
-      const registered = handleRegister();
-      if (registered) {
+      try {
+        const response = await register(submitData); // Kirim submitData yang sudah diubah
+        toast.success(response.message);
         setFormData({
-          username: "",
+          name: "",
           email: "",
           password: "",
           address: "",
-          role: "",
+          user_role: "user", // Reset ke default value
           agree: false,
         });
-        toastSuccess("Registration successful!");
-      } else {
-        toastDanger("Email is already registered!");
+        router.push("/login");
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error(error.message);
+        }
       }
-    } else {
-      const user = handleLogin();
-      if (user) {
-        toastSuccess("Login successful!");
+    } else if (type === "login") {
+      try {
+        const { email, password } = formData;
+        if (!email || !password) {
+          throw new Error("Please input both email and password");
+        }
+        const response = await login({ email, password });
+        const { token, user } = response.data;
+
+        // Simpan token dan data pengguna ke context dan localStorage
+        loginUser(user, token);
+
+        toast.success(response.message);
         router.push("/dashboard");
-      } else {
-        toastDanger("Invalid credentials");
+      } catch (error) {
+        toast.error(error.message);
       }
     }
-  };
-
-  const toastSuccess = (message) => {
-    return <ToastSuccess message={message} />;
-  };
-
-  const toastDanger = (message) => {
-    return <ToastDanger message={message} />;
   };
 
   return (
@@ -91,22 +90,22 @@ const AuthForm = ({ type }) => {
           {type === "login" ? "Login to continue" : "Create a new account"}
         </p>
       </div>
-      <InputField
-        id="username"
-        type="text"
-        value={formData.username}
-        onChange={handleChange}
-        placeholder="Username"
-      />
       {type === "register" && (
         <InputField
-          id="email"
-          type="email"
-          value={formData.email}
+          id="name"
+          type="text"
+          value={formData.name}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder="Username"
         />
       )}
+      <InputField
+        id="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Email"
+      />
       <InputField
         id="password"
         type="password"

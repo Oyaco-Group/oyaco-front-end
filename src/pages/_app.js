@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
-import Head from "next/head";
 import Layout from "./layout";
+import { AuthProvider } from "../context/auth-context";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
+    <AuthProvider>
       <Layout>
         <ToastContainer
           position="top-center"
@@ -21,6 +21,6 @@ export default function App({ Component, pageProps }) {
         />
         <Component {...pageProps} />
       </Layout>
-    </>
+    </AuthProvider>
   );
 }
