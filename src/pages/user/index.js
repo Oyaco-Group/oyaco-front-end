@@ -16,7 +16,7 @@ const UserPage = () => {
   ];
 
   const [originalData, setOriginalData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredUser, setFilteredUser] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
@@ -63,13 +63,13 @@ const UserPage = () => {
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
           user.address.toLowerCase().includes(valueSearch.toLowerCase())
       );
-      setFilteredData(filteredUsers);
+      setFilteredUser(filteredUsers);
       setLengthSearch(valueSearch.length);
     } else {
-      setFilteredData(originalData);
+      setFilteredUser(originalData);
     }
 
-    setFilteredData(filteredUsers);
+    setFilteredUser(filteredUsers);
   };
 
   const handleEdit = (user) => {
@@ -119,9 +119,10 @@ const UserPage = () => {
           {!isLoading && (
             <Table
               columns={columns}
-              data={filteredData}
+              data={filteredUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              fetchData={fetchData}
             />
           )}
         </div>
