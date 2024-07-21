@@ -43,7 +43,7 @@ const UserPage = () => {
       setFilteredUser(roleUserData);
     } catch (error) {
       toast.error("Failed to fetch user data");
-      console.error("Error fetching user data:", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
