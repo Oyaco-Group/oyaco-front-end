@@ -1,5 +1,6 @@
 import instance from "@/lib/axios";
 
+
 const getAllTransactions = async (warehouse, page) => {
   const response = await instance({
     method: "GET",
@@ -7,5 +8,6 @@ const getAllTransactions = async (warehouse, page) => {
   });
   return response.data;
 };
+
 
 export { getAllTransactions };
