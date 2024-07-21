@@ -8,10 +8,11 @@ const Layout = (props) => {
   const pathname = usePathname();
 
   const isAuthPath = ["/login", "/register"].includes(pathname);
+  const is404Path = pathname === "/404";
 
   return (
     <div className="h-screen">
-      {!isAuthPath && (
+      {!isAuthPath && !is404Path && (
         <>
           <Navbar />
           <SidebarMenu />

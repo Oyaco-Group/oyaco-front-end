@@ -1,4 +1,3 @@
-// pages/user/index.js
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
@@ -6,6 +5,7 @@ import SpinnerLoad from "@/components/style-components/loading-indicator/spinner
 import { fetchUsers } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";
+import Pagination from "@/components/style-components/pagination";
 
 const UserPage = () => {
   const columns = [
@@ -13,7 +13,7 @@ const UserPage = () => {
     { field: "name", label: "Name" },
     { field: "address", label: "Address" },
     { field: "user_role", label: "Role" },
-    { field: "action", label: "Action" },
+    { field: "Edit", label: "Action" },
   ];
 
   const [originalData, setOriginalData] = useState([]);
@@ -41,6 +41,7 @@ const UserPage = () => {
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
       setFilteredUser(roleUserData);
+      console.log(roleUserData);
     } catch (error) {
       toast.error("Failed to fetch user data");
       console.error(error);
@@ -133,20 +134,9 @@ const UserPage = () => {
         modalEditUser={modalEditUser}
         fetchData={fetchData}
       />
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 1}
-          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg disabled:bg-gray-400"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => handlePageChange(page + 1)}
-          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg"
-        >
-          Next
-        </button>
+      <div className="flex justify-between pr-4 pl-4">
+        <p className="text-md ml-4 mt-2 font-semibold text-gray-500">Total :</p>
+        <Pagination />
       </div>
     </div>
   );
