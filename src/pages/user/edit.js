@@ -92,7 +92,7 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
         type="password"
         value={tempData.password}
         onChange={handleChange}
-        placeholder="Password"
+        placeholder="New Password"
         className="text-gray-400"
       />
       <TextareaField

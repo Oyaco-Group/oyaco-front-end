@@ -1,8 +1,9 @@
+// pages/user/index.js
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData, deleteUser } from "@/utils/dataTest";
+import { fetchUsers } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";
 
@@ -21,25 +22,28 @@ const UserPage = () => {
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page, limit);
+  }, [page]);
 
   useEffect(() => {
     filterUsers(searchUser);
   }, [searchUser, originalData]);
 
-  const fetchData = async () => {
+  const fetchData = async (page, limit) => {
     try {
       setIsLoading(true);
-      const userData = await fetchUserData();
+      console.log(`Fetching users with page: ${page}, limit: ${limit}`);
+      const { data: userData } = await fetchUsers(page, limit);
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
       setFilteredUser(roleUserData);
     } catch (error) {
       toast.error("Failed to fetch user data");
-      console.error("Error fetching user data:", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +90,10 @@ const UserPage = () => {
     setModalEditUser(null);
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
@@ -113,6 +121,8 @@ const UserPage = () => {
               onEdit={handleEdit}
               onDelete={handleDelete}
               fetchData={fetchData}
+              page={page}
+              onPageChange={handlePageChange}
             />
           )}
         </div>
@@ -123,6 +133,21 @@ const UserPage = () => {
         modalEditUser={modalEditUser}
         fetchData={fetchData}
       />
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg disabled:bg-gray-400"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
