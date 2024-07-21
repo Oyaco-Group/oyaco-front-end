@@ -1,13 +1,11 @@
 import instance from "@/lib/axios";
 
-const getAllTransactions = async () => {
+const getAllTransactions = async (warehouse, page) => {
   const response = await instance({
     method: "GET",
-    url: "/transactions",
+    url: `/transactions/outgoing/${warehouse}?page=${page}`,
   });
   return response.data;
 };
 
-const getOutgoingTransactionsById = async () => {};
-
-export { getAllTransactions, getOutgoingTransactionsById };
+export { getAllTransactions };
