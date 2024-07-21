@@ -15,10 +15,10 @@ const HistoryOrderPage = ({ initialOrders }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
-        setLoading(true)
+        setLoading(true);
         const data = await fetchOrderHistoryById(id);
         setOrders(data);
-        setLoading(false)
+        setLoading(false);
       }
     };
     fetchData();
