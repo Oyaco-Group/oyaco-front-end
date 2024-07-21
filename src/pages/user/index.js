@@ -1,9 +1,9 @@
-// UserPage.jsx
+// pages/user/index.js
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData, deleteUser } from "@/utils/dataTest";
+import { fetchUsers } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";
 
@@ -17,58 +17,52 @@ const UserPage = () => {
   ];
 
   const [originalData, setOriginalData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredUser, setFilteredUser] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
-  const [lengthSearch,setLengthSearch] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page, limit);
+  }, [page]);
 
   useEffect(() => {
     filterUsers(searchUser);
   }, [searchUser, originalData]);
 
-  const fetchData = async () => {
+  const fetchData = async (page, limit) => {
     try {
       setIsLoading(true);
-      const userData = await fetchUserData();
+      console.log(`Fetching users with page: ${page}, limit: ${limit}`);
+      const { data: userData } = await fetchUsers(page, limit);
       const roleUserData = userData.filter((user) => user.user_role === "user");
       setOriginalData(roleUserData);
-      setFilteredData(roleUserData); // Initialize filteredData with roleUserData
-      setIsLoading(false);
+      setFilteredUser(roleUserData);
     } catch (error) {
+      toast.error("Failed to fetch user data");
+      console.error(error);
+    } finally {
       setIsLoading(false);
-      console.error("Error fetching user data:", error);
     }
   };
 
   const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchUser(value);
+    setSearchUser(event.target.value);
   };
 
   const filterUsers = (valueSearch) => {
-    let filteredUsers = filteredData; // Use filteredData instead of originalData
-
-    if(lengthSearch > valueSearch.length) {
-      filteredUsers = originalData;
-    }
-
     if (valueSearch) {
-      filteredUsers = filteredUsers.filter(
+      const filteredUsers = originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-        user.address.toLowerCase().includes(valueSearch.toLowerCase()),
-      );  
-      setFilteredData(filteredUsers);
-      setLengthSearch(valueSearch.length);
-    }  else {
-      setFilteredData(originalData)
+          user.address.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+      setFilteredUser(filteredUsers);
+    } else {
+      setFilteredUser(originalData);
     }
   };
 
@@ -82,19 +76,22 @@ const UserPage = () => {
       await deleteUser(userId);
       toast.success("User deleted successfully");
 
-      // Update originalData and filteredData after deletion
       const updatedData = originalData.filter((user) => user.id !== userId);
       setOriginalData(updatedData);
-      setFilteredData(updatedData);
+      setFilteredUser(updatedData);
     } catch (error) {
-      console.error("Error deleting user:", error);
       toast.error("Failed to delete user");
+      console.error("Error deleting user:", error);
     }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setModalEditUser(null);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
   return (
@@ -120,9 +117,12 @@ const UserPage = () => {
           {!isLoading && (
             <Table
               columns={columns}
-              data={filteredData}
+              data={filteredUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              fetchData={fetchData}
+              page={page}
+              onPageChange={handlePageChange}
             />
           )}
         </div>
@@ -133,6 +133,21 @@ const UserPage = () => {
         modalEditUser={modalEditUser}
         fetchData={fetchData}
       />
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg disabled:bg-gray-400"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          className="px-4 py-2 mx-1 text-white bg-blue-500 rounded-lg"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

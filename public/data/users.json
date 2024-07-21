@@ -6,7 +6,7 @@
     "password": "oyaco123",
     "address": "Kulas Light, Apt. 556, Gwenborough",
     "user_role": "admin",
-    "image_url": "https://randomuser.me/api/portraits/women/1.jpg"
+    "image_url": ""
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "password": "oyaco123",
     "address": "Victor Plains, Suite 879, Wisokyburgh",
     "user_role": "user",
-    "image_url": "https://randomuser.me/api/portraits/men/2.jpg"
+    "image_url": ""
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "password": "oyaco123",
     "address": "Douglas Extension, Suite 847, McKenziehaven",
     "user_role": "admin",
-    "image_url": "https://randomuser.me/api/portraits/women/3.jpg"
+    "image_url": ""
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "password": "oyaco123",
     "address": "Hoeger Mall, Apt. 692, South Elvis",
     "user_role": "user",
-    "image_url": "https://randomuser.me/api/portraits/women/4.jpg"
+    "image_url": ""
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "password": "oyaco123",
     "address": "Skiles Walks, Suite 351, Roscoeview",
     "user_role": "admin",
-    "image_url": "https://randomuser.me/api/portraits/women/5.jpg"
+    "image_url": ""
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "password": "oyaco123",
     "address": "Norberto Crossing, Apt. 950, South Christy",
     "user_role": "user",
-    "image_url": "https://randomuser.me/api/portraits/women/6.jpg"
+    "image_url": ""
   },
   {
     "id": 7,
@@ -60,7 +60,7 @@
     "password": "oyaco123",
     "address": "Rex Trail, Suite 280, Howemouth",
     "user_role": "admin",
-    "image_url": "https://randomuser.me/api/portraits/men/7.jpg"
+    "image_url": ""
   },
   {
     "id": 8,
@@ -69,6 +69,6 @@
     "name": "Nicholas Runolfsdottir V",
     "address": "Ellsworth Summit, Suite 729, Aliyaview",
     "user_role": "user",
-    "image_url": "https://randomuser.me/api/portraits/men/8.jpg"
+    "image_url": ""
   }
 ]

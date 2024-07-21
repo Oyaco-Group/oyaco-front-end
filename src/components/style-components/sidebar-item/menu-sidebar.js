@@ -1,11 +1,15 @@
 import { useRouter } from "next/router";
 
-const Menu = ({ href, title, icon, className }) => {
+const Menu = ({ href, title, icon, className, onClick }) => {
   const router = useRouter();
 
   const handleClick = (e) => {
     e.preventDefault();
-    router.push(href);
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(href);
+    }
   };
 
   return (

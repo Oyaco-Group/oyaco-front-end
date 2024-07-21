@@ -1,21 +1,26 @@
 import "@/styles/globals.css";
-import Head from "next/head";
 import Layout from "./layout";
+import { AuthProvider } from "../context/auth-context";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com " />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
+    <AuthProvider>
       <Layout>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Component {...pageProps} />
       </Layout>
-    </>
+    </AuthProvider>
   );
 }
