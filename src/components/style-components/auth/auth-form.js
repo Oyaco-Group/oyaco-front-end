@@ -7,6 +7,7 @@ import CheckboxField from "@/components/style-components/form/checkbox-field";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const AuthForm = ({ type }) => {
     agree: false,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const { login: loginUser } = useAuth();
   const router = useRouter();
 
@@ -27,6 +30,10 @@ const AuthForm = ({ type }) => {
       ...formData,
       [id]: type === "checkbox" ? checked : value,
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (event) => {
@@ -111,13 +118,26 @@ const AuthForm = ({ type }) => {
         onChange={handleChange}
         placeholder="Email"
       />
-      <InputField
-        id="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="Password"
-      />
+      <div className="relative">
+        <InputField
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Password"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500" />
+          )}
+        </button>
+      </div>
       {type === "register" && (
         <>
           <TextareaField
