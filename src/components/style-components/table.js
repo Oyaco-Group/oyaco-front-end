@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/components/style-components/button";
 
-const Table = ({ columns, data = [], onEdit }) => {
+const Table = ({ columns, data = [], onEdit, onDelete }) => {
   const totalData = data.length;
 
   return (
@@ -32,13 +32,21 @@ const Table = ({ columns, data = [], onEdit }) => {
                     <td key={colIndex} className="whitespace-nowrap px-6 py-4">
                       {column.field === "no" ? (
                         <span>{rowIndex + 1}</span> // Display sequential number
-                      ) : column.field === "action" ? (
+                      ) : column.field === "Edit" ? (
                         <Button
                           className="bg-blue-400 hover:bg-blue-500"
                           onClick={() => onEdit(row)}
                           size="sm"
                         >
-                          Info
+                          Edit
+                        </Button>
+                      ) : column.field === "Delete" ? (
+                        <Button
+                          className="bg-blue-400 hover:bg-blue-500"
+                          onClick={() => onDelete(row)}
+                          size="sm"
+                        >
+                          Delete
                         </Button>
                       ) : column.render ? (
                         column.render(row[column.field], row)
@@ -62,9 +70,9 @@ const Table = ({ columns, data = [], onEdit }) => {
           </tbody>
         </table>
       </div>
-      <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
+      {/* <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
         Total : {totalData}
-      </p>
+      </p> */}
     </div>
   );
 };

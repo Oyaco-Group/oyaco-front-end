@@ -8,6 +8,7 @@ import { RiShoppingBagLine } from "react-icons/ri";
 import { BsClipboard2Check } from "react-icons/bs";
 import { BsBoxSeam } from "react-icons/bs";
 import { TbReport } from "react-icons/tb";
+import { LuWarehouse } from "react-icons/lu";
 
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/router";
@@ -16,14 +17,14 @@ import { toast } from "react-toastify";
 const SidebarMenu = () => {
   const { logout } = useAuth();
   const router = useRouter();
-  const [userRole, setUserRole] = useState(null);
+  // const [userRole, setUserRole] = useState(null);
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData && userData.role) {
-      setUserRole(userData.role);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userData = JSON.parse(localStorage.getItem("user"));
+  //   if (userData && userData.role) {
+  //     setUserRole(userData.role);
+  //   }
+  // }, []);
 
   const inventoryItems = [
     {
@@ -67,52 +68,55 @@ const SidebarMenu = () => {
       <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm">
         <ul className="mt-5 flex h-full flex-col space-y-2">
           <div className="flex-grow">
-            {userRole === "admin" && (
-              <>
-                <Menu
-                  href="/dashboard"
-                  title="Dashboard"
-                  icon={<TbHomeDot className="text-xl" />}
-                />
-                <Menu
-                  href="/user"
-                  title="Users"
-                  icon={<AiOutlineUser className="text-xl" />}
-                />
-                <SidebarDropdown
-                  label="Inventories"
-                  items={inventoryItems}
-                  icon={
-                    <MdOutlineInventory2 className="text-xl text-blue-500" />
-                  }
-                />
-                <SidebarDropdown
-                  label="Transactions"
-                  items={transactionItems}
-                  icon={<BsClipboard2Check className="text-xl text-blue-400" />}
-                />
-                <Menu
-                  href="/orders"
-                  title="Orders"
-                  icon={<RiShoppingBagLine className="text-xl" />}
-                />
-              </>
-            )}
+            {/* {userRole === "admin" && ( */}
+            <>
+              <Menu
+                href="/dashboard"
+                title="Dashboard"
+                icon={<TbHomeDot className="text-xl" />}
+              />
+              <Menu
+                href="/user"
+                title="Users"
+                icon={<AiOutlineUser className="text-xl" />}
+              />
+              <Menu
+                href="/warehouses"
+                title="Warehouses"
+                icon={<LuWarehouse className="text-xl" />}
+              />
+              <SidebarDropdown
+                label="Inventories"
+                items={inventoryItems}
+                icon={<MdOutlineInventory2 className="text-xl text-blue-500" />}
+              />
+              <SidebarDropdown
+                label="Transactions"
+                items={transactionItems}
+                icon={<BsClipboard2Check className="text-xl text-blue-400" />}
+              />
+              <Menu
+                href="/orders"
+                title="Orders"
+                icon={<RiShoppingBagLine className="text-xl" />}
+              />
+            </>
+            {/* )} */}
 
-            {userRole === "user" && (
-              <>
-                <Menu
-                  href="/product-list"
-                  title="Product List"
-                  icon={<BsBoxSeam className="text-xl" />}
-                />
-                <Menu
-                  href="/HistoryOrder"
-                  title="History Order"
-                  icon={<TbReport className="text-xl" />}
-                />
-              </>
-            )}
+            {/* {userRole === "user" && ( */}
+            <>
+              <Menu
+                href="/product-list"
+                title="Product List"
+                icon={<BsBoxSeam className="text-xl" />}
+              />
+              <Menu
+                href="/HistoryOrder"
+                title="History Order"
+                icon={<TbReport className="text-xl" />}
+              />
+            </>
+            {/* )} */}
           </div>
           <div className="mt-auto">
             <Menu
