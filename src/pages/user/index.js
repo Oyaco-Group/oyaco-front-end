@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUsers } from "@/fetching/user";
+import { fetchUsers, fetchDeleteUser } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";
 import Pagination from "@/components/style-components/pagination";
@@ -24,10 +24,12 @@ const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     fetchData(page, limit);
-  }, [page]);
+  }, [page, limit]);
 
   useEffect(() => {
     filterUsers(searchUser);
@@ -36,12 +38,11 @@ const UserPage = () => {
   const fetchData = async (page, limit) => {
     try {
       setIsLoading(true);
-      console.log(`Fetching users with page: ${page}, limit: ${limit}`);
-      const { data: userData } = await fetchUsers(page, limit);
-      const roleUserData = userData.filter((user) => user.user_role === "user");
-      setOriginalData(roleUserData);
-      setFilteredUser(roleUserData);
-      console.log(roleUserData);
+      const response = await fetchUsers(page, limit);
+      setOriginalData(response.data);
+      setFilteredUser(response.data);
+      setTotalUsers(response.totalUsers);
+      setTotalPages(response.totalPages);
     } catch (error) {
       toast.error("Failed to fetch user data");
       console.error(error);
@@ -74,12 +75,18 @@ const UserPage = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await deleteUser(userId);
+      await fetchDeleteUser(userId);
       toast.success("User deleted successfully");
 
       const updatedData = originalData.filter((user) => user.id !== userId);
       setOriginalData(updatedData);
       setFilteredUser(updatedData);
+      setTotalUsers((prevTotal) => prevTotal - 1);
+
+      // Handle pagination if needed
+      if (updatedData.length === 0 && page > 1) {
+        setPage(page - 1);
+      }
     } catch (error) {
       toast.error("Failed to delete user");
       console.error("Error deleting user:", error);
@@ -89,6 +96,7 @@ const UserPage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setModalEditUser(null);
+    fetchData(page, limit);
   };
 
   const handlePageChange = (newPage) => {
@@ -121,9 +129,6 @@ const UserPage = () => {
               data={filteredUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              fetchData={fetchData}
-              page={page}
-              onPageChange={handlePageChange}
             />
           )}
         </div>
@@ -132,11 +137,17 @@ const UserPage = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         modalEditUser={modalEditUser}
-        fetchData={fetchData}
+        fetchData={() => fetchData(page, limit)}
       />
       <div className="flex justify-between pr-4 pl-4">
-        <p className="text-md ml-4 mt-2 font-semibold text-gray-500">Total :</p>
-        <Pagination />
+        <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
+          Total: {totalUsers}
+        </p>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

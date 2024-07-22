@@ -6,6 +6,7 @@ import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
 import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user"; // Import the new function
 import { toast } from "react-toastify";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -17,19 +18,27 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     address: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     if (modalEditUser) {
-      console.log("Received modalEditUser:", modalEditUser); // Log data
+      // console.log("Received modalEditUser:", modalEditUser);
+      // console.log("Setting User ID:", modalEditUser.id);
+
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
-        password: "", // Initialize empty for new passwords
+        password: "",
         address: modalEditUser.address || "",
       });
     }
   }, [modalEditUser]);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -41,10 +50,10 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await fetchDeleteUser(tempData.id); // Use the new delete function
+      await fetchDeleteUser(tempData.id);
       toast.success("User deleted successfully");
       onClose();
-      fetchData(); // Refresh data
+      fetchData();
     } catch (error) {
       console.error(
         "Error deleting user:",
@@ -55,7 +64,6 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   };
 
   const handleSaveChanges = async () => {
-    // Basic validation
     if (!tempData.name) {
       toast.error("Name is required");
       return;
@@ -71,27 +79,25 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       return;
     }
 
-    if (tempData.password.length < 5) {
-      toast.error("Password must be at least 5 characters long");
-      return; // Stop if validation fails
-    }
-
     if (!tempData.address) {
       toast.error("Address is required");
       return;
     }
 
     try {
-      console.log("Updating user with data:", tempData);
-      await fetchUpdateUser(tempData);
+      //console.log("Updating user with data:", tempData);
+      await fetchUpdateUser({
+        userId: tempData.id,
+        name: tempData.name,
+        email: tempData.email,
+        password: tempData.password,
+        address: tempData.address,
+      });
       toast.success("User updated successfully");
       onClose();
       fetchData();
     } catch (error) {
-      console.error(
-        "Error updating user data:",
-        error.response || error.message || error
-      );
+      console.error("Error updating user data:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to update user";
       toast.error(errorMessage);
@@ -122,14 +128,27 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
         placeholder="Email"
         className="text-gray-400"
       />
-      <InputField
-        id="password"
-        type="password"
-        value={tempData.password}
-        onChange={handleChange}
-        placeholder="New Password"
-        className="text-gray-400"
-      />
+      <div className="relative">
+        <InputField
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={tempData.password}
+          onChange={handleChange}
+          placeholder="New Password"
+          className="text-gray-400"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500" />
+          )}
+        </button>
+      </div>
       <TextareaField
         id="address"
         rows="4"
