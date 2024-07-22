@@ -46,7 +46,7 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
   };
 
   return (
-    <div className="flex items-center bg-white dark:bg-gray-800 max-w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 mb-4">
+    <div className="flex items-center bg-white dark:bg-gray-800 max-w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 mb-4 transition duration-300 ease-in-out transform hover:shadow-lg">
       <div className="flex-shrink-0 mr-4 ml-10">
         <img
           className="h-16 w-16 object-cover rounded-full"
@@ -56,7 +56,6 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
       </div>
       <div className="w-full p-4">
         <div className="font-bold text-xl mb-2">Order ID: {order.id}</div>
-        <p className="text-gray-700 text-base">User ID: {order.user_id}</p>
         <p className="text-gray-700 text-base">
           Payment Type: {order.payment_type}
         </p>
@@ -70,21 +69,21 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
           Created At: {formatISODate(order.created_at)}
         </p>
       </div>
-      <div className="p-4 flex justify-end">
+      <div className="p-4 flex items-center space-x-4">
         <button
-          className="bg-black hover:bg-gray-800 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-600 transition duration-300 ease-in-out"
           onClick={handleOrderDetail}
         >
           Detail
         </button>
         <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 transition duration-300 ease-in-out"
           onClick={handleComplaint}
         >
           Complaint
         </button>
         <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded mr-8 text-sm"
+          className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 ease-in-out"
           onClick={handleUpdateStatus}
         >
           Status
