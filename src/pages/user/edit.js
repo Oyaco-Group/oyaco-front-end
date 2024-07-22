@@ -6,6 +6,7 @@ import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
 import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user"; // Import the new function
 import { toast } from "react-toastify";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -16,6 +17,8 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     password: "",
     address: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (modalEditUser) {
@@ -32,6 +35,10 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       });
     }
   }, [modalEditUser]);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -121,14 +128,27 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
         placeholder="Email"
         className="text-gray-400"
       />
-      <InputField
-        id="password"
-        type="password"
-        value={tempData.password}
-        onChange={handleChange}
-        placeholder="New Password"
-        className="text-gray-400"
-      />
+      <div className="relative">
+        <InputField
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={tempData.password}
+          onChange={handleChange}
+          placeholder="New Password"
+          className="text-gray-400"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500" />
+          )}
+        </button>
+      </div>
       <TextareaField
         id="address"
         rows="4"
