@@ -2,8 +2,6 @@ import React from "react";
 import Button from "@/components/style-components/button";
 
 const Table = ({ columns, data = [], onEdit, onDelete }) => {
-  const totalData = data.length;
-
   return (
     <div>
       <div className="overflow-x-auto overflow-y-auto rounded-lg border shadow-md">
@@ -70,9 +68,6 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
           </tbody>
         </table>
       </div>
-      {/* <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
-        Total : {totalData}
-      </p> */}
     </div>
   );
 };

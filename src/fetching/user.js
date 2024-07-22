@@ -1,6 +1,6 @@
 import instance from "@/lib/axios";
 
-export const fetchUsers = async (page = 1, limit = 5) => {
+export const fetchUsers = async (page, limit) => {
   try {
     const response = await instance.get(`/user`, {
       params: {
@@ -8,7 +8,11 @@ export const fetchUsers = async (page = 1, limit = 5) => {
         limit: limit,
       },
     });
-    return response.data;
+    return {
+      data: response.data.data.users,
+      totalUsers: response.data.data.total_user,
+      totalPages: response.data.data.total_page,
+    };
   } catch (error) {
     console.error(
       "Error fetching user data:",
@@ -25,6 +29,12 @@ export const fetchUpdateUser = async ({
   password,
   address,
 }) => {
+  // console.log("Updating user with ID:", userId);
+
+  if (!userId || isNaN(parseInt(userId, 10))) {
+    throw new Error("Invalid User ID");
+  }
+
   try {
     const response = await instance.put(`/user/edit/${userId}`, {
       name,
@@ -34,7 +44,7 @@ export const fetchUpdateUser = async ({
     });
     return response.data.data;
   } catch (error) {
-    console.error("Error edit user:", error);
+    console.error("Error editing user:", error);
     throw error;
   }
 };
