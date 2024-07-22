@@ -73,7 +73,12 @@ const AuthForm = ({ type }) => {
         loginUser(user, token);
 
         toast.success(response.message);
-        router.push("/dashboard");
+        const dataUser = response.data.user;
+        if (dataUser.role === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/product-list");
+        }
       } catch (error) {
         toast.error(error.message);
       }

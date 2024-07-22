@@ -4,7 +4,7 @@ import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
-import { updateUser, deleteUser } from "@/utils/dataTest";
+import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user"; // Import the new function
 import { toast } from "react-toastify";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
@@ -19,12 +19,13 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   useEffect(() => {
     if (modalEditUser) {
+      console.log("Received modalEditUser:", modalEditUser); // Log data
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
-        password: modalEditUser.password || "",
+        password: "", // Initialize empty for new passwords
         address: modalEditUser.address || "",
       });
     }
@@ -40,26 +41,60 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteUser(tempData.id);
+      await fetchDeleteUser(tempData.id); // Use the new delete function
       toast.success("User deleted successfully");
       onClose();
-      fetchData();
+      fetchData(); // Refresh data
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error(
+        "Error deleting user:",
+        error.response || error.message || error
+      );
       toast.error("Failed to delete user");
     }
   };
 
   const handleSaveChanges = async () => {
+    // Basic validation
+    if (!tempData.name) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!tempData.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(tempData.email)) {
+      toast.error("Invalid email format");
+      return;
+    }
+
+    if (tempData.password.length < 5) {
+      toast.error("Password must be at least 5 characters long");
+      return; // Stop if validation fails
+    }
+
+    if (!tempData.address) {
+      toast.error("Address is required");
+      return;
+    }
+
     try {
-      await updateUser(tempData);
-      toast.success("Changes saved successfully");
+      console.log("Updating user with data:", tempData);
+      await fetchUpdateUser(tempData);
+      toast.success("User updated successfully");
       onClose();
       fetchData();
-      console.log("Data sent to server:", tempData);
     } catch (error) {
-      console.error("Error updating user data:", error);
-      toast.error("Failed to save changes");
+      console.error(
+        "Error updating user data:",
+        error.response || error.message || error
+      );
+      const errorMessage =
+        error.response?.data?.message || "Failed to update user";
+      toast.error(errorMessage);
     }
   };
 
@@ -92,7 +127,7 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
         type="password"
         value={tempData.password}
         onChange={handleChange}
-        placeholder="Password"
+        placeholder="New Password"
         className="text-gray-400"
       />
       <TextareaField
