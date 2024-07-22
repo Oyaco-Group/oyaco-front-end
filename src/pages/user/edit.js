@@ -19,13 +19,15 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   useEffect(() => {
     if (modalEditUser) {
-      console.log("Received modalEditUser:", modalEditUser); // Log data
+      // console.log("Received modalEditUser:", modalEditUser);
+      // console.log("Setting User ID:", modalEditUser.id);
+
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
-        password: "", // Initialize empty for new passwords
+        password: "",
         address: modalEditUser.address || "",
       });
     }
@@ -41,10 +43,10 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await fetchDeleteUser(tempData.id); // Use the new delete function
+      await fetchDeleteUser(tempData.id);
       toast.success("User deleted successfully");
       onClose();
-      fetchData(); // Refresh data
+      fetchData();
     } catch (error) {
       console.error(
         "Error deleting user:",
@@ -55,7 +57,6 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   };
 
   const handleSaveChanges = async () => {
-    // Basic validation
     if (!tempData.name) {
       toast.error("Name is required");
       return;
@@ -71,27 +72,25 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       return;
     }
 
-    if (tempData.password.length < 5) {
-      toast.error("Password must be at least 5 characters long");
-      return; // Stop if validation fails
-    }
-
     if (!tempData.address) {
       toast.error("Address is required");
       return;
     }
 
     try {
-      console.log("Updating user with data:", tempData);
-      await fetchUpdateUser(tempData);
+      //console.log("Updating user with data:", tempData);
+      await fetchUpdateUser({
+        userId: tempData.id,
+        name: tempData.name,
+        email: tempData.email,
+        password: tempData.password,
+        address: tempData.address,
+      });
       toast.success("User updated successfully");
       onClose();
       fetchData();
     } catch (error) {
-      console.error(
-        "Error updating user data:",
-        error.response || error.message || error
-      );
+      console.error("Error updating user data:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to update user";
       toast.error(errorMessage);
