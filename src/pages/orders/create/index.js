@@ -85,6 +85,7 @@ const OrderCreatePage = () => {
 
     
     const arrangeArrayProduct = (index) => {
+        arrayProduct[index] = {}
         const newItem = {
             master_product_id : productId,
             quantity : quantity
