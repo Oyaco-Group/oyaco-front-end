@@ -12,13 +12,15 @@ import Button from "@/components/style-components/button";
 const OrderCreatePage = () => {
     const[optionEmail,setOptionEmail] = useState([]);
     const[optionProduct, setOptionProduct] = useState([]);
-    const[arrayShow,setArrayShow] = useState();
+    const[arrayShow,setArrayShow] = useState([]);
     const[userId, setUserId] = useState();
     const[paymentType, setPaymentType] = useState();
     const[buyerType, setBuyerType] = useState();
     const[numberItem, setNumberItem] = useState();
+    const[productId, setProductId] = useState();
+    const[quantity, setQuantity] = useState();
 
-    const arrayProduct = useState([]);
+    const [arrayProduct, setArrayProduct] = useState([]);
 
     const[data,setData] = useState({})
 
@@ -81,10 +83,13 @@ const OrderCreatePage = () => {
         setArrayShow(Array(+item).fill(null));
     }
 
+    
     const arrangeArrayProduct = (index) => {
-        arrayProduct[index] = {
-            master_product_id : ''
+        const newItem = {
+            master_product_id : productId,
+            quantity : quantity
         }
+        setArrayProduct([...arrayProduct,newItem]);
     }
 
     const arrangeData = () => {
@@ -94,6 +99,8 @@ const OrderCreatePage = () => {
             buyer_status : buyerType,
             order_status : 'Confirmed Yet'
         })
+        console.log(productId)
+        console.log(quantity)
     }
 
     useEffect(() => {
@@ -137,14 +144,18 @@ const OrderCreatePage = () => {
                                 <InputField type={'number'} minValue={1} onChange={(ev) => {onChangeNumberItem(ev)}}/>
                             </div>
                             <h1 className="mb-3">Product : </h1>
-                            { arrayShow.map((arr) => {
+                            { arrayShow.map((arr,index) => {
                                 return (
                                     <div className="flex mx-5 justify-around text-center text-gray-900 text-white font-semibold">
                                             {/* <span>1</span> */}
-                                            <SelectFieldOrder options={optionProduct} placeholder={'Product Name'}/>
+                                            <SelectFieldOrder options={optionProduct} placeholder={'Product Name'} 
+                                                onChange={(ev) => {setProductId(ev.target.value)}}/>
                                             <div>
-                                                <InputField type={'number'} minValue={1} placeholder={'Quantity'}/>
+                                                <InputField type={'number'} minValue={1} placeholder={'Quantity'}
+                                                    onChange={(ev) => {setQuantity(ev.target.value)}}/>
                                             </div>
+                                            <Button size="sm" onClick={() => {arrangeArrayProduct(index)}}
+                                            >OK</Button>
                                      </div>
                                 )
                             })
