@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/components/style-components/button";
 
-const TableOrder = ({ columns, data = [], onEdit }) => {
+const TableOrder = ({ columns, data = [], onDetail, onForm }) => {
   const totalData = data.length;
 
   return (
@@ -28,28 +28,31 @@ const TableOrder = ({ columns, data = [], onEdit }) => {
                       className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                   >
                     <td className="whitespace-nowrap px-6 py-4">
-                      <Button className="bg-orange-400 hover:bg-orange-500" size="sm" onClick={(e)=>{
-                          console.log(e.target.value)
-                          onEdit(order.id)
-                        }}>
-                        {order.id}
-                      </Button>
+                        {index+1}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">{order.created_at}</td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                        { order.complaint === null ? order.order_status : order.complaint.iscomplaint === true ? 
-                          (<a className="font-medium text-red-600 dark:text-blue-500 hover:underline" href="">
-                            Complaint!!!
-                          </a>) :  'Solved'
-                        }
-                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">{order.order_status}</td>
                     <td className="whitespace-nowrap px-6 py-4">{order.buyer_status}</td>
                     <td className="whitespace-nowrap px-6 py-4">{order.payment_type}</td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <Button className="bg-blue-400 hover:bg-blue-500"
-                            size="sm"
-                      >Add Resi
-                      </Button>
+                    <td className="whitespace-nowrap px-6 py-4 text-left">
+                    {/* { order.complaint === null ? order.order_status : order.complaint.iscomplaint === true ? 
+                          (<a className="font-medium text-red-600 dark:text-blue-500 hover:underline" href={`/complaint/${order.id}`}>
+                            Complaint!!!
+                          </a>) :  order.order_status
+                        } */}
+                      
+                      {order.order_status.toLowerCase() === 'confirmed yet' ? 
+                        <Button className="bg-green-400 hover:bg-green-500" size="sm" onClick={() => onDetail(order.id)}>Confirm</Button> 
+                         : order.order_status.toLowerCase() === 'confirmed' ?
+                         <Button className="bg-orange-400 hover:bg-orange-500" size="sm" onClick={() => onDetail(order.id)}>Edit</Button>
+                         : order.order_status.toLowerCase() === 'on delivery' ?
+                         <Button className="bg-blue-400 hover:bg-blue-500" size="sm" onClick={() => onDetail(order.id)}>Wait</Button>
+                         : 
+                         <Button className="bg-red-500 hover:bg-red-600" size="sm" onClick={() => onDetail(order.id)}>Complaint</Button>
+                      }
+                    </td>
+                    <td>
+                    <Button className="bg-blue-400 hover:bg-blue-500" size="sm" onClick={() => onDetail(order.id)}>Add Resi</Button>
                     </td>
                   </tr>
               )
