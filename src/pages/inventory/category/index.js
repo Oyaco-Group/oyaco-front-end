@@ -17,7 +17,8 @@ const CategoryPage = () => {
   const columns = [
     { field: "no", label: "No" },
     { field: "name", label: "Name" },
-    { field: "action", label: "Action" },
+    { field: "Edit", label: "Edit" },
+    { field: "Delete", label: "Delete" },
   ];
 
   const [originalData, setOriginalData] = useState([]);
@@ -81,6 +82,14 @@ const CategoryPage = () => {
     setIsModalOpen(true);
   };
 
+  const handleDelete = async (category) => {
+    try {
+      await deleteCategory(parseInt(category.id, 10));
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
   const closeModal = () => {
     setIsModalOpen(false);
     setModalEditCategory(null);
@@ -119,7 +128,12 @@ const CategoryPage = () => {
             {isLoading && <SpinnerLoad />}
           </div>
           {!isLoading && (
-            <Table columns={columns} data={filteredData} onEdit={handleEdit} />
+            <Table
+              columns={columns}
+              data={filteredData}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const InventoryBalancePage = () => {
   const [sortOrder, setSortOrder] = useState(null);
   const [warehouse, setWarehouse] = useState("Warehouse 1");

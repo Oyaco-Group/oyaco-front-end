@@ -13,10 +13,9 @@ export const AuthProvider = ({ children }) => {
     if (token && userData) {
       setUser(JSON.parse(userData));
     }
-
-    //  else {
-    //     router.push("/login"); // Redirect ke halaman login jika tidak ada token
-    //   }
+    // else {
+    //   router.push("/login"); // Redirect ke halaman login jika tidak ada token
+    // }
   }, [router]); // Tambahkan router ke dalam dependensi
 
   const login = (userData, token) => {
