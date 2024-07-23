@@ -8,7 +8,6 @@ import { getAllTransactions } from "@/fetching/outgoingTransaction";
 
 const TransactionOutgoingPage = () => {
   const columns = [
-    { field: "id", label: "ID" },
     { field: "user_id", label: "Admin ID" },
     { field: "master_product_id", label: "Product ID" },
     { field: "inventory_id", label: "Inventory ID" },
@@ -17,6 +16,7 @@ const TransactionOutgoingPage = () => {
     { field: "quantity", label: "Quantity" },
     { field: "arrival_date", label: "Date" },
     { field: "expiration_date", label: "Expiration Date" },
+    { field: "expiration_status", label: "Expiration Status" },
     { field: "action", label: "Action" },
   ];
 
@@ -47,6 +47,7 @@ const TransactionOutgoingPage = () => {
       setPage((prevPage) => prevPage - 1);
     }
   };
+  
 
   return (
     <div>
@@ -54,11 +55,6 @@ const TransactionOutgoingPage = () => {
         <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
 
           <h1 className="mt-4 mb-6 text-2xl text-gray-800">Outgoing Transaction</h1>
-
-          <h1 className="mb-6 mt-4 text-2xl text-gray-800">
-            {" "}
-            Outgoing Transaction{" "}
-          </h1>
 
           <div className="relative overflow-x-auto">
             <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
