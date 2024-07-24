@@ -7,6 +7,8 @@ const SelectFieldOrder = ({
   options,
   placeholder,
   className,
+  disabled,
+  required
 }) => {
   useEffect(() => {
     const selectElement = document.getElementById(id);
@@ -25,6 +27,8 @@ const SelectFieldOrder = ({
         id={id}
         value={value}
         onChange={onChange}
+        disabled = {disabled}
+        required = {required}
         className={`block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-400 focus:border-blue-500 focus:ring-blue-500 ${className}`}
       >
         <option value="">{placeholder}</option>

@@ -59,11 +59,28 @@ const getAllProduct = async(page,limit) => {
     return response.data.data;
 }
 
+const createOrder = async(params) => {
+    const response = await instance({
+        method : 'POST',
+        url : `order/createorder`,
+        data : {
+            user_id: params.user_id,
+            payment_type: params.payment_type,
+            order_status: params.order_status,
+            buyer_status: params.buyer_status,
+            products: params.products
+        }
+    })
+    console.log(response);
+    return response.data.data;
+}
+
 export {
     getAllOrder,
     getOrderById,
     getOrderByUserId,
     updateOrderAdmin,
     getAllUser,
-    getAllProduct
+    getAllProduct,
+    createOrder
 }

@@ -6,7 +6,7 @@ const getInventoryByProductId = async(id) => {
         method : 'GET',
         url : `/inventory/product/${id}`
     })
-    return response.data;
+    return response.data.data;
 }
 
 

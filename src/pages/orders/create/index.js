@@ -4,21 +4,24 @@ import CheckboxField from "@/components/style-components/form/checkbox-field";
 import InputField from "@/components/style-components/form/input-field";
 import SelectField from "@/components/style-components/form/select-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
-import { getAllProduct, getAllUser } from "@/fetching/order";
+import { createOrder, getAllProduct, getAllUser } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SelectFieldOrder from "./selectFieldOrderEmail";
 import Button from "@/components/style-components/button";
+import { getInventoryByProductId } from "@/fetching/inventory";
+import Modal from "@/components/style-components/modal";
 
 const OrderCreatePage = () => {
     const[optionEmail,setOptionEmail] = useState([]);
     const[optionProduct, setOptionProduct] = useState([]);
+    const[inventory, setInventory] = useState([]);
     const[arrayShow,setArrayShow] = useState([]);
     const[userId, setUserId] = useState();
     const[paymentType, setPaymentType] = useState();
     const[buyerType, setBuyerType] = useState();
-    const[numberItem, setNumberItem] = useState();
-    const[productId, setProductId] = useState();
-    const[quantity, setQuantity] = useState();
+    const[minValueProduct, setMinValueProduct] = useState(1);
+
+    const[isOpen, setIsOpen] = useState(false);
 
     const [arrayProduct, setArrayProduct] = useState([]);
 
@@ -58,8 +61,23 @@ const OrderCreatePage = () => {
                 label : data[i].name
             }
         }
-
         setOptionProduct(product);
+    }
+
+    const fetchInventory = async(index) => {
+        const master_product_id = +document.getElementById(`productId${index}`).value;
+        const data = await getInventoryByProductId(master_product_id);
+
+        let item = [];
+        for(const i in data) {
+            item[i] = {
+                id : data[i].id,
+                label : `Warehouse ${data[i].warehouse_id}, (${data[i].quantity})`
+            }
+        }
+        const newArray = [...inventory];
+        newArray[index] = item;
+        setInventory(newArray);
     }
 
     const onChangeUserId = (ev) => {
@@ -78,32 +96,61 @@ const OrderCreatePage = () => {
     }
 
     const onChangeNumberItem = (ev) => {
-        const item = ev.target.value;
-        setNumberItem(item);
-        setArrayShow(Array(+item).fill(null));
+        const numberItem = ev.target.value;
+        const notNullLength = arrayShow.filter(item => item !== null).length;
+        setMinValueProduct(notNullLength);
+
+        if(notNullLength <= numberItem) {
+            const array = Array(+numberItem).fill(null);
+            const existArray = [...arrayShow];
+            for(const i in array) {
+                if(i < existArray.length) {
+                    array[i] = existArray[i]
+                }
+            }
+            setArrayShow(array);
+        }
     }
 
+    const isDisableSetting = (index) => {
+        const arrayItem = [...arrayShow];
+        arrayItem[index] = true;
+        setArrayShow(arrayItem)
+    }
+
+    const isUnableSetting = (index) => {
+        const arrayItem = [...arrayShow];
+        arrayItem[index] = false;
+        setArrayShow(arrayItem);
+    }
     
     const arrangeArrayProduct = (index) => {
-        arrayProduct[index] = {}
-        const newItem = {
-            master_product_id : productId,
-            quantity : quantity
+        const master_product_id = +document.getElementById(`productId${index}`).value;
+        const quantity = +document.getElementById(`quantity${index}`).value;
+        const inventory_id = +document.getElementById(`inventoryId${index}`).value;
+        const newArray= [...arrayProduct];
+        newArray[index] = {
+            master_product_id, quantity, inventory_id
         }
-        setArrayProduct([...arrayProduct,newItem]);
+        setArrayProduct(newArray);
     }
 
-    const arrangeData = () => {
+    const arrangeData = async() => {
         setData({
-            user_id : userId,
+            user_id : +userId,
             payment_type : paymentType,
             buyer_status : buyerType,
-            order_status : 'Confirmed Yet'
+            order_status : 'Confirmed Yet',
+            products : arrayProduct
         })
-        console.log(productId)
-        console.log(quantity)
+        console.log(data);
     }
 
+    const createOrderItem = async() => {
+        console.log(data)
+        await createOrder(data)
+    }
+ 
     useEffect(() => {
         fetchDataUser();
         fetchProduct();
@@ -116,9 +163,9 @@ const OrderCreatePage = () => {
                 <p className="mb-6 text-sm font-light text-gray-400">
                     Please input order item or product
                 </p>
-                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-400 p-5">
-                    <form className="w-full min-w-max flex justify-between text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                        <div className="">
+                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5">
+                    <form className="w-full min-w-max flex justify-around text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                        <div className="bg-blue-400 p-4 rounded-lg">
                             <div className="flex justify-between gap-2 mx-5 text-gray-900 text-white font-semibold">
                                 <label>User Email</label>
                                 <span>:</span>
@@ -138,35 +185,93 @@ const OrderCreatePage = () => {
                                     onChange={(ev) => {onChangeBuyer(ev)}}/>
                             </div>
                         </div>
-                        <div className="w-1/2 mx-5 text-center text-gray-900 text-white font-semibold border">
+                        <div className="w-2/3 mx-5 text-center text-gray-900 text-white font-semibold bg-blue-400 p-4 rounded-lg">
                             <div className="w-full flex mx-5 justify-center text-gray-900 text-white font-semibold">
                                 <label>Product Item</label>
                                 <span>:</span>
-                                <InputField type={'number'} minValue={1} onChange={(ev) => {onChangeNumberItem(ev)}}/>
+                                <InputField type={'number'} minValue={minValueProduct} onChange={(ev) => {onChangeNumberItem(ev)}}/>
                             </div>
-                            <h1 className="mb-3">Product : </h1>
-                            { arrayShow.map((arr,index) => {
-                                return (
-                                    <div className="flex mx-5 justify-around text-center text-gray-900 text-white font-semibold">
-                                            {/* <span>1</span> */}
-                                            <SelectFieldOrder options={optionProduct} placeholder={'Product Name'} 
-                                                onChange={(ev) => {setProductId(ev.target.value)}}/>
-                                            <div>
-                                                <InputField type={'number'} minValue={1} placeholder={'Quantity'}
-                                                    onChange={(ev) => {setQuantity(ev.target.value)}}/>
-                                            </div>
-                                            <Button size="sm" onClick={() => {arrangeArrayProduct(index)}}
-                                            >OK</Button>
-                                     </div>
-                                )
-                            })
-                            }
+
+                            <div className="overflow-x-auto overflow-y-auto rounded-lg border shadow-md">
+
+                                <table className="w-full min-w-max text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                    <thead className="bg-blue-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr className="text-center">
+                                            <th scope="col" className="whitespace-nowrap px-6 py-3">No</th>
+                                            <th scope="col" className="whitespace-nowrap px-6 py-3">Product</th>
+                                            <th scope="col" className="whitespace-nowrap px-6 py-3">Quantity</th>
+                                            <th scope="col" className="whitespace-nowrap px-6 py-3">Warehouse</th>
+                                            <th scope="col" className="whitespace-nowrap px-6 py-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        { arrayShow.map((arr,index) => {
+                                            return (
+                                                <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                                                        <td className="px-8 ">{index+1}</td>
+                                                        <td className="py-2 px-2">
+                                                            <SelectFieldOrder options={optionProduct} placeholder={'Product Name'} id={`productId${index}`} disabled={arrayShow[index]} required={true} 
+                                                                onChange={() => {fetchInventory(index)}}/>
+                                                        </td>
+                                                        <td className="py-2 px-2">
+                                                            <InputField type={'number'} minValue={1} placeholder={'Quantity'} id={`quantity${index}`} disabled={arrayShow[index]} required={true}/>
+                                                        </td>
+                                                        <td className="py-2 px-2">
+                                                            <SelectFieldOrder options={!inventory[index] ? [] : inventory[index]} placeholder={'Inventory'} id={`inventoryId${index}`} disabled={arrayShow[index]} required={true}/>
+                                                        </td>
+                                                        <td className="px-2 text-center">
+                                                            {!arr && (
+                                                                <Button size="sm" onClick={(ev) => 
+                                                                    {
+                                                                        ev.preventDefault();
+                                                                        isDisableSetting(index);
+                                                                        arrangeArrayProduct(index);
+                                                                    }}
+                                                                >Create Data</Button>
+                                                            )}
+                                                            {arr && (
+                                                                 <Button size="sm" onClick={(ev) => 
+                                                                    {
+                                                                        ev.preventDefault();
+                                                                        isUnableSetting(index);
+                                                                    }}
+                                                                >Update Data</Button>
+                                                            )}
+                                                            
+                                                        </td>
+                                                </tr>
+                                            )
+                                        })}
+
+                                    </tbody>
+
+                                </table>
+                           
+                            </div>
                             
                         </div>
                         
                     </form>
-                        <Button onClick={arrangeData}>Add Order</Button>
+                        <Button 
+                            onClick={() => {
+                                arrangeData();
+                                setIsOpen(true);
+                                }}>
+                            Add Order
+                        </Button>
+                        <Modal title={'Confirm Order'} onClose={()=>{setIsOpen(false)}} isOpen={isOpen} >
+                            <p>Are You Sure to Order ?</p>
+                            <Button onClick={() => 
+                                {
+                                    setIsOpen(false)
+                                    arrangeData()
+                                    createOrderItem();
+                                }}>
+                                CheckOut
+                            </Button>
+                        </Modal>
                 </div>
+                {JSON.stringify(data)}
             </div>
 
         </div>
