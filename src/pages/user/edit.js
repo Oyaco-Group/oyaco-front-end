@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Modal from "@/components/style-components/modal";
+import Modal from "@/components/style-components/modal.js";
 import InputField from "@/components/style-components/form/input-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
-import { updateUser, deleteUser } from "@/utils/dataTest";
+import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user"; // Import the new function
 import { toast } from "react-toastify";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -17,18 +18,27 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     address: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     if (modalEditUser) {
+      // console.log("Received modalEditUser:", modalEditUser);
+      // console.log("Setting User ID:", modalEditUser.id);
+
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
-        password: modalEditUser.password || "",
+        password: "",
         address: modalEditUser.address || "",
       });
     }
   }, [modalEditUser]);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -40,26 +50,57 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteUser(tempData.id);
+      await fetchDeleteUser(tempData.id);
       toast.success("User deleted successfully");
       onClose();
       fetchData();
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error(
+        "Error deleting user:",
+        error.response || error.message || error
+      );
       toast.error("Failed to delete user");
     }
   };
 
   const handleSaveChanges = async () => {
+    if (!tempData.name) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!tempData.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(tempData.email)) {
+      toast.error("Invalid email format");
+      return;
+    }
+
+    if (!tempData.address) {
+      toast.error("Address is required");
+      return;
+    }
+
     try {
-      await updateUser(tempData);
-      toast.success("Changes saved successfully");
+      //console.log("Updating user with data:", tempData);
+      await fetchUpdateUser({
+        userId: tempData.id,
+        name: tempData.name,
+        email: tempData.email,
+        password: tempData.password,
+        address: tempData.address,
+      });
+      toast.success("User updated successfully");
       onClose();
       fetchData();
-      console.log("Data sent to server:", tempData);
     } catch (error) {
       console.error("Error updating user data:", error);
-      toast.error("Failed to save changes");
+      const errorMessage =
+        error.response?.data?.message || "Failed to update user";
+      toast.error(errorMessage);
     }
   };
 
@@ -87,14 +128,27 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
         placeholder="Email"
         className="text-gray-400"
       />
-      <InputField
-        id="password"
-        type="password"
-        value={tempData.password}
-        onChange={handleChange}
-        placeholder="Password"
-        className="text-gray-400"
-      />
+      <div className="relative">
+        <InputField
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={tempData.password}
+          onChange={handleChange}
+          placeholder="New Password"
+          className="text-gray-400"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500" />
+          )}
+        </button>
+      </div>
       <TextareaField
         id="address"
         rows="4"
