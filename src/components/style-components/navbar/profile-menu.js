@@ -46,6 +46,47 @@ const ProfileMenu = (onClose) => {
     }));
   };
 
+  const handleSaveChanges = async () => {
+    if (!tempData.name) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!tempData.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(tempData.email)) {
+      toast.error("Invalid email format");
+      return;
+    }
+
+    if (!tempData.address) {
+      toast.error("Address is required");
+      return;
+    }
+
+    try {
+      //console.log("Updating user with data:", tempData);
+      await fetchUpdateUser({
+        userId: user?.id,
+        name: user?.name,
+        email: user?.email,
+        password: user?.password,
+        address: user?.address,
+      });
+      toast.success("User updated successfully");
+      onClose();
+      fetchData();
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to update user";
+      toast.error(errorMessage);
+    }
+  };
+
   return (
     <div className="flex items-center">
       <div className="ms-3 flex items-center">
@@ -157,15 +198,6 @@ const ProfileMenu = (onClose) => {
             className="text-gray-400"
           />
           <div className="flex justify-center gap-4">
-            <Button
-              type="button"
-              className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
-              size="md"
-              onClick={handleDelete}
-            >
-              <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
-              Delete
-            </Button>
             <Button type="button" onClick={handleSaveChanges}>
               Save Changes
             </Button>
