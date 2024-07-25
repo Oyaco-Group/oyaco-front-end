@@ -3,11 +3,16 @@ import Modal from "@/components/style-components/modal"; // Import Modal compone
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import InputField from "../form/input-field";
+import TextareaField from "../form/textarea-field";
+import Button from "../button";
 
-const ProfileMenu = () => {
+const ProfileMenu = (onClose) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, logout } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -27,6 +32,18 @@ const ProfileMenu = () => {
     logout();
     router.push("/login");
     toast.success("Log out successfully ");
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setTempData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
   };
 
   return (
@@ -87,17 +104,71 @@ const ProfileMenu = () => {
       </div>
 
       {isModalOpen && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          title="Edit Profile"
-        >
-          <div>
-            <p>Image: {user?.image_url}</p>
-            <p>Name: {user?.name}</p>
-            <p>Email: {user?.email}</p>
-            <p>Address: {user?.address}</p>
-            {/* <p>Role: {user?.role}</p> */}
+        <Modal isOpen={isOpen} onClose={onClose} title="Edit Profile">
+          <img
+            className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
+            src={"/avatar.png"}
+            alt={user?.name}
+          />
+          <h1 className="mb-4 flex items-start font-normal">Personal</h1>
+          <InputField
+            id="name"
+            type="text"
+            value={user?.name}
+            onChange={handleChange}
+            placeholder="Username"
+            className="text-gray-400"
+          />
+          <InputField
+            id="email"
+            type="email"
+            value={user?.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="text-gray-400"
+          />
+          <div className="relative">
+            <InputField
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={user?.password}
+              onChange={handleChange}
+              placeholder="New Password"
+              className="text-gray-400"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 flex items-center pr-3"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
+          </div>
+          <TextareaField
+            id="address"
+            rows="4"
+            value={user?.address}
+            onChange={handleChange}
+            placeholder="Write your address here..."
+            className="text-gray-400"
+          />
+          <div className="flex justify-center gap-4">
+            <Button
+              type="button"
+              className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
+              size="md"
+              onClick={handleDelete}
+            >
+              <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
+              Delete
+            </Button>
+            <Button type="button" onClick={handleSaveChanges}>
+              Save Changes
+            </Button>
           </div>
         </Modal>
       )}

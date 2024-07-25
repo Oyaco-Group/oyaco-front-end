@@ -70,7 +70,6 @@ const AuthForm = ({ type }) => {
 
         loginUser(access_token);
 
-        // No need to redirect here, it will be handled after setting user in context
         toast.success(response.message);
       } catch (error) {
         toast.error(error.message);

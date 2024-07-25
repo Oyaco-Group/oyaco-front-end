@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { fetchProfileUser } from "@/fetching/user";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -15,9 +16,9 @@ export const AuthProvider = ({ children }) => {
     if (token && !profileFetched) {
       fetchProfileUser()
         .then((userData) => {
-          setUser(userData); // Pastikan userData memiliki user_role
-          redirectBasedOnRole(userData.user_role); // Tambahkan fungsi ini jika perlu
-          setProfileFetched(true); // Set flag bahwa profil sudah diambil
+          setUser(userData);
+          redirectBasedOnRole(userData.user_role);
+          setProfileFetched(true);
         })
         .catch((error) => {
           console.error("Failed to fetch user profile:", error);
@@ -30,12 +31,12 @@ export const AuthProvider = ({ children }) => {
     try {
       localStorage.setItem("access_token", token);
       const userData = await fetchProfileUser();
-      setUser(userData); // Pastikan userData memiliki user_role
-      redirectBasedOnRole(userData.user_role); // Tambahkan fungsi ini jika perlu
-      router.push("/"); // Redirect ke halaman utama setelah login
+      setUser(userData);
+      redirectBasedOnRole(userData.user_role);
+      router.push("/");
     } catch (error) {
       console.error("Failed to fetch user profile after login:", error);
-      // Handle error: misalnya, tampilkan pesan kesalahan
+      toast.error("Invalid credential");
     }
   };
 
@@ -43,10 +44,10 @@ export const AuthProvider = ({ children }) => {
     try {
       localStorage.removeItem("access_token");
       setUser(null);
-      router.push("/login"); // Redirect ke halaman login setelah logout
+      router.push("/login");
     } catch (error) {
       console.error("Failed to logout:", error);
-      // Handle error: misalnya, tampilkan pesan kesalahan
+      toast.error("Failed to logout");
     }
   };
 
