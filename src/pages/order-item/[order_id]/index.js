@@ -11,6 +11,7 @@ const HistoryOrderDetailPage = ({ initialOrders }) => {
 
   const [orders, setOrders] = useState(initialOrders || []);
   const [loading, setLoading] = useState(true);
+  const [totalPayment, setTotalPayment] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,22 +19,35 @@ const HistoryOrderDetailPage = ({ initialOrders }) => {
         setLoading(true);
         const data = await fetchOrderHistoryDetailById(order_id);
         setOrders(data);
+        calculateTotalPayment(data);
         setLoading(false);
       }
     };
     fetchData();
   }, [order_id]);
 
+  const calculateTotalPayment = (orders) => {
+    let total = 0;
+    orders.forEach((order) => {
+      const { quantity, master_product } = order;
+      const { price } = master_product;
+      total += quantity * price;
+    });
+    setTotalPayment(total);
+  };
+
   return (
-    <div>
-      <div className="p-4 sm:ml-64">
-        <div className="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
-          <h1 className="text-4xl mt-10 mb-10">History Order Detail Page</h1>
-          {orders.map((order) => (
-            <div key={order.id} className="col-md-6 mb-4">
-              <CardOrderDetail orders={orders} />
-            </div>
-          ))}
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
+        <h1 className="text-4xl mt-10 mb-10">History Order Detail Page</h1>
+        {orders.map((order) => (
+          <div key={order.id} className="mb-8">
+            <CardOrderDetail orders={[order]} />
+          </div>
+        ))}
+        <div className="mt-4 bg-gray-100 p-4 rounded-lg border-t border-gray-200">
+          <h5 className="font-bold text-gray-800">Total Payment</h5>
+          <p className="text-gray-700">Rp{totalPayment}</p>
         </div>
       </div>
     </div>

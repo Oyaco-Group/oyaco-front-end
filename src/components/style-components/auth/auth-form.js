@@ -114,7 +114,6 @@ const AuthForm = ({ type }) => {
           value={formData.password}
           onChange={handleChange}
           placeholder="Password"
-          className="text-gray-400"
         />
         <button
           type="button"
