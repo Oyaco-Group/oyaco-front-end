@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchMaster } from "@/fetching/products";
+import { fetchMaster, editProducts, deleteProducts } from "@/fetching/products";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
+import EditProductsModal from "@/pages/inventory/products/edit";
 
 const ProductsPage = () => {
   const columns = [
@@ -14,15 +15,17 @@ const ProductsPage = () => {
     { field: "sku", label: "SKU" },
     { field: "price", label: "Price" },
     { field: "category_name", label: "Category" },
-    { field: "action", label: "Action" },
+    { field: "Edit", label: "Edit" },
   ];
 
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchMaster, setSearchMaster] = useState("");
+  const [modalEditProducts, setModalEditProducts] = useState(null);
   const [page, setPage] = useState(1); // for pagination
-  const [limit, setLimit] = useState(10); // items per page
+  const [limit, setLimit] = useState(15); // items per page
 
   const Products = async () => {
     try {
@@ -50,6 +53,9 @@ const ProductsPage = () => {
         name: masterProduct.name,
         price: masterProduct.price,
         category_name: masterProduct.category.name,
+        image: masterProduct.image
+          ? `/assets/masterProduct/${masterProduct.image}`
+          : null,
         ...masterProduct,
       }));
     } else {
@@ -72,6 +78,16 @@ const ProductsPage = () => {
       );
     }
     setFilteredData(filteredMaster);
+  };
+
+  const handleEdit = (masterProduct) => {
+    setModalEditProducts(masterProduct);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalEditProducts(null);
   };
 
   return (
@@ -99,10 +115,33 @@ const ProductsPage = () => {
               columns={columns}
               fetchData={fetchMaster}
               data={filteredData}
+              onEdit={handleEdit}
+              render={(row, column) => {
+                if (column.field === "image") {
+                  return row.image ? (
+                    <img
+                      src={row.image}
+                      alt={row.name}
+                      style={{ width: "50px", height: "50px" }}
+                    />
+                  ) : (
+                    "No Image"
+                  );
+                }
+                return row[column.field];
+              }}
             />
           )}
         </div>
       </div>
+      <EditProductsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        modalEditProducts={modalEditProducts}
+        fetchData={Products}
+        onSave={editProducts}
+        onDelete={deleteProducts}
+      />
     </div>
   );
 };
