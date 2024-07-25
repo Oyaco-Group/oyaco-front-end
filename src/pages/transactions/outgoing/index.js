@@ -51,7 +51,14 @@ const TransactionOutgoingPage = () => {
   const fetchOutgoingTransaction = async (warehouse, page) => {
     try {
       const data = await getAllOutgoingTransactions(warehouse.id, page);
-      setTransaction(data.data);
+      const transformedData = data.data.map((transaction) => ({
+        ...transaction,
+        iscondition_good: transaction.iscondition_good ? "Good" : "Bad",
+        expiration_status: transaction.expiration_status
+          ? "Expired"
+          : "Not Expired",
+      }));
+      setTransaction(transformedData);
     } catch (err) {
       console.error(err);
     }
@@ -99,9 +106,10 @@ const TransactionOutgoingPage = () => {
               <Dropdown options={warehouses} onSelect={setWarehouse} />
             </div>
             <div>
-              <SearchBar className="w-72" />
+              <SearchBar className="w-50" />
             </div>
             <div>
+              <Button  className="mr-4">Check & Update</Button>
               <Button onClick={() => setIsModalOpen(true)}>
                 Create Transaction
               </Button>
