@@ -10,6 +10,8 @@ const InventoryBalancePage = () => {
   const columns = [
     { field: "no", label: "No" },
     { field: "master_product_id", label: "Product ID" },
+    { field: "master_product_name", label: "Product Name" },
+    { field: "master_product_price", label: "Product Price" },
     { field: "warehouse_id", label: "Warehouse" },
     { field: "quantity", label: "Quantity" },
   ];
@@ -47,7 +49,12 @@ const InventoryBalancePage = () => {
     setLoading(true);
     try {
       const data = await getStockByWarehouse(warehouseId, page);
-      setInventory(data);
+      const formattedData = data.map((item, index) => ({
+        ...item,
+        master_product_name: item.master_product.name,
+        master_product_price: item.master_product.price,
+      }));
+      setInventory(formattedData);
     } catch (err) {
       console.error(err);
       setError("Failed to load inventory");
