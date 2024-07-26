@@ -74,7 +74,7 @@ const InventoryBalancePage = () => {
     });
     setInventory(sortedInventory);
   };
-
+  
   useEffect(() => {
     fetchWarehouses();
   }, []);
