@@ -8,6 +8,7 @@ import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Link from "next/link";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -143,6 +144,9 @@ const AuthForm = ({ type }) => {
             label="I agree with the"
             link="#"
           />
+          <div className="w-full text-center my-4 text-white font-normal">
+            <Link href="/login">Back to Login</Link>
+          </div>
         </>
       )}
       <div

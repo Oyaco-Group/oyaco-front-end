@@ -6,10 +6,10 @@ import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import OutgoingTransactionModal from "@/components/style-components/outgoingTransactionModal";
 import {
-  getAllOutgoingTransactions,
+  getAllIncomingTransactions,
   getWarehouses,
   createTransaction,
-} from "@/fetching/outgoingTransaction";
+} from "@/fetching/incomingTransaction";
 
 const TransactionIncomingPage = () => {
   const columns = [
@@ -48,9 +48,9 @@ const TransactionIncomingPage = () => {
     }
   };
 
-  const fetchOutgoingTransaction = async (warehouse, page) => {
+  const fetchIncomingTransaction = async (warehouse, page) => {
     try {
-      const data = await getAllOutgoingTransactions(warehouse.id, page);
+      const data = await getAllIncomingTransactions(warehouse.id, page);
       const transformedData = data.data.map((transaction) => ({
         ...transaction,
         iscondition_good: transaction.iscondition_good ? "Good" : "Bad",
@@ -68,7 +68,7 @@ const TransactionIncomingPage = () => {
     try {
       await createTransaction(formData);
       setIsModalOpen(false);
-      fetchOutgoingTransaction(warehouse, page);
+      fetchIncomingTransaction(warehouse, page);
     } catch (err) {
       console.error(err);
     }
@@ -79,7 +79,7 @@ const TransactionIncomingPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchOutgoingTransaction(warehouse, page);
+    fetchIncomingTransaction(warehouse, page);
   }, [warehouse, page]);
 
   const handleNextPage = () => {
@@ -96,7 +96,7 @@ const TransactionIncomingPage = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
         <h1 className="mt-4 mb-6 text-2xl text-gray-800">
-          Incoming Transaction
+          incoming Transaction
         </h1>
 
         <div className="relative overflow-x-auto">

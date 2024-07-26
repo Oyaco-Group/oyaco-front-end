@@ -10,6 +10,9 @@ import {
   getWarehouses,
   createTransaction,
 } from "@/fetching/outgoingTransaction";
+import { toast } from "react-toastify";
+import { FaPlus } from "react-icons/fa6";
+import Pagination from "@/components/style-components/pagination";
 
 const TransactionOutgoingPage = () => {
   const columns = [
@@ -92,6 +95,12 @@ const TransactionOutgoingPage = () => {
     }
   };
 
+  const handleUpdateexpired = () => {
+    // if () {
+    //   toast.error(nsdwuadkja)
+    // }
+  };
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
@@ -108,9 +117,15 @@ const TransactionOutgoingPage = () => {
             <div>
               <SearchBar className="w-50" />
             </div>
-            <div>
-              <Button  className="mr-4">Check & Update</Button>
-              <Button onClick={() => setIsModalOpen(true)}>
+            <div className="flex">
+              <Button className="mr-4" onClick={handleUpdateexpired}>
+                Check & Update
+              </Button>
+              <Button
+                className="flex gap-2 items-center"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <FaPlus />
                 Create Transaction
               </Button>
             </div>

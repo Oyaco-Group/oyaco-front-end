@@ -37,13 +37,13 @@ const Navbar = () => {
                 xmlns='http://www.w3.org/2000/svg'
               ></svg> */}
               <div className="ms-2 flex md:me-24">
-                {/* <img
-                  src='https://flowbite.com/docs/images/logo.svg'
-                  className='h-8 me-3'
-                  alt='FlowBite Logo'
-                /> */}
-                <span className="self-center whitespace-nowrap text-xl font-semibold text-white sm:text-3xl sm:font-bold">
-                  OyaCo
+                <img
+                  src="/OyaCo.png"
+                  className="h-16 my-0 py-0"
+                  alt="Oyaco Logo"
+                />
+                <span className="self-center whitespace-nowrap text-xl font-semibold text-white sm:text-3xl">
+                  OyaCo.
                 </span>
               </div>
             </div>

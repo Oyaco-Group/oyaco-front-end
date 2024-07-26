@@ -13,19 +13,24 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (token && !profileFetched) {
-      fetchProfileUser()
-        .then((userData) => {
+    const fetchData = async () => {
+      try {
+        if (token && !user && !profileFetched) {
+          const userData = await fetchProfileUser();
           setUser(userData);
           redirectBasedOnRole(userData.user_role);
           setProfileFetched(true);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch user profile:", error);
+        } else if (!token) {
           router.push("/login");
-        });
-    }
-  }, [router, profileFetched]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+        router.push("/login");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const login = async (token) => {
     try {
@@ -33,6 +38,7 @@ export const AuthProvider = ({ children }) => {
       const userData = await fetchProfileUser();
       setUser(userData);
       redirectBasedOnRole(userData.user_role);
+      setProfileFetched(true);
       router.push("/");
     } catch (error) {
       console.error("Failed to fetch user profile after login:", error);
@@ -44,6 +50,7 @@ export const AuthProvider = ({ children }) => {
     try {
       localStorage.removeItem("access_token");
       setUser(null);
+      setProfileFetched(false);
       router.push("/login");
     } catch (error) {
       console.error("Failed to logout:", error);
@@ -52,7 +59,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const redirectBasedOnRole = (role) => {
-    console.log(role);
     if (role === "admin") {
       router.push("/dashboard");
     } else {
