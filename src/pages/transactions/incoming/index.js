@@ -91,7 +91,7 @@ const TransactionIncomingPage = () => {
       console.error(err);
     }
   };
-
+  
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -116,7 +116,6 @@ const TransactionIncomingPage = () => {
         <h1 className="mt-4 mb-6 text-2xl text-gray-800">
           Incoming Transaction
         </h1>
-
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div className="flex items-center gap-4">
