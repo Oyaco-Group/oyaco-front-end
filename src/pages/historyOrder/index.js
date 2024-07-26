@@ -18,14 +18,13 @@ const HistoryOrderPage = ({ initialOrders }) => {
   const [orders, setOrders] = useState(initialOrders);
 
   useEffect(() => {
-    // Fetch data on component mount (similar to componentDidMount)
     const fetchData = async () => {
-      const data = await fetchOrderData(id); // Replace with actual ID or use dynamic routing
+      const data = await fetchOrderData(id);
       setOrders(data);
     };
 
     fetchData();
-  }, []); // Empty dependency array means this effect runs only once on mount
+  }, []);
 
   return (
     <div>
