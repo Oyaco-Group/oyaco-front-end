@@ -46,7 +46,10 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                         >
                           Delete
                         </Button>
-                      ) : column.render ? (
+                      ) : column.field === "image" ? (
+                          <img src={row[column.field]} style={{width:'10rem'}}/>
+                      )
+                      : column.render ? (
                         column.render(row[column.field], row)
                       ) : (
                         row[column.field]

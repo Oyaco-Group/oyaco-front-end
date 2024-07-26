@@ -10,6 +10,7 @@ import SelectFieldOrder from "./selectFieldOrderEmail";
 import Button from "@/components/style-components/button";
 import { getInventoryByProductId } from "@/fetching/inventory";
 import Modal from "@/components/style-components/modal";
+import { toast } from "react-toastify";
 
 const OrderCreatePage = () => {
     const[optionEmail,setOptionEmail] = useState([]);
@@ -39,29 +40,41 @@ const OrderCreatePage = () => {
 
 
     const fetchDataUser = async(page=1,limit=10) => {
-        const data = await getAllUser(page,limit);
+        try {
+            const data = await getAllUser(page,limit);
        
-        let user = [];
-        for(const i in data) {
-            user[i] = {
-                id : data[i].id,
-                label : data[i].email
+            let user = [];
+            for(const i in data) {
+                user[i] = {
+                    id : data[i].id,
+                    label : data[i].email
+                }
             }
+            setOptionEmail(user);
+        } catch (err) {
+            console.log(err);
+            toast.error('Failed to fetch User Email');
         }
-        setOptionEmail(user);
     }
+        
 
     const fetchProduct = async(page=1,limit=20) => {
-        const data = await getAllProduct(page,limit);
-
-        let product = [];
-        for(const i in data) {
-            product[i] = {
-                id : data[i].id,
-                label : data[i].name
+        try {
+            const data = await getAllProduct(page,limit);
+    
+            let product = [];
+            for(const i in data) {
+                product[i] = {
+                    id : data[i].id,
+                    label : data[i].name
+                }
             }
+            setOptionProduct(product);
+            
+        } catch (err) {
+            console.log(err);
+            toast.error('Failed to fetch Product List');
         }
-        setOptionProduct(product);
     }
 
     const fetchInventory = async(index) => {
@@ -83,6 +96,7 @@ const OrderCreatePage = () => {
     const onChangeUserId = (ev) => {
         const id = ev.target.value;
         setUserId(id);
+
     }
     
     const onChangePayment = (ev) => {
@@ -135,7 +149,7 @@ const OrderCreatePage = () => {
         setArrayProduct(newArray);
     }
 
-    const arrangeData = async() => {
+    const arrangeData = () => {
         setData({
             user_id : +userId,
             payment_type : paymentType,
@@ -143,12 +157,19 @@ const OrderCreatePage = () => {
             order_status : 'Confirmed Yet',
             products : arrayProduct
         })
-        console.log(data);
     }
 
     const createOrderItem = async() => {
-        console.log(data)
-        await createOrder(data)
+        try{
+            const response = await createOrder(data);
+            setArrayShow([]);
+            setArrayProduct([]);
+            setData({});
+            toast.success(response.message);
+        } catch(err) {
+            console.log(err);
+            toast.error(err.message);
+        }
     }
  
     useEffect(() => {
@@ -223,7 +244,6 @@ const OrderCreatePage = () => {
                                                             {!arr && (
                                                                 <Button size="sm" onClick={(ev) => 
                                                                     {
-                                                                        ev.preventDefault();
                                                                         isDisableSetting(index);
                                                                         arrangeArrayProduct(index);
                                                                     }}
@@ -232,7 +252,6 @@ const OrderCreatePage = () => {
                                                             {arr && (
                                                                  <Button size="sm" onClick={(ev) => 
                                                                     {
-                                                                        ev.preventDefault();
                                                                         isUnableSetting(index);
                                                                     }}
                                                                 >Update Data</Button>
@@ -256,6 +275,7 @@ const OrderCreatePage = () => {
                             onClick={() => {
                                 arrangeData();
                                 setIsOpen(true);
+                                // document.getElementById('user_email').value = ''
                                 }}>
                             Add Order
                         </Button>
@@ -271,7 +291,6 @@ const OrderCreatePage = () => {
                             </Button>
                         </Modal>
                 </div>
-                {JSON.stringify(data)}
             </div>
 
         </div>

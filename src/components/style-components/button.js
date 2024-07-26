@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Button = ({ children, onClick, className = "", size = "md" }) => {
+const Button = ({ children, onClick, className = "", size = "md", disabled }) => {
   const sizeClasses = {
     sm: "px-3 py-2 text-sm",
     md: "px-6 py-3 text-base",
@@ -17,6 +17,7 @@ const Button = ({ children, onClick, className = "", size = "md" }) => {
     <button
       onClick={handleClick}
       className={`${className} rounded-lg bg-amber-500 hover:bg-amber-600 ${sizeClasses[size]} text-white`}
+      disabled = {disabled}
     >
       {children}
     </button>
