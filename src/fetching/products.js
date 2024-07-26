@@ -59,3 +59,4 @@ export const deleteProducts = async (id) => {
     throw error;
   }
 };
+
