@@ -1,6 +1,5 @@
 import instance from "@/lib/axios";
 
-// Fetch master products
 export const fetchMaster = async (page = 1, limit = 10) => {
   try {
     const response = await instance.get("/masterProduct", {
@@ -13,14 +12,13 @@ export const fetchMaster = async (page = 1, limit = 10) => {
   }
 };
 
-// Create a new product
 export const createProducts = async (productData) => {
   try {
     const formData = new FormData();
     for (const key in productData) {
       formData.append(key, productData[key]);
     }
-    const response = await instance.post("/masterProduct", formData, {
+    const response = await instance.post("/masterProduct/add", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -32,7 +30,6 @@ export const createProducts = async (productData) => {
   }
 };
 
-// Edit an existing product
 export const editProducts = async (id, productData) => {
   try {
     const formData = new FormData();
@@ -53,7 +50,6 @@ export const editProducts = async (id, productData) => {
   }
 };
 
-// Delete a product
 export const deleteProducts = async (id) => {
   try {
     const response = await instance.delete(`/masterProduct/delete/${id}`);

@@ -6,6 +6,7 @@ import { fetchMaster, editProducts, deleteProducts } from "@/fetching/products";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
 import EditProductsModal from "@/pages/inventory/products/edit";
+import AddProductModal from "@/pages/inventory/products/add";
 
 const ProductsPage = () => {
   const columns = [
@@ -22,6 +23,7 @@ const ProductsPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchMaster, setSearchMaster] = useState("");
   const [modalEditProducts, setModalEditProducts] = useState(null);
   const [page, setPage] = useState(1); // for pagination
@@ -73,8 +75,10 @@ const ProductsPage = () => {
     let filteredMaster = originalData;
 
     if (valueSearch) {
-      filteredMaster = filteredMaster.filter((master) =>
-        master.name.toLowerCase().includes(valueSearch.toLowerCase())
+      filteredMaster = filteredMaster.filter(
+        (master) =>
+          master.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          master.sku.toLowerCase().includes(valueSearch.toLowerCase())
       );
     }
     setFilteredData(filteredMaster);
@@ -90,6 +94,13 @@ const ProductsPage = () => {
     setModalEditProducts(null);
   };
 
+  const openAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
+  };
   return (
     <div className='p-4 sm:ml-64'>
       <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
@@ -103,7 +114,10 @@ const ProductsPage = () => {
                 value={searchMaster}
               />
             </div>
-            <Button className='bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'>
+            <Button
+              className='bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+              onClick={openAddModal}
+            >
               <FaPlus />
               Add Products
             </Button>
@@ -141,6 +155,11 @@ const ProductsPage = () => {
         fetchData={Products}
         onSave={editProducts}
         onDelete={deleteProducts}
+      />
+      <AddProductModal
+        isOpen={isAddModalOpen}
+        onClose={closeAddModal}
+        fetchData={Products}
       />
     </div>
   );

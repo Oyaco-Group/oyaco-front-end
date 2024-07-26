@@ -71,7 +71,8 @@ const EditProductsModal = ({
         }
       }
 
-      await onSave(tempData.id, formData);
+      await onSave(tempData.id, tempData);
+      console.log("Success saving product data:", tempData);
       fetchData();
       onClose();
     } catch (error) {
@@ -108,7 +109,7 @@ const EditProductsModal = ({
         onChange={handleChange}
         placeholder='Category ID'
         className='text-gray-400'
-        min={0}
+        min={1}
       />
       <InputField
         id='price'
@@ -127,13 +128,15 @@ const EditProductsModal = ({
         placeholder='SKU'
         className='text-gray-400'
       />
-      <input
-        id='image'
-        type='file'
-        accept='image/*'
-        onChange={handleFileChange}
-        className='text-gray-400'
-      />
+      <div className='mb-4'>
+        <input
+          id='image'
+          type='file'
+          accept='image/*'
+          onChange={handleFileChange}
+          className='text-gray-400'
+        />
+      </div>
       <div className='flex justify-center gap-4'>
         <Button type='button' onClick={handleSaveChanges}>
           Save Changes
