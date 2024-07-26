@@ -16,6 +16,22 @@ const getWarehouses = async () => {
   return response.data.data;
 };
 
+const getAllTransactions = async (page) => {
+  const response = await instance({
+    method: "GET",
+    url: `/transactions?page=${page}`,
+  });
+  return response.data.data;
+};
+
+const updateAndCheck = async () => {
+  const response = await instance({
+    method: "PUT",
+    url: `/transactions/expStatus`,
+  });
+  return response.data;
+};
+
 const createTransaction = async (transactionData) => {
   const response = await instance({
     method: "POST",
@@ -36,4 +52,4 @@ const createTransaction = async (transactionData) => {
 //   return response.data.data;
 // };
 
-export { getAllOutgoingTransactions, getWarehouses, createTransaction };
+export { getAllOutgoingTransactions, getWarehouses, createTransaction, getAllTransactions, updateAndCheck };

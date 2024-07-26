@@ -18,6 +18,7 @@ const TransactionIncomingPage = () => {
     { field: "master_product_id", label: "Product ID" },
     { field: "inventory_id", label: "Inventory ID" },
     { field: "destination", label: "Warehouse" },
+    { field: "movement_type", label: "Movement Type" },
     { field: "origin", label: "From" },
     { field: "quantity", label: "Quantity" },
     { field: "iscondition_good", label: "Product Condition" },
@@ -28,7 +29,10 @@ const TransactionIncomingPage = () => {
 
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
-  const [warehouse, setWarehouse] = useState([]);
+  const [warehouse, setWarehouse] = useState({
+    id: 1,
+    label: "Default Warehouse",
+  });
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
