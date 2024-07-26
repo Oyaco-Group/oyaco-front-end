@@ -6,6 +6,7 @@ import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import OutgoingTransactionModal from "@/components/style-components/outgoingTransactionModal";
 import {
+
   getAllIncomingTransactions,
   getWarehouses,
   createTransaction,
@@ -100,6 +101,7 @@ const TransactionIncomingPage = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
         <h1 className="mt-4 mb-6 text-2xl text-gray-800">
+
           incoming Transaction
         </h1>
 
