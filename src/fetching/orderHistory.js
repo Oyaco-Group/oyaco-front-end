@@ -25,20 +25,20 @@ export const fetchOrderHistoryDetailById = async (params) => {
 };
 
 export const fetchOrderComplaint = async (order_id) => {
-  try{
+  try {
     const response = await instance.get(`/complaint/${order_id}`);
     return response.data.data;
-  }catch(error) {
+  } catch (error) {
     console.error("Error getting complaint data:", error);
     throw error;
   }
-}
+};
 
 export const fetchUpdateOrderComplaint = async (order_id, text) => {
   try {
     const response = await instance.patch(`/complaint/edit/${order_id}`, {
       text,
-      iscomplaint: true
+      iscomplaint: true,
     });
     return response.data;
   } catch (error) {
@@ -68,4 +68,4 @@ export const fetchUpdateOrderStatus = async (id, order_status) => {
     console.error("Error updating order status:", error);
     throw error;
   }
-}
+};
