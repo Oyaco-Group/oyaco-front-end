@@ -6,10 +6,11 @@ import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import OutgoingTransactionModal from "@/components/style-components/outgoingTransactionModal";
 import {
-  getAllOutgoingTransactions,
+
+  getAllIncomingTransactions,
   getWarehouses,
   createTransaction,
-} from "@/fetching/outgoingTransaction";
+} from "@/fetching/incomingTransaction";
 
 const TransactionIncomingPage = () => {
   const columns = [
@@ -18,6 +19,7 @@ const TransactionIncomingPage = () => {
     { field: "master_product_id", label: "Product ID" },
     { field: "inventory_id", label: "Inventory ID" },
     { field: "destination", label: "Warehouse" },
+    { field: "movement_type", label: "Movement Type" },
     { field: "origin", label: "From" },
     { field: "quantity", label: "Quantity" },
     { field: "iscondition_good", label: "Product Condition" },
@@ -28,7 +30,10 @@ const TransactionIncomingPage = () => {
 
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
-  const [warehouse, setWarehouse] = useState([]);
+  const [warehouse, setWarehouse] = useState({
+    id: 1,
+    label: "Default Warehouse",
+  });
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,9 +53,9 @@ const TransactionIncomingPage = () => {
     }
   };
 
-  const fetchOutgoingTransaction = async (warehouse, page) => {
+  const fetchIncomingTransaction = async (warehouse, page) => {
     try {
-      const data = await getAllOutgoingTransactions(warehouse.id, page);
+      const data = await getAllIncomingTransactions(warehouse.id, page);
       const transformedData = data.data.map((transaction) => ({
         ...transaction,
         iscondition_good: transaction.iscondition_good ? "Good" : "Bad",
@@ -68,7 +73,7 @@ const TransactionIncomingPage = () => {
     try {
       await createTransaction(formData);
       setIsModalOpen(false);
-      fetchOutgoingTransaction(warehouse, page);
+      fetchIncomingTransaction(warehouse, page);
     } catch (err) {
       console.error(err);
     }
@@ -79,7 +84,7 @@ const TransactionIncomingPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchOutgoingTransaction(warehouse, page);
+    fetchIncomingTransaction(warehouse, page);
   }, [warehouse, page]);
 
   const handleNextPage = () => {
@@ -96,7 +101,8 @@ const TransactionIncomingPage = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
         <h1 className="mt-4 mb-6 text-2xl text-gray-800">
-          Outgoing Transaction
+
+          incoming Transaction
         </h1>
 
         <div className="relative overflow-x-auto">

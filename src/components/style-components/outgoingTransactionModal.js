@@ -10,7 +10,7 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
     origin: '',
     destination: '',
     quantity: '',
-    iscondition_good: false,
+    iscondition_good: true,
     expiration_status: false,
   });
 

@@ -4,11 +4,14 @@ import Dropdown from "@/components/style-components/dropdown";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
+import { toast } from "react-toastify";
 import OutgoingTransactionModal from "@/components/style-components/outgoingTransactionModal";
 import {
   getAllOutgoingTransactions,
   getWarehouses,
   createTransaction,
+  getAllTransactions,
+  updateAndCheck,
 } from "@/fetching/outgoingTransaction";
 
 const TransactionOutgoingPage = () => {
@@ -18,6 +21,7 @@ const TransactionOutgoingPage = () => {
     { field: "master_product_id", label: "Product ID" },
     { field: "inventory_id", label: "Inventory ID" },
     { field: "origin", label: "Warehouse" },
+    { field: "movement_type", label: "Movement Type" },
     { field: "destination", label: "Delivered to" },
     { field: "quantity", label: "Quantity" },
     { field: "iscondition_good", label: "Product Condition" },
@@ -28,7 +32,10 @@ const TransactionOutgoingPage = () => {
 
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
-  const [warehouse, setWarehouse] = useState([]);
+  const [warehouse, setWarehouse] = useState({
+    id: 1,
+    label: "Default Warehouse",
+  });
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,6 +81,17 @@ const TransactionOutgoingPage = () => {
     }
   };
 
+  const handleUpdateExpirationStatus = async () => {
+    try {
+      await updateAndCheck();
+      toast.success("Check & Update success! Removed expired products from inventory")
+      fetchOutgoingTransaction(warehouse, page);
+    } catch (err) {
+      toast.error("There is no expired product")
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -109,7 +127,9 @@ const TransactionOutgoingPage = () => {
               <SearchBar className="w-50" />
             </div>
             <div>
-              <Button  className="mr-4">Check & Update</Button>
+              <Button className="mr-4" onClick={handleUpdateExpirationStatus}>
+                Check & Update
+              </Button>
               <Button onClick={() => setIsModalOpen(true)}>
                 Create Transaction
               </Button>
