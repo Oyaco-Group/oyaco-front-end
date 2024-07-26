@@ -4,6 +4,7 @@ import Dropdown from "@/components/style-components/dropdown";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
+import { toast } from "react-toastify";
 import OutgoingTransactionModal from "@/components/style-components/outgoingTransactionModal";
 import {
   getAllIncomingTransactions,
@@ -18,6 +19,7 @@ const TransactionIncomingPage = () => {
     { field: "master_product_id", label: "Product ID" },
     { field: "inventory_id", label: "Inventory ID" },
     { field: "destination", label: "Warehouse" },
+    { field: "movement_type", label: "Movement Type" },
     { field: "origin", label: "From" },
     { field: "quantity", label: "Quantity" },
     { field: "iscondition_good", label: "Product Condition" },
@@ -28,7 +30,10 @@ const TransactionIncomingPage = () => {
 
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
-  const [warehouse, setWarehouse] = useState([]);
+  const [warehouse, setWarehouse] = useState({
+    id: 1,
+    label: "Default Warehouse",
+  });
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,6 +79,19 @@ const TransactionIncomingPage = () => {
     }
   };
 
+  const handleUpdateExpirationStatus = async () => {
+    try {
+      await updateAndCheck();
+      toast.success(
+        "Check & Update success! Removed expired products from inventory"
+      );
+      fetchIncomingTransaction(warehouse, page);
+    } catch (err) {
+      toast.error("There is no expired product");
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -96,9 +114,8 @@ const TransactionIncomingPage = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
         <h1 className="mt-4 mb-6 text-2xl text-gray-800">
-          incoming Transaction
+          Incoming Transaction
         </h1>
-
         <div className="relative overflow-x-auto">
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div className="flex items-center gap-4">
@@ -109,13 +126,14 @@ const TransactionIncomingPage = () => {
               <SearchBar className="w-50" />
             </div>
             <div>
-              <Button className="mr-4">Check & Update</Button>
+              <Button className="mr-4" onClick={handleUpdateExpirationStatus}>
+                Check & Update
+              </Button>
               <Button onClick={() => setIsModalOpen(true)}>
                 Create Transaction
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center"></div>
           <Table columns={columns} data={transaction} />
           <div className="flex justify-between mt-4">
             <Button onClick={handlePreviousPage} disabled={page === 1}>

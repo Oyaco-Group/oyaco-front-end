@@ -50,8 +50,8 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await fetchDeleteUser(tempData.id);
-      toast.success("User deleted successfully");
+      const response = await fetchDeleteUser(tempData.id);
+      toast.success(response.message);
       onClose();
       fetchData();
     } catch (error) {
