@@ -22,6 +22,7 @@ const InventoryBalancePage = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const fetchWarehouses = async () => {
     setLoading(true);
@@ -63,6 +64,17 @@ const InventoryBalancePage = () => {
     }
   };
 
+  const sortInventory = () => {
+    const sortedInventory = [...inventory].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.quantity - b.quantity;
+      } else {
+        return b.quantity - a.quantity;
+      }
+    });
+    setInventory(sortedInventory);
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -72,6 +84,10 @@ const InventoryBalancePage = () => {
       fetchInventory(selectedWarehouse.id, page);
     }
   }, [selectedWarehouse, page]);
+
+  useEffect(() => {
+    sortInventory();
+  }, [sortOrder, inventory]);
 
   const handleNextPage = () => {
     setPage((prevPage) => prevPage + 1);
@@ -98,8 +114,11 @@ const InventoryBalancePage = () => {
                 defaultValue={selectedWarehouse}
               />
             </div>
-            <div>
+            <div className="flex items-center gap-4">
               <SearchBar className="w-50" />
+              <Button onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")} className="text-sm py-1 px-2 w-60">
+                Sorted by {sortOrder === "asc" ? "Lowest" : "Highest"} Quantity 
+              </Button>
             </div>
           </div>
           <div className="flex items-center justify-center">
@@ -112,11 +131,11 @@ const InventoryBalancePage = () => {
             )}
           </div>
           <div className="flex justify-between mt-4">
-            <Button onClick={handlePreviousPage} disabled={page === 1}>
+            <Button onClick={handlePreviousPage} disabled={page === 1} className="w-32">
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button onClick={handleNextPage}>Next</Button>
+            <Button onClick={handleNextPage} className="w-32">Next</Button>
           </div>
         </div>
       </div>
