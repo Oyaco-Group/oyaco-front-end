@@ -1,92 +1,143 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Table from "@/components/style-components/table";
+import Dropdown from "@/components/style-components/dropdown";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SearchBar from "@/components/style-components/navbar/searchbar";
+import Button from "@/components/style-components/button";
+import { getWarehouses, getStockByWarehouse } from "@/fetching/inventory";
 
 const InventoryBalancePage = () => {
-  const [sortOrder, setSortOrder] = useState(null);
-  const [warehouse, setWarehouse] = useState("Warehouse 1");
+  const columns = [
+    { field: "no", label: "No" },
+    { field: "master_product_id", label: "Product ID" },
+    { field: "master_product_name", label: "Product Name" },
+    { field: "master_product_price", label: "Product Price" },
+    { field: "warehouse_id", label: "Warehouse" },
+    { field: "quantity", label: "Quantity" },
+  ];
 
-  const handleSort = (order) => {
-    setSortOrder(order);
+  const [inventory, setInventory] = useState([]);
+  const [page, setPage] = useState(1);
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+  const [warehouses, setWarehouses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  const fetchWarehouses = async () => {
+    setLoading(true);
+    try {
+      const data = await getWarehouses();
+      const formattedWarehouses = data.map((warehouse) => ({
+        id: warehouse.id,
+        label: warehouse.name,
+      }));
+      setWarehouses(formattedWarehouses);
+      if (formattedWarehouses.length > 0) {
+        setSelectedWarehouse(formattedWarehouses[0]);
+      } else {
+        setError("No warehouses available");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load warehouses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchInventory = async (warehouseId, page) => {
+    setLoading(true);
+    try {
+      const data = await getStockByWarehouse(warehouseId, page);
+      const formattedData = data.map((item, index) => ({
+        ...item,
+        master_product_name: item.master_product.name,
+        master_product_price: item.master_product.price,
+      }));
+      setInventory(formattedData);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load inventory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sortInventory = () => {
+    const sortedInventory = [...inventory].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.quantity - b.quantity;
+      } else {
+        return b.quantity - a.quantity;
+      }
+    });
+    setInventory(sortedInventory);
+  };
+  
+  useEffect(() => {
+    fetchWarehouses();
+  }, []);
+
+  useEffect(() => {
+    if (selectedWarehouse) {
+      fetchInventory(selectedWarehouse.id, page);
+    }
+  }, [selectedWarehouse, page]);
+
+  useEffect(() => {
+    sortInventory();
+  }, [sortOrder, inventory]);
+
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
   };
 
   return (
     <div className="p-4 sm:ml-64">
-      <div className="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
-        <h1 className="text-2xl">Inventory Balance</h1>
-        <div className="flex justify-between mt-4">
-          <select
-            value={warehouse}
-            onChange={(e) => setWarehouse(e.target.value)}
-            className="border rounded p-2"
-          >
-            <option value="Warehouse 1">Warehouse 1</option>
-            <option value="Warehouse 2">Warehouse 2</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Search"
-            className="border rounded p-2"
-          />
-          <div className="relative">
-            <button
-              onClick={() =>
-                setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
-              }
-              className="border rounded p-2"
-            >
-              Sort by
-            </button>
-            {sortOrder && (
-              <div className="absolute bg-white border rounded shadow mt-2 right-0">
-                <button
-                  onClick={() => handleSort("desc")}
-                  className="block w-full text-left p-2"
-                >
-                  Highest Stock
-                </button>
-                <button
-                  onClick={() => handleSort("asc")}
-                  className="block w-full text-left p-2"
-                >
-                  Lower Stock
-                </button>
-              </div>
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 mb-6 text-2xl text-gray-800">Inventory Balance</h1>
+
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
+            <div className="flex items-center gap-4">
+              <p>Select warehouse: </p>
+              <Dropdown
+                options={warehouses}
+                onSelect={(option) => setSelectedWarehouse(option)}
+                defaultValue={selectedWarehouse}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <SearchBar className="w-50" />
+              <Button onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")} className="text-sm py-1 px-2 w-60">
+                Sorted by {sortOrder === "asc" ? "Lowest" : "Highest"} Quantity 
+              </Button>
+            </div>
+          </div>
+          <div className="flex items-center justify-center">
+            {loading ? (
+              <SpinnerLoad />
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              <Table columns={columns} data={inventory} />
             )}
           </div>
+          <div className="flex justify-between mt-4">
+            <Button onClick={handlePreviousPage} disabled={page === 1} className="w-32">
+              Previous
+            </Button>
+            <span>Page {page}</span>
+            <Button onClick={handleNextPage} className="w-32">Next</Button>
+          </div>
         </div>
-        <table className="min-w-full mt-4 border">
-          <thead>
-            <tr>
-              <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">SKU</th>
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Category</th>
-              <th className="border px-4 py-2">Book Stock</th>
-              <th className="border px-4 py-2">Stock Opname</th>
-              <th className="border px-4 py-2">Price/pcs</th>
-              <th className="border px-4 py-2">Input Stock Opname</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border px-4 py-2">1</td>
-              <td className="border px-4 py-2">ABCD24</td>
-              <td className="border px-4 py-2">Biscuit</td>
-              <td className="border px-4 py-2">Baby food</td>
-              <td className="border px-4 py-2">100</td>
-              <td className="border px-4 py-2">
-                <input type="number" className="border p-1 w-full" />
-              </td>
-              <td className="border px-4 py-2">Rp. 20.000</td>
-              <td className="border px-4 py-2">
-                <input type="number" className="border p-1 w-full" />
-              </td>
-            </tr>
-            {/* Add more rows as needed */}
-          </tbody>
-        </table>
-        <button className="mt-4 border rounded p-2 bg-blue-500 text-white">
-          Save
-        </button>
       </div>
     </div>
   );
