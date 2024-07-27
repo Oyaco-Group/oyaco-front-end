@@ -10,7 +10,7 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
     sku: "",
     price: "",
     category_id: "",
-    image: null,
+    image: "/no-image.jpg" || null,
   });
 
   const handleChange = (e) => {
@@ -39,7 +39,7 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
       console.error("Error creating product:", error);
     }
   };
-
+  // Tambah Toast buat handle error ya intinya klo kategori gaada
   return (
     <Modal isOpen={isOpen} onClose={onClose} title='Add Product'>
       <InputField
