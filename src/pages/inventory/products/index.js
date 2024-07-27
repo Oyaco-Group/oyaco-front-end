@@ -55,10 +55,7 @@ const ProductsPage = () => {
         name: masterProduct.name,
         price: masterProduct.price,
         category_name: masterProduct.category.name,
-        image: masterProduct.image
-          ? `/assets/masterProduct/${masterProduct.image}`
-          : null,
-        ...masterProduct,
+        image: `http://localhost:8080/api/images/${masterProduct.image}`,
       }));
     } else {
       throw new Error("Invalid data format from server");
@@ -128,7 +125,7 @@ const ProductsPage = () => {
             <Table
               columns={columns}
               fetchData={fetchMaster}
-              data={filteredData}
+              data={originalData}
               onEdit={handleEdit}
               render={(row, column) => {
                 if (column.field === "image") {

@@ -1,10 +1,10 @@
 import instance from "@/lib/axios"
 
 
-const getAllOrder = async() => {
+const getAllOrder = async(page,limit) => {
     const response = await instance({
         method : "GET",
-        url : '/order/getorder'
+        url : `/order/getorder?page=${page}&limit=${limit}`
     })
     return response.data;
 }
@@ -25,11 +25,11 @@ const getOrderByUserId = async(user_id) => {
     return response.data;
 }
 
-const updateOrderAdmin = async(id, data) => {
+const updateOrderItem = async(id, data) => {
     const response = await instance({
         method : 'PUT',
-        url : `order/updateorder/${id}`,
-        data : data
+        url : `orderitem/updateorderitem/${id}`,
+        data : {...data}
     })
     return response.data
 }
@@ -37,8 +37,10 @@ const updateOrderAdmin = async(id, data) => {
 const updateOrderStatus = async(id,order_status) => {
     const response = await instance({
         method : 'PATCH',
-        url : `order/updateorderstatus/${id}`
+        url : `order/updateorderstatus/${id}`,
+        data : {order_status}
     })
+    return response.data;
 }
 
 const getAllUser = async(page,limit) => {
@@ -71,16 +73,26 @@ const createOrder = async(params) => {
             products: params.products
         }
     })
-    console.log(response);
-    return response.data.data;
+    return response.data;
+}
+
+const sendOrder = async(id,params) => {
+    const response = await instance({
+        method : 'POST',
+        url : `order/sendorder/${id}`,
+        data : {...params}
+    })
+    return response.data;
 }
 
 export {
     getAllOrder,
     getOrderById,
     getOrderByUserId,
-    updateOrderAdmin,
+    updateOrderStatus,
+    updateOrderItem,
     getAllUser,
     getAllProduct,
-    createOrder
+    createOrder,
+    sendOrder
 }
