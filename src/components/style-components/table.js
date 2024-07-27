@@ -50,6 +50,16 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                         >
                           Delete
                         </Button>
+                      ) : column.field === "imageMaster" ? (
+                        <img
+                          src={row[column.field]}
+                          style={{
+                            height: "120px",
+                            width: "120px",
+                            objectFit: "cover",
+                            borderRadius: "10px",
+                          }}
+                        />
                       ) : column.field === "address" ? (
                         <div>
                           <div
@@ -71,6 +81,8 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                             ></div>
                           </div>
                         </div>
+                      ) : column.render ? (
+                        column.render(row[column.field], row)
                       ) : (
                         row[column.field]
                       )}
@@ -78,16 +90,6 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                   ))}
                 </tr>
               ))
-            ) : column.field === "imageMaster" ? (
-              <img
-                src={row[column.field]}
-                style={{
-                  height: "120px",
-                  width: "120px",
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                }}
-              />
             ) : (
               <tr>
                 <td
