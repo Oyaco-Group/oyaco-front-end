@@ -13,6 +13,8 @@ import {
   getAllTransactions,
   updateAndCheck,
 } from "@/fetching/outgoingTransaction";
+import { FaPlus } from "react-icons/fa6";
+import Pagination from "@/components/style-components/pagination";
 
 const TransactionOutgoingPage = () => {
   const columns = [
@@ -84,10 +86,12 @@ const TransactionOutgoingPage = () => {
   const handleUpdateExpirationStatus = async () => {
     try {
       await updateAndCheck();
-      toast.success("Check & Update success! Removed expired products from inventory")
+      toast.success(
+        "Check & Update success! Removed expired products from inventory"
+      );
       fetchOutgoingTransaction(warehouse, page);
     } catch (err) {
-      toast.error("There is no expired product")
+      toast.error("There is no expired product");
       console.error(err);
     }
   };
@@ -108,6 +112,12 @@ const TransactionOutgoingPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
     }
+  };
+
+  const handleUpdateexpired = () => {
+    // if () {
+    //   toast.error(nsdwuadkja)
+    // }
   };
 
   return (

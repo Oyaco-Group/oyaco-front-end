@@ -8,6 +8,7 @@ import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Link from "next/link";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -15,12 +16,10 @@ const AuthForm = ({ type }) => {
     email: "",
     password: "",
     address: "",
-    user_role: "",
     agree: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
   const { login: loginUser } = useAuth();
   const router = useRouter();
 
@@ -32,27 +31,21 @@ const AuthForm = ({ type }) => {
     });
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Jika tipe adalah "register", tambahkan user_role ke formData
-    const submitData =
-      type === "register" ? { ...formData, user_role: "user" } : formData;
-
     if (type === "register") {
       try {
-        const response = await register(submitData); // Kirim submitData yang sudah diubah
+        const response = await register({
+          ...formData,
+          user_role: "user",
+        });
         toast.success(response.message);
         setFormData({
           name: "",
           email: "",
           password: "",
           address: "",
-          user_role: "user", // Reset ke default value
           agree: false,
         });
         router.push("/login");
@@ -74,22 +67,19 @@ const AuthForm = ({ type }) => {
           throw new Error("Please input both email and password");
         }
         const response = await login({ email, password });
-        const { token, user } = response.data;
+        const { access_token } = response.data;
 
-        // Simpan token dan data pengguna ke context dan localStorage
-        loginUser(user, token);
+        loginUser(access_token);
 
         toast.success(response.message);
-        const dataUser = response.data.user;
-        if (dataUser.role === "admin") {
-          router.push("/dashboard");
-        } else {
-          router.push("/product-list");
-        }
       } catch (error) {
         toast.error(error.message);
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -154,6 +144,9 @@ const AuthForm = ({ type }) => {
             label="I agree with the"
             link="#"
           />
+          <div className="w-full text-center my-4 text-white font-normal">
+            <Link href="/login">Back to Login</Link>
+          </div>
         </>
       )}
       <div
