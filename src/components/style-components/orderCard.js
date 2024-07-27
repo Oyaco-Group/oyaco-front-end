@@ -1,3 +1,5 @@
+import { FaCartShopping } from "react-icons/fa6";
+
 const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
   const formatISODate = (isoDateString) => {
     // Mendapatkan bagian-bagian tanggal dari string ISO 8601
@@ -48,11 +50,7 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
   return (
     <div className="flex items-center bg-white dark:bg-gray-800 max-w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 mb-4 transition duration-300 ease-in-out transform hover:shadow-lg">
       <div className="flex-shrink-0 mr-4 ml-10">
-        <img
-          className="h-16 w-16 object-cover rounded-full"
-          src="http://www.w3.org/2000/svg"
-          alt="Order Image"
-        />
+        <FaCartShopping className="text-blue-400 h-12 w-12" />
       </div>
       <div className="w-full p-4">
         <div className="font-bold text-xl mb-2">Order ID: {order.id}</div>
@@ -69,7 +67,7 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
           Created At: {formatISODate(order.created_at)}
         </p>
       </div>
-      <div className="p-4 flex items-center space-x-4">
+      <div className="p-4 flex items-center space-x-4 mr-6">
         <button
           className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-600 transition duration-300 ease-in-out"
           onClick={handleOrderDetail}
