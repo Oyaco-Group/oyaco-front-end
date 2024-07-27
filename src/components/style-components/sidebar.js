@@ -17,13 +17,13 @@ const SidebarMenu = () => {
   const { logout } = useAuth();
   const router = useRouter();
   const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
       try {
         const userData = JSON.parse(atob(token.split(".")[1]));
-        console.log(userData);
         setUserRole(userData.role);
       } catch (error) {
         console.error("Error parsing user data from token:", error);
@@ -93,7 +93,7 @@ const SidebarMenu = () => {
       icon: <BsBoxSeam className="text-xl" />,
     },
     {
-      href: "/HistoryOrder",
+      href: userId ? `/history-order/${userId}` : "#",
       title: "History Order",
       icon: <TbReport className="text-xl" />,
     },

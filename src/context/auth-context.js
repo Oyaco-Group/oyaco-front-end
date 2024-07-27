@@ -61,7 +61,8 @@ export const AuthProvider = ({ children }) => {
   const redirectBasedOnRole = (role) => {
     if (role === "admin") {
       router.push("/dashboard");
-    } else {
+    }
+    if (role === "user") {
       router.push("/product-list");
     }
   };

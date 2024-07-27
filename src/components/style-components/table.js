@@ -44,7 +44,7 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                         </Button>
                       ) : column.field === "Delete" ? (
                         <Button
-                          className="bg-red-400 hover:bg-red-500"
+                          className="bg-red-600 hover:bg-red-700"
                           onClick={() => onDelete(row)}
                           size="sm"
                         >

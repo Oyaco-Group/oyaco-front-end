@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Modal from "@/components/style-components/modal"; // Import Modal component
+import Modal from "@/components/style-components/modal"; // Import komponen Modal
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -8,11 +8,17 @@ import InputField from "../form/input-field";
 import TextareaField from "../form/textarea-field";
 import Button from "../button";
 
-const ProfileMenu = (onClose) => {
+const ProfileMenu = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, logout } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [tempData, setTempData] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    password: "",
+    address: user?.address || "",
+  });
 
   const router = useRouter();
 
@@ -31,7 +37,7 @@ const ProfileMenu = (onClose) => {
   const handleLogout = () => {
     logout();
     router.push("/login");
-    toast.success("Log out successfully ");
+    toast.success("Logout berhasil");
   };
 
   const togglePasswordVisibility = () => {
@@ -48,41 +54,41 @@ const ProfileMenu = (onClose) => {
 
   const handleSaveChanges = async () => {
     if (!tempData.name) {
-      toast.error("Name is required");
+      toast.error("Nama diperlukan");
       return;
     }
     if (!tempData.email) {
-      toast.error("Email is required");
+      toast.error("Email diperlukan");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(tempData.email)) {
-      toast.error("Invalid email format");
+      toast.error("Format email tidak valid");
       return;
     }
 
     if (!tempData.address) {
-      toast.error("Address is required");
+      toast.error("Alamat diperlukan");
       return;
     }
 
     try {
-      //console.log("Updating user with data:", tempData);
+      //console.log("Memperbarui pengguna dengan data:", tempData);
       await fetchUpdateUser({
         userId: user?.id,
-        name: user?.name,
-        email: user?.email,
-        password: user?.password,
-        address: user?.address,
+        name: tempData.name,
+        email: tempData.email,
+        password: tempData.password,
+        address: tempData.address,
       });
-      toast.success("User updated successfully");
-      onClose();
+      toast.success("Pengguna berhasil diperbarui");
+      handleCloseModal();
       fetchData();
     } catch (error) {
-      console.error("Error updating user data:", error);
+      console.error("Terjadi kesalahan saat memperbarui data pengguna:", error);
       const errorMessage =
-        error.response?.data?.message || "Failed to update user";
+        error.response?.data?.message || "Gagal memperbarui pengguna";
       toast.error(errorMessage);
     }
   };
@@ -97,11 +103,11 @@ const ProfileMenu = (onClose) => {
             aria-expanded={isOpen ? "true" : "false"}
             onClick={toggleDropdown}
           >
-            <span className="sr-only">Open user menu</span>
+            <span className="sr-only">Buka menu pengguna</span>
             <img
               className="h-10 w-10 rounded-full"
               src={user?.image_url || "/avatar.png"}
-              alt="profile picture"
+              alt="foto profil"
             />
             <div className="ms-3 space-y-0.5 text-left font-medium text-gray-500 rtl:text-right">
               <div className="mt-2">| {user?.user_role}</div>
@@ -115,7 +121,7 @@ const ProfileMenu = (onClose) => {
             >
               <div className="px-4 py-3">
                 <p className="text-sm text-blue-600 dark:text-white">
-                  Hi, {user?.name}!
+                  Hai, {user?.name}!
                 </p>
                 <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-300">
                   {user?.email}
@@ -135,7 +141,7 @@ const ProfileMenu = (onClose) => {
                     onClick={handleLogout}
                     className="block w-full text-start px-4 py-2 text-sm text-red-600 hover:bg-blue-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
-                    Log out
+                    Logout
                   </button>
                 </li>
               </ul>
@@ -145,7 +151,11 @@ const ProfileMenu = (onClose) => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen={isOpen} onClose={onClose} title="Edit Profile">
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title="Edit Profile"
+        >
           <img
             className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
             src={"/avatar.png"}
@@ -155,7 +165,7 @@ const ProfileMenu = (onClose) => {
           <InputField
             id="name"
             type="text"
-            value={user?.name}
+            value={tempData.name}
             onChange={handleChange}
             placeholder="Username"
             className="text-gray-400"
@@ -163,7 +173,7 @@ const ProfileMenu = (onClose) => {
           <InputField
             id="email"
             type="email"
-            value={user?.email}
+            value={tempData.email}
             onChange={handleChange}
             placeholder="Email"
             className="text-gray-400"
@@ -172,9 +182,9 @@ const ProfileMenu = (onClose) => {
             <InputField
               id="password"
               type={showPassword ? "text" : "password"}
-              value={user?.password}
+              value={tempData.password}
               onChange={handleChange}
-              placeholder="New Password"
+              placeholder="New password"
               className="text-gray-400"
             />
             <button
@@ -192,9 +202,9 @@ const ProfileMenu = (onClose) => {
           <TextareaField
             id="address"
             rows="4"
-            value={user?.address}
+            value={tempData.address}
             onChange={handleChange}
-            placeholder="Write your address here..."
+            placeholder="Wrote your address here.."
             className="text-gray-400"
           />
           <div className="flex justify-center gap-4">
