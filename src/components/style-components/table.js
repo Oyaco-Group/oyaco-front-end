@@ -78,6 +78,16 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
                   ))}
                 </tr>
               ))
+            ) : column.field === "imageMaster" ? (
+              <img
+                src={row[column.field]}
+                style={{
+                  height: "120px",
+                  width: "120px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                }}
+              />
             ) : (
               <tr>
                 <td

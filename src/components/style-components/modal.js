@@ -3,7 +3,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-5 bg-blend-color-burn"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
       onClick={onClose}
     >
       <div
