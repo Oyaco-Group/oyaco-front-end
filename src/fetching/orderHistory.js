@@ -1,10 +1,10 @@
 import instance from "@/lib/axios";
 
-export const fetchOrderHistoryById = async (params) => {
+export const fetchOrderHistoryById = async (params, page = 1, pageSize = 5) => {
   try {
     const id = params;
-    const response = await instance.get(`/order/getoneorderuser/${id}`);
-    return response.data.data;
+    const response = await instance.get(`/order/getoneorderuser/${params}?page=${page}&pageSize=${pageSize}`);
+    return response.data;
   } catch (error) {
     console.error("Error getting order history data:", error);
     throw error;

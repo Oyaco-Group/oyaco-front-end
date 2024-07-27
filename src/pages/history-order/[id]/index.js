@@ -7,6 +7,7 @@ import {
   fetchUpdateOrderStatus,
 } from "@/fetching/orderHistory";
 import OrderCard from "@/components/style-components/orderCard";
+import Pagination from "@/components/style-components/pagination";
 import Link from "next/link";
 import ComplaintModal from "@/components/style-components/complaintModal";
 import ConfirmationModal from "@/components/style-components/updateStatusModal";
@@ -23,13 +24,18 @@ const HistoryOrderPage = ({ initialOrders }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         setLoading(true);
         try {
-          const data = await fetchOrderHistoryById(id);
-          setOrders(data);
+          const data = await fetchOrderHistoryById(id, currentPage, pageSize);
+          setOrders(data.data);
+          setTotalPages(data.metadata.totalPages);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching order history:", error);
@@ -38,7 +44,7 @@ const HistoryOrderPage = ({ initialOrders }) => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, currentPage, pageSize]);
 
   const handleOrderDetail = (orderId) => {
     console.log("Order Detail clicked for order ID:", orderId);
@@ -92,6 +98,12 @@ const HistoryOrderPage = ({ initialOrders }) => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   const refreshData = async () => {
     try {
       setLoading(true);
@@ -127,6 +139,13 @@ const HistoryOrderPage = ({ initialOrders }) => {
                 }
               />
             ))}
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

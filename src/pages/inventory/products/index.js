@@ -11,7 +11,7 @@ import AddProductModal from "@/pages/inventory/products/add";
 const ProductsPage = () => {
   const columns = [
     { field: "no", label: "No" },
-    { field: "image", label: "Image" },
+    { field: "imageMaster", label: "Image" },
     { field: "name", label: "Name" },
     { field: "sku", label: "SKU" },
     { field: "price", label: "Price" },
@@ -54,8 +54,9 @@ const ProductsPage = () => {
         no: index + 1,
         name: masterProduct.name,
         price: masterProduct.price,
+        sku: masterProduct.sku,
         category_name: masterProduct.category.name,
-        image: `http://localhost:8080/api/images/${masterProduct.image}`,
+        imageMaster: `http://localhost:8080/api/images/${masterProduct.image}`,
       }));
     } else {
       throw new Error("Invalid data format from server");
@@ -112,7 +113,7 @@ const ProductsPage = () => {
               />
             </div>
             <Button
-              className='bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+              className='bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
               onClick={openAddModal}
             >
               <FaPlus />
@@ -128,13 +129,9 @@ const ProductsPage = () => {
               data={originalData}
               onEdit={handleEdit}
               render={(row, column) => {
-                if (column.field === "image") {
-                  return row.image ? (
-                    <img
-                      src={row.image}
-                      alt={row.name}
-                      style={{ width: "50px", height: "50px" }}
-                    />
+                if (column.field === "imageMaster") {
+                  return row.imageMaster ? (
+                    <img src={row.imageMaster} alt={row.name} />
                   ) : (
                     "No Image"
                   );

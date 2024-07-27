@@ -144,7 +144,7 @@ const EditProductsModal = ({
         <Button
           type='button'
           onClick={handleDelete}
-          className='bg-red-500 hover:bg-red-400 focus:outline-none focus:ring-0 flex items-center gap-2'
+          className='bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-0 flex items-center gap-2'
         >
           <AiOutlineDelete />
           Delete
