@@ -5,8 +5,7 @@ import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
 import { TbHomeDot } from "react-icons/tb";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { RiShoppingBagLine } from "react-icons/ri";
-import { BsClipboard2Check } from "react-icons/bs";
-import { BsBoxSeam } from "react-icons/bs";
+import { BsClipboard2Check, BsBoxSeam } from "react-icons/bs";
 import { TbReport } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";
 
@@ -17,46 +16,127 @@ import { toast } from "react-toastify";
 const SidebarMenu = () => {
   const { logout } = useAuth();
   const router = useRouter();
-  // const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  // useEffect(() => {
-  //   const userData = JSON.parse(localStorage.getItem("user"));
-  //   if (userData && userData.role) {
-  //     setUserRole(userData.role);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      try {
+        const userData = JSON.parse(atob(token.split(".")[1]));
+        setUserRole(userData.role);
+      } catch (error) {
+        console.error("Error parsing user data from token:", error);
+      }
+    }
+  }, []);
 
-  const inventoryItems = [
+  const adminMenu = [
     {
-      label: "Products",
-      href: "/inventory/products",
+      href: "/dashboard",
+      title: "Dashboard",
+      icon: <TbHomeDot className="text-xl" />,
     },
     {
-      label: "Category",
-      href: "/inventory/category",
+      href: "/user",
+      title: "Users",
+      icon: <AiOutlineUser className="text-xl" />,
     },
     {
-      label: "Inventory Balance",
-      href: "/inventory/balance",
+      href: "/warehouses",
+      title: "Warehouses",
+      icon: <LuWarehouse className="text-xl" />,
+    },
+    {
+      label: "Inventories",
+      items: [
+        {
+          label: "Products",
+          href: "/inventory/products",
+        },
+        {
+          label: "Category",
+          href: "/inventory/category",
+        },
+        {
+          label: "Inventory Balance",
+          href: "/inventory/balance",
+        },
+      ],
+      icon: <MdOutlineInventory2 className="text-xl text-blue-500" />,
+    },
+    {
+      label: "Transactions",
+      items: [
+        {
+          label: "Incoming",
+          href: "/transactions/incoming",
+        },
+        {
+          label: "Outgoing",
+          href: "/transactions/outgoing",
+        },
+      ],
+      icon: <BsClipboard2Check className="text-xl text-blue-400" />,
+    },
+    {
+      href: "/orders",
+      title: "Orders",
+      icon: <RiShoppingBagLine className="text-xl" />,
     },
   ];
 
-  const transactionItems = [
+  const userMenu = [
     {
-      label: "Incoming",
-      href: "/transactions/incoming",
+      href: "/product-list",
+      title: "Product List",
+      icon: <BsBoxSeam className="text-xl" />,
     },
     {
-      label: "Outgoing",
-      href: "/transactions/outgoing",
+      href: userId ? `/history-order/${userId}` : "#",
+      title: "History Order",
+      icon: <TbReport className="text-xl" />,
     },
   ];
 
   const handleLogout = () => {
-    // console.log("click");
     logout();
     router.push("/login");
-    toast.success("Log out successfully ");
+    toast.success("Logged out successfully");
+  };
+
+  // Render menu based on userRole
+  const renderMenu = () => {
+    if (userRole === "admin") {
+      return adminMenu.map((menuItem, index) => (
+        <React.Fragment key={index}>
+          {menuItem.items ? (
+            <SidebarDropdown
+              label={menuItem.label}
+              items={menuItem.items}
+              icon={menuItem.icon}
+            />
+          ) : (
+            <Menu
+              href={menuItem.href}
+              title={menuItem.title}
+              icon={menuItem.icon}
+            />
+          )}
+        </React.Fragment>
+      ));
+    } else if (userRole === "user") {
+      return userMenu.map((menuItem, index) => (
+        <Menu
+          key={index}
+          href={menuItem.href}
+          title={menuItem.title}
+          icon={menuItem.icon}
+        />
+      ));
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -67,57 +147,7 @@ const SidebarMenu = () => {
     >
       <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm">
         <ul className="mt-5 flex h-full flex-col space-y-2">
-          <div className="flex-grow">
-            {/* {userRole === "admin" && ( */}
-            <>
-              <Menu
-                href="/dashboard"
-                title="Dashboard"
-                icon={<TbHomeDot className="text-xl" />}
-              />
-              <Menu
-                href="/user"
-                title="Users"
-                icon={<AiOutlineUser className="text-xl" />}
-              />
-              <Menu
-                href="/warehouses"
-                title="Warehouses"
-                icon={<LuWarehouse className="text-xl" />}
-              />
-              <SidebarDropdown
-                label="Inventories"
-                items={inventoryItems}
-                icon={<MdOutlineInventory2 className="text-xl text-blue-500" />}
-              />
-              <SidebarDropdown
-                label="Transactions"
-                items={transactionItems}
-                icon={<BsClipboard2Check className="text-xl text-blue-400" />}
-              />
-              <Menu
-                href="/orders"
-                title="Orders"
-                icon={<RiShoppingBagLine className="text-xl" />}
-              />
-            </>
-            {/* )} */}
-
-            {/* {userRole === "user" && ( */}
-            <>
-              <Menu
-                href="/product-list"
-                title="Product List"
-                icon={<BsBoxSeam className="text-xl" />}
-              />
-              <Menu
-                href="/HistoryOrder"
-                title="History Order"
-                icon={<TbReport className="text-xl" />}
-              />
-            </>
-            {/* )} */}
-          </div>
+          <div className="flex-grow">{renderMenu()}</div>
           <div className="mt-auto">
             <Menu
               href="#"

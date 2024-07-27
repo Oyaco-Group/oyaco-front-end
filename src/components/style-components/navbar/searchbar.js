@@ -4,7 +4,7 @@ const SearchBar = ({ className, onChange, value }) => {
   return (
     <form className={`mx-auto ${className}`}>
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
             className="h-4 w-4 text-gray-500 dark:text-gray-400"
             aria-hidden="true"
@@ -23,8 +23,7 @@ const SearchBar = ({ className, onChange, value }) => {
         </div>
         <input
           type="search"
-          id="default-search"
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pl-12 text-xs text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pl-10 pr-3 text-xs text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder="Search..."
           required
           onChange={onChange}

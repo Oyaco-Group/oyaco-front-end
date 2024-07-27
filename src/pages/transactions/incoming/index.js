@@ -91,7 +91,7 @@ const TransactionIncomingPage = () => {
       console.error(err);
     }
   };
-  
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -134,7 +134,6 @@ const TransactionIncomingPage = () => {
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center"></div>
           <Table columns={columns} data={transaction} />
           <div className="flex justify-between mt-4">
             <Button onClick={handlePreviousPage} disabled={page === 1}>

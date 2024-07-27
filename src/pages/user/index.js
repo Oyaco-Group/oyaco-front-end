@@ -114,6 +114,7 @@ const UserPage = () => {
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div>
               <SearchBar
+                id="search-user"
                 className="ml-2 w-72"
                 onChange={handleSearchChange}
                 value={searchUser}

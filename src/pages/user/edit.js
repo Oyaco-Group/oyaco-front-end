@@ -50,8 +50,8 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await fetchDeleteUser(tempData.id);
-      toast.success("User deleted successfully");
+      const response = await fetchDeleteUser(tempData.id);
+      toast.success(response.message);
       onClose();
       fetchData();
     } catch (error) {
@@ -160,14 +160,18 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       <div className="flex justify-center gap-4">
         <Button
           type="button"
-          className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
+          className="flex items-center bg-red-600 hover:bg-red-700"
           size="md"
           onClick={handleDelete}
         >
           <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
           Delete
         </Button>
-        <Button type="button" onClick={handleSaveChanges}>
+        <Button
+          className="bg-green-500 hover:bg-green-600"
+          type="button"
+          onClick={handleSaveChanges}
+        >
           Save Changes
         </Button>
       </div>
