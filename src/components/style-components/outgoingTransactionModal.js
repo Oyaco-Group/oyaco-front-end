@@ -1,16 +1,17 @@
 // components/TransactionModal.js
-import { useState } from 'react';
-import Modal from '@/components/style-components/modal';
-import Button from '@/components/style-components/button';
+import { useState } from "react";
+import Modal from "@/components/style-components/modal";
+import Button from "@/components/style-components/button";
+import { toast } from "react-toastify";
 
 const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    user_id: '',
-    master_product_id: '',
-    origin: '',
-    destination: '',
-    quantity: '',
-    iscondition_good: false,
+    user_id: "",
+    master_product_id: "",
+    origin: "",
+    destination: "",
+    quantity: "",
+    iscondition_good: true,
     expiration_status: false,
   });
 
@@ -18,25 +19,30 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
     const { name, value, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'radio' ? value === 'true' : value,
+      [name]: type === "radio" ? value === "true" : value,
     });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const formDataToSend = {
-      ...formData,
-      quantity: Number(formData.quantity),
-      user_id: Number(formData.user_id),
-      master_product_id: Number(formData.master_product_id),
-    };
+    try {
+      e.preventDefault();
+      const formDataToSend = {
+        ...formData,
+        quantity: Number(formData.quantity),
+        user_id: Number(formData.user_id),
+        master_product_id: Number(formData.master_product_id),
+      };
 
-    if (isNaN(formDataToSend.quantity) || formDataToSend.quantity <= 0) {
-      alert('Please enter a valid quantity');
-      return;
+      if (isNaN(formDataToSend.quantity) || formDataToSend.quantity <= 0) {
+        alert("Please enter a valid quantity");
+        return;
+      }
+
+      onSubmit(formDataToSend);
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
     }
-
-    onSubmit(formDataToSend);
   };
 
   return (
@@ -123,7 +129,8 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
                 onChange={handleChange}
                 className="h-5 w-5"
               />
-              <span className="ml-2">Not Good</span>
+
+              <span className="ml-2">Bad</span>
             </label>
           </div>
         </div>
@@ -155,7 +162,12 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="px-6 py-2 bg-blue-500 text-white rounded">Submit</Button>
+          <Button
+            type="submit"
+            className="px-6 py-2 bg-blue-500 text-white rounded"
+          >
+            Submit
+          </Button>
         </div>
       </form>
     </Modal>

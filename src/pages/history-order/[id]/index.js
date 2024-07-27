@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { fetchOrderHistoryById, fetchUpdateOrderStatus } from "@/fetching/orderHistory";
+import {
+  fetchOrderHistoryById,
+  fetchUpdateOrderStatus,
+} from "@/fetching/orderHistory";
 import OrderCard from "@/components/style-components/orderCard";
 import Link from "next/link";
 import ComplaintModal from "@/components/style-components/complaintModal";
@@ -18,7 +21,7 @@ const HistoryOrderPage = ({ initialOrders }) => {
   const [showComplaintModal, setShowComplaintModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [orderStatus, setOrderStatus] = useState('');
+  const [orderStatus, setOrderStatus] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,22 +53,24 @@ const HistoryOrderPage = ({ initialOrders }) => {
   };
 
   const handleUpdateStatus = (orderId, status) => {
-    console.log(`Update Status Pesanan clicked for order ID: ${orderId}, with status: ${status}`);
+    console.log(
+      `Update Status Pesanan clicked for order ID: ${orderId}, with status: ${status}`
+    );
     setSelectedOrderId(orderId);
-    setOrderStatus(status)
+    setOrderStatus(status);
     setShowConfirmationModal(true);
   };
 
   const closeComplaintModal = () => {
     setShowComplaintModal(false);
-    setSelectedOrderId(null)
-    setOrderStatus('')
+    setSelectedOrderId(null);
+    setOrderStatus("");
   };
 
   const handleCloseConfirmationModal = () => {
     setShowConfirmationModal(false);
-    setSelectedOrderId(null)
-    setOrderStatus('')
+    setSelectedOrderId(null);
+    setOrderStatus("");
   };
 
   const handleConfirmUpdateStatus = async () => {
@@ -76,16 +81,14 @@ const HistoryOrderPage = ({ initialOrders }) => {
       );
       console.log("Order status updated successfully!", response.data);
 
-      // Refresh data setelah berhasil mengupdate status
       setLoading(true);
       const updatedOrders = await fetchOrderHistoryById(id);
       setOrders(updatedOrders);
       setLoading(false);
     } catch (error) {
       console.error("Error updating order status:", error);
-      // Tambahkan penanganan error sesuai kebutuhan
     } finally {
-      setShowConfirmationModal(false); // Tutup modal konfirmasi setelah selesai
+      setShowConfirmationModal(false);
     }
   };
 
@@ -119,7 +122,9 @@ const HistoryOrderPage = ({ initialOrders }) => {
                 order={order}
                 onOrderDetail={() => handleOrderDetail(order.id)}
                 onComplaint={() => handleComplaint(order.id)}
-                onUpdateStatus={() => handleUpdateStatus(order.id, order.order_status)}
+                onUpdateStatus={() =>
+                  handleUpdateStatus(order.id, order.order_status)
+                }
               />
             ))}
           </div>

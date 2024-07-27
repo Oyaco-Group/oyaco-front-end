@@ -3,6 +3,7 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/input-field";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 const EditWarehouseModal = ({
   isOpen,
@@ -50,6 +51,7 @@ const EditWarehouseModal = ({
       });
       fetchData();
       onClose();
+      toast.success();
     } catch (error) {
       console.error("Error saving warehouse data:", error);
     }

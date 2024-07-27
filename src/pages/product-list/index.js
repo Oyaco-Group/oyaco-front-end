@@ -12,7 +12,7 @@ const ProductListPage = () => {
           placeholder="Search..."
           className="mb-4 p-2 border rounded w-full"
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {products.map((product) => (
             <div key={product.id} className="border p-4 rounded">
               <img src={product.image} alt={product.name} className="mb-2" />
@@ -26,7 +26,7 @@ const ProductListPage = () => {
               </button>
             </div>
           ))}
-        </div>
+        </div> */}
         {selectedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-4 rounded shadow-lg relative w-11/12 md:w-1/2">
