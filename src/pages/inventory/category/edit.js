@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "@/components/style-components/modal";
-import InputField from "@/components/style-components/form/input-field";
+import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
 
@@ -50,17 +50,17 @@ const EditCategoryModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Edit Category'>
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Category">
       <InputField
-        id='name'
-        type='text'
+        id="name"
+        type="text"
         value={tempData.name}
         onChange={handleChange}
-        placeholder='Category Name'
-        className='text-gray-400'
+        placeholder="Category Name"
+        className="text-gray-400"
       />
-      <div className='flex justify-center gap-4'>
-        <Button type='button' onClick={handleSaveChanges}>
+      <div className="flex justify-center gap-4">
+        <Button type="button" onClick={handleSaveChanges}>
           Save Changes
         </Button>
       </div>

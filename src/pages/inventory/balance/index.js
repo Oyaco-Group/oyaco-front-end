@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import Dropdown from "@/components/style-components/dropdown";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import { getWarehouses, getStockByWarehouse } from "@/fetching/inventory";

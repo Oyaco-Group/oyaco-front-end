@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Modal from "@/components/style-components/modal"; // Import komponen Modal
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import InputField from "../form/input-field";
-import TextareaField from "../form/textarea-field";
+import InputField from "../form/inputField";
+import TextareaField from "../form/textareaField";
 import Button from "../button";
 import { fetchUpdateUser } from "@/fetching/user";
 
@@ -85,7 +85,7 @@ const ProfileMenu = ({ onClose }) => {
       });
       toast.success("Pengguna berhasil diperbarui");
       handleCloseModal();
-      fetchData();
+      // fetchData();
     } catch (error) {
       console.error("Terjadi kesalahan saat memperbarui data pengguna:", error);
       const errorMessage =

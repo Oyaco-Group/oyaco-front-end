@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import EditWarehouseModal from "@/pages/warehouses/edit";
 import AddWarehouseModal from "@/pages/warehouses/add";
 import {
@@ -117,27 +117,27 @@ const TransactionIncomingPage = () => {
     }
   };
   return (
-    <div className='p-4 sm:ml-64'>
-      <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
-        <h1 className='mt-4 mb-4 text-2xl text-gray-800'>List Warehouse</h1>
-        <div className='relative overflow-x-auto'>
-          <div className='flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900'>
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 mb-4 text-2xl text-gray-800">List Warehouse</h1>
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div>
               <SearchBar
-                className='w-72'
+                className="w-72"
                 onChange={handleSearchChange}
                 value={searchWarehouse}
               />
             </div>
             <Button
-              className='bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+              className="bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between"
               onClick={openAddModal}
             >
               <FaPlus />
               Add Warehouse
             </Button>
           </div>
-          <div className='flex items-center justify-center'>
+          <div className="flex items-center justify-center">
             {isLoading && <SpinnerLoad />}
           </div>
           {!isLoading && (

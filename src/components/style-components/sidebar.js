@@ -9,7 +9,7 @@ import { BsClipboard2Check, BsBoxSeam } from "react-icons/bs";
 import { TbReport } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";
 
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 

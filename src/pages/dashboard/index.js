@@ -3,30 +3,14 @@ import { BsBoxSeam } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { BsChatSquareText } from "react-icons/bs";
-import CardCount from "@/components/style-components/card-count";
-import Table from "@/components/style-components/table";
-import LoadingCard from "@/components/style-components/loading-indicator/skeleton-load";
+import CardCount from "@/components/style-components/cardCount";
+import CardTransaction from "@/components/style-components/cardTransaction";
+import LoadingCard from "@/components/style-components/loading-indicator/skeletonLoad";
 import { fetchDashboard } from "@/fetching/dashboard";
-import { fetchProfileUser } from "@/fetching/user";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/authContext";
+import CalendarComponent from "@/components/style-components/calender";
 
 const DashboardPage = () => {
-  const tableIncoming = [
-    { field: "no", label: "No" },
-    { field: "name", label: "Name" },
-    { field: "address", label: "Address" },
-    { field: "user_role", label: "Role" },
-    { field: "action", label: "Action" },
-  ];
-
-  const tableOutgoing = [
-    { field: "no", label: "No" },
-    { field: "name", label: "Name" },
-    { field: "address", label: "Address" },
-    { field: "user_role", label: "Role" },
-    { field: "action", label: "Action" },
-  ];
-
   const [isLoading, setIsLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const { user } = useAuth();
@@ -54,25 +38,30 @@ const DashboardPage = () => {
     <>
       <div className="p-4 sm:ml-64">
         <div className="mt-24">
-          <div className="flex flex-col gap-20 body-font container mx-auto my-14 text-gray-700">
+          <div className="flex flex-col gap-10 body-font container mx-auto my-14 text-gray-700">
             <section>
-              <div className="flex flex-row w-1/2 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
-                <div className="w-3/4">
-                  <p>Welcome</p>
-                  <h1 className="text-4xl font-semibold">
-                    Hi,{" "}
-                    <span className="text-blue-400 font-normal">
-                      {user ? user.name : "Loading..."}
-                    </span>
-                  </h1>
+              <div className="flex flex-row">
+                <div className="flex flex-row w-1/2 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
+                  <div className="w-3/4">
+                    <p>Welcome</p>
+                    <h1 className="text-4xl font-semibold">
+                      Hi,{" "}
+                      <span className="text-blue-400 font-normal">
+                        {user ? user.name : "Loading..."}
+                      </span>
+                    </h1>
+                  </div>
+                  <img
+                    src="/avatar.png"
+                    alt="avatar"
+                    width={150}
+                    height={150}
+                    className="1/4"
+                  />
                 </div>
-                <img
-                  src="/avatar.png"
-                  alt="avatar"
-                  width={150}
-                  height={150}
-                  className="1/4"
-                />
+                <div className="w-1/2">
+                  <CalendarComponent />
+                </div>
               </div>
             </section>
             <section>
@@ -104,36 +93,16 @@ const DashboardPage = () => {
                 </div>
               )}
             </section>
-            {/* <section className="flex flex-row">
-              <div className="basis-1/2">
-                <p>Transaction incoming</p>
-                <div className="flex items-center justify-center">
-                  {isLoading && <LoadingCard />}
+            <section className="w-full">
+              <div className="flex flex-row ml-20">
+                <div className="w-1/2">
+                  <CardTransaction />
                 </div>
-                {!isLoading && (
-                  <Table
-                    columns={tableIncoming}
-                    // data={}
-                    // onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
-                )}
-              </div>
-              <div className="basis-1/2">
-                <p>Transaction incoming</p>
-                <div className="flex items-center justify-center">
-                  {isLoading && <LoadingCard />}
+                <div className="w-1/2">
+                  <CardTransaction />
                 </div>
-                {!isLoading && (
-                  <Table
-                    columns={tableIncoming}
-                    // data={}
-                    // onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
-                )}
               </div>
-            </section> */}
+            </section>
           </div>
         </div>
       </div>

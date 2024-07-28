@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "@/context/auth-context";
-import InputField from "@/components/style-components/form/input-field";
-import TextareaField from "@/components/style-components/form/textarea-field";
-import CheckboxField from "@/components/style-components/form/checkbox-field";
+import { useAuth } from "@/context/authContext";
+import InputField from "@/components/style-components/form/inputField";
+import TextareaField from "@/components/style-components/form/textareaField";
+import CheckboxField from "@/components/style-components/form/checkboxField";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
@@ -144,8 +144,11 @@ const AuthForm = ({ type }) => {
             label="I agree with the"
             link="#"
           />
-          <div className="w-full text-center my-4 text-white font-normal">
-            <Link href="/login">Back to Login</Link>
+          <div className="flex gap-2 w-full justify-center my-6 text-white font-normal">
+            <p>Already have an account?</p>
+            <Link href="/login" className="text-blue-700">
+              Login
+            </Link>
           </div>
         </>
       )}
