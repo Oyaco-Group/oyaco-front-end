@@ -7,6 +7,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import InputField from "../form/input-field";
 import TextareaField from "../form/textarea-field";
 import Button from "../button";
+import { fetchUpdateUser } from "@/fetching/user";
 
 const ProfileMenu = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,7 +75,7 @@ const ProfileMenu = ({ onClose }) => {
     }
 
     try {
-      //console.log("Memperbarui pengguna dengan data:", tempData);
+      console.log("Memperbarui pengguna dengan data:", tempData);
       await fetchUpdateUser({
         userId: user?.id,
         name: tempData.name,
@@ -103,7 +104,7 @@ const ProfileMenu = ({ onClose }) => {
             aria-expanded={isOpen ? "true" : "false"}
             onClick={toggleDropdown}
           >
-            <span className="sr-only">Buka menu pengguna</span>
+            <span className="sr-only">Open profile menu</span>
             <img
               className="h-10 w-10 rounded-full"
               src={user?.image_url || "/avatar.png"}
