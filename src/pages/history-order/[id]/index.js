@@ -11,10 +11,14 @@ import Pagination from "@/components/style-components/pagination";
 import Link from "next/link";
 import ComplaintModal from "@/components/style-components/complaintModal";
 import ConfirmationModal from "@/components/style-components/updateStatusModal";
+import { useAuth } from "@/context/authContext";
 
 const HistoryOrderPage = ({ initialOrders }) => {
   const router = useRouter();
-  const { id } = router.query;
+  const { user } = useAuth();
+  console.log(user);
+  const id = user.id;
+  // const { id } = router.query;
 
   const [orders, setOrders] = useState(initialOrders || []);
   const [loading, setLoading] = useState(true);
@@ -43,7 +47,9 @@ const HistoryOrderPage = ({ initialOrders }) => {
         }
       }
     };
-    fetchData();
+    if (user) {
+      fetchData();
+    }
   }, [id, currentPage, pageSize]);
 
   const handleOrderDetail = (orderId) => {

@@ -12,7 +12,7 @@ import CalendarComponent from "@/components/style-components/dashboard/calender"
 
 const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState({});
   const { user } = useAuth();
 
   useEffect(() => {
@@ -32,12 +32,12 @@ const DashboardPage = () => {
   };
 
   const {
-    totalUsers,
-    totalMasterProducts,
-    totalOrders,
-    totalComplaints,
-    productMovements,
-  } = dashboardData || {};
+    totalUsers = 0,
+    totalMasterProducts = 0,
+    totalOrders = 0,
+    totalComplaints = 0,
+    productMovements = [],
+  } = dashboardData;
 
   return (
     <>
@@ -46,7 +46,7 @@ const DashboardPage = () => {
           <div className="flex flex-col gap-10 body-font container mx-auto my-14 text-gray-700">
             <section>
               <div className="flex flex-row">
-                <div className="flex flex-row w-3/4 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
+                <div className="flex flex-row w-1/2 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
                   <div className="w-3/4">
                     <p>Welcome</p>
                     <h1 className="text-4xl font-semibold">
@@ -99,7 +99,9 @@ const DashboardPage = () => {
               )}
             </section>
             <section className="flex flex-row gap-10">
-              <CardTransaction transactions={productMovements} />
+              {!isLoading && (
+                <CardTransaction transactions={productMovements} />
+              )}
             </section>
           </div>
         </div>
