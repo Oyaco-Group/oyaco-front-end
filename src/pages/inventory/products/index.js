@@ -56,7 +56,9 @@ const ProductsPage = () => {
         price: masterProduct.price,
         sku: masterProduct.sku,
         category_name: masterProduct.category.name,
-        imageMaster: `http://localhost:8080/api/images/${masterProduct.image}`,
+        imageMaster: masterProduct.image
+          ? `http://localhost:8080/api/images/${masterProduct.image}`
+          : "/no-image.jpg",
       }));
     } else {
       throw new Error("Invalid data format from server");

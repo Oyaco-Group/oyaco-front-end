@@ -3,6 +3,7 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/input-field";
 import Button from "@/components/style-components/button";
 import { createProducts } from "@/fetching/products";
+import { toast } from "react-toastify";
 
 const AddProductModal = ({ isOpen, onClose, fetchData }) => {
   const [productData, setProductData] = useState({
@@ -10,7 +11,7 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
     sku: "",
     price: "",
     category_id: "",
-    image: "/no-image.jpg" || null,
+    image: null,
   });
 
   const handleChange = (e) => {
@@ -37,6 +38,11 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
       fetchData(); // Fetch updated product list
     } catch (error) {
       console.error("Error creating product:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error("Category not found. Please check the category ID.");
+      } else {
+        toast.error("Category doesn't exist");
+      }
     }
   };
   // Tambah Toast buat handle error ya intinya klo kategori gaada
