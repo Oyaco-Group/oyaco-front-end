@@ -131,7 +131,13 @@ const ProductsPage = () => {
               render={(row, column) => {
                 if (column.field === "imageMaster") {
                   return row.imageMaster ? (
-                    <img src={row.imageMaster} alt={row.name} />
+                    <img
+                      src={
+                        row.imageMaster ||
+                        "/docs/images/examples/image-1@2x.jpg"
+                      }
+                      alt={row.name}
+                    />
                   ) : (
                     "No Image"
                   );

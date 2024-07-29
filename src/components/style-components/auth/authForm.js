@@ -152,9 +152,7 @@ const AuthForm = ({ type }) => {
           </div>
         </>
       )}
-      <div
-        className={`flex ${type === "login" ? "justify-center" : "justify-end"}`}
-      >
+      <div className="flex justify-center">
         <Button type="submit">{type === "login" ? "LOGIN" : "REGISTER"}</Button>
       </div>
     </form>

@@ -84,7 +84,7 @@ const CalendarComponent = () => {
           <div className="flex items-center justify-between">
             <span
               tabIndex="0"
-              className="focus:outline-none text-md font-bold dark:text-gray-100 text-gray-800"
+              className="focus:outline-none text-md font-semibold dark:text-gray-100 text-blue-400 mb-4"
             >
               {`${today.toLocaleString("default", { month: "long" })} ${currentYear}`}
             </span>
@@ -92,7 +92,7 @@ const CalendarComponent = () => {
               <button
                 aria-label="calendar backward"
                 onClick={handlePrevMonth}
-                className="focus:text-gray-400 hover:text-gray-400 text-gray-800 dark:text-gray-100"
+                className="mb-4 focus:text-gray-400 hover:text-gray-400 text-gray-800 dark:text-gray-100"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@ const CalendarComponent = () => {
               <button
                 aria-label="calendar forward"
                 onClick={handleNextMonth}
-                className="focus:text-gray-400 hover:text-gray-400 ml-1 text-gray-800 dark:text-gray-100"
+                className="mb-4 focus:text-gray-400 hover:text-gray-400 ml-1 text-gray-800 dark:text-gray-100"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

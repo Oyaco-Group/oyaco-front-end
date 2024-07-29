@@ -147,7 +147,7 @@ const SidebarMenu = () => {
       <div className="h-full overflow-y-auto bg-white px-3 pb-4 shadow-sm">
         <ul className="mt-5 flex h-full flex-col space-y-2">
           <div className="flex-grow">{renderMenu()}</div>
-          <div className="mt-auto">
+          <div className="mt-auto"  >
             <Menu
               href="#"
               title="Log out"

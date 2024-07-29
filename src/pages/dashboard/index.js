@@ -3,12 +3,12 @@ import { BsBoxSeam } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { BsChatSquareText } from "react-icons/bs";
-import CardCount from "@/components/style-components/cardCount";
-import CardTransaction from "@/components/style-components/cardTransaction";
+import CardCount from "@/components/style-components/dashboard/cardSummary";
+import CardTransaction from "@/components/style-components/dashboard/cardTransaction";
 import LoadingCard from "@/components/style-components/loading-indicator/skeletonLoad";
 import { fetchDashboard } from "@/fetching/dashboard";
 import { useAuth } from "@/context/authContext";
-import CalendarComponent from "@/components/style-components/calender";
+import CalendarComponent from "@/components/style-components/dashboard/calender";
 
 const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +31,13 @@ const DashboardPage = () => {
     }
   };
 
-  const { totalUsers, totalMasterProducts, totalOrders, totalComplaints } =
-    dashboardData || {};
+  const {
+    totalUsers,
+    totalMasterProducts,
+    totalOrders,
+    totalComplaints,
+    productMovements,
+  } = dashboardData || {};
 
   return (
     <>
@@ -41,7 +46,7 @@ const DashboardPage = () => {
           <div className="flex flex-col gap-10 body-font container mx-auto my-14 text-gray-700">
             <section>
               <div className="flex flex-row">
-                <div className="flex flex-row w-1/2 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
+                <div className="flex flex-row w-3/4 px-20 py-20 border border-0.5 border-gray-100 rounded-3xl bg-blue-100 shadow-md">
                   <div className="w-3/4">
                     <p>Welcome</p>
                     <h1 className="text-4xl font-semibold">
@@ -93,15 +98,8 @@ const DashboardPage = () => {
                 </div>
               )}
             </section>
-            <section className="w-full">
-              <div className="flex flex-row ml-20">
-                <div className="w-1/2">
-                  <CardTransaction />
-                </div>
-                <div className="w-1/2">
-                  <CardTransaction />
-                </div>
-              </div>
+            <section className="flex flex-row gap-10">
+              <CardTransaction transactions={productMovements} />
             </section>
           </div>
         </div>
