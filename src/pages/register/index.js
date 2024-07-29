@@ -1,5 +1,5 @@
-import AuthForm from "../../components/style-components/auth/auth-form";
-import AuthImage from "../../components/style-components/auth/auth-image";
+import AuthForm from "../../components/style-components/auth/authForm";
+import AuthImage from "../../components/style-components/auth/authImage";
 import Link from "next/link";
 
 const RegisterPage = () => {

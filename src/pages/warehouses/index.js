@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import EditWarehouseModal from "@/pages/warehouses/edit";
 import AddWarehouseModal from "@/pages/warehouses/add";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/fetching/warehouses";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const TransactionIncomingPage = () => {
   const columns = [
@@ -38,6 +39,7 @@ const TransactionIncomingPage = () => {
     try {
       setIsLoading(true);
       const warehouseData = await fetchWarehouse();
+      console.log(warehouseData);
       const processedData = processWarehouseData(warehouseData);
       setOriginalData(processedData);
       setFilteredData(processedData);
@@ -90,8 +92,10 @@ const TransactionIncomingPage = () => {
     try {
       await deleteWarehouse(parseInt(warehouse.id, 10));
       fetchData();
+      toast.success("Successfully warehouse deleted");
     } catch (error) {
       console.error("Error deleting warehouse:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -111,33 +115,36 @@ const TransactionIncomingPage = () => {
     try {
       await editWarehouse({ id, ...data });
       fetchData();
-      onClose();
+      toast.success("Successfully warehouse edited");
     } catch (error) {
       console.error("Error saving warehouse data:", error);
+      toast.error(error.response.data.message);
     }
   };
   return (
-    <div className='p-4 sm:ml-64'>
-      <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
-        <h1 className='mt-4 mb-4 text-2xl text-gray-800'>List Warehouse</h1>
-        <div className='relative overflow-x-auto'>
-          <div className='flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900'>
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 mb-4 text-2xl text-gray-800">List Warehouse</h1>
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div>
               <SearchBar
-                className='w-72'
+                className="w-72"
                 onChange={handleSearchChange}
                 value={searchWarehouse}
               />
             </div>
             <Button
+
               className='bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+
               onClick={openAddModal}
             >
               <FaPlus />
               Add Warehouse
             </Button>
           </div>
-          <div className='flex items-center justify-center'>
+          <div className="flex items-center justify-center">
             {isLoading && <SpinnerLoad />}
           </div>
           {!isLoading && (
