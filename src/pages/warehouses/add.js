@@ -3,6 +3,7 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { createWarehouse } from "@/fetching/warehouses";
+import { toast } from "react-toastify";
 
 const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -25,10 +26,11 @@ const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
         location: tempData.location,
       });
       console.log("Warehouse created:", tempData);
-      onClose();
       fetchData();
+      toast.success("Successfully warehouse created");
     } catch (error) {
       console.error("Error creating warehouse:", error);
+      toast.error(error.response.data.message);
     }
   };
 
