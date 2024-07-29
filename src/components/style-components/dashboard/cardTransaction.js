@@ -83,7 +83,7 @@ const CardTransaction = ({ transactions }) => {
               ))}
             </ul>
           ) : (
-            <div className="flex flex-col gap-4 items-center justify-center h-[24rem] text-gray-400">
+            <div className="flex flex-col gap-4 items-center justify-center h-[24rem] text-gray-400 p-20 bg-gray-50 rounded-xl">
               <img src="/icons/emptystatetrx.png" height={80} width={80} />
               <p>Transaction is empty</p>
             </div>
