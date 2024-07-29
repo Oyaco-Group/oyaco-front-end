@@ -85,18 +85,18 @@
       },
     ];
 
-    const userMenu = [
-      {
-        href: "/product-list",
-        title: "Product List",
-        icon: <BsBoxSeam className="text-xl" />,
-      },
-      {
-        href: user ? `/history-order/${user.id}` : "#",
-        title: "History Order",
-        icon: <TbReport className="text-xl" />,
-      },
-    ];
+  const userMenu = [
+    {
+      href: "/product-list",
+      title: "Product List",
+      icon: <BsBoxSeam className="text-xl" />,
+    },
+    {
+      href: user ? `/history-order/${user.id}` : "#",
+      title: "History Order",
+      icon: <TbReport className="text-xl" />,
+    },
+  ];
 
     const handleLogout = () => {
       logout();

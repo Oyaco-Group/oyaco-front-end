@@ -120,7 +120,9 @@ const CategoryPage = () => {
               />
             </div>
             <Button
-              className="bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between"
+
+              className='bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+
               onClick={openAddModal}
             >
               <FaPlus />
