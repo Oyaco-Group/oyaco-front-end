@@ -16,9 +16,7 @@ import { useAuth } from "@/context/authContext";
 const HistoryOrderPage = ({ initialOrders }) => {
   const router = useRouter();
   const { user } = useAuth();
-  console.log(user);
   const id = user.id;
-  // const { id } = router.query;
 
   const [orders, setOrders] = useState(initialOrders || []);
   const [loading, setLoading] = useState(true);
