@@ -135,7 +135,9 @@ const TransactionIncomingPage = () => {
               />
             </div>
             <Button
-              className="bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between"
+
+              className='bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+
               onClick={openAddModal}
             >
               <FaPlus />
