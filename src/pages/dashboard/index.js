@@ -5,8 +5,10 @@ import { RiShoppingBagLine } from "react-icons/ri";
 import { BsChatSquareText } from "react-icons/bs";
 import CardCount from "@/components/style-components/card-count";
 import Table from "@/components/style-components/table";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData } from "@/utils/dataTest";
+import LoadingCard from "@/components/style-components/loading-indicator/skeleton-load";
+import { fetchDashboard } from "@/fetching/dashboard";
+import { fetchProfileUser } from "@/fetching/user";
+import { useAuth } from "@/context/auth-context";
 
 const DashboardPage = () => {
   const tableIncoming = [
@@ -26,20 +28,27 @@ const DashboardPage = () => {
   ];
 
   const [isLoading, setIsLoading] = useState(true);
-  const [filteredData, setFilteredData] = useState([]);
+  const [dashboardData, setDashboardData] = useState(null);
+  const { user } = useAuth();
 
-  const fetchData = async () => {
+  useEffect(() => {
+    getDashboardData();
+  }, []);
+
+  const getDashboardData = async () => {
     try {
       setIsLoading(true);
-      const userData = await fetchUserData();
-      const roleUserData = userData.filter((user) => user.user_role === "user");
-      setOriginalData(roleUserData);
-      setIsLoading(false);
+      const data = await fetchDashboard();
+      setDashboardData(data);
     } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
       setIsLoading(false);
-      console.error("Error fetching user data:", error);
     }
   };
+
+  const { totalUsers, totalMasterProducts, totalOrders, totalComplaints } =
+    dashboardData || {};
 
   return (
     <>
@@ -52,7 +61,9 @@ const DashboardPage = () => {
                   <p>Welcome</p>
                   <h1 className="text-4xl font-semibold">
                     Hi,{" "}
-                    <span className="text-blue-400 font-normal">John Doe</span>
+                    <span className="text-blue-400 font-normal">
+                      {user ? user.name : "Loading..."}
+                    </span>
                   </h1>
                 </div>
                 <img
@@ -63,48 +74,47 @@ const DashboardPage = () => {
                   className="1/4"
                 />
               </div>
-              {/* <div
-                id="datepicker-inline"
-                inline-datepicker
-                data-date="02/25/2024"
-                className="w-1/4"
-              ></div> */}
             </section>
             <section>
-              <div className="flex justify-center text-center">
-                <CardCount
-                  icon={<BsBoxSeam className="text-2xl" />}
-                  count={500}
-                  label="Products"
-                />
-                <CardCount
-                  icon={<FiUsers className="text-2xl" />}
-                  count={100}
-                  label="Users"
-                />
-                <CardCount
-                  icon={<RiShoppingBagLine className="text-2xl" />}
-                  count={74}
-                  label="Orders"
-                />
-                <CardCount
-                  icon={<BsChatSquareText className="text-2xl" />}
-                  count={3}
-                  label="Complaints"
-                />
+              <div className="flex items-center justify-center">
+                {isLoading && <LoadingCard />}
               </div>
+              {!isLoading && (
+                <div className="flex justify-center text-center">
+                  <CardCount
+                    icon={<BsBoxSeam className="text-2xl" />}
+                    count={totalMasterProducts}
+                    label="Products"
+                  />
+                  <CardCount
+                    icon={<FiUsers className="text-2xl" />}
+                    count={totalUsers}
+                    label="Users"
+                  />
+                  <CardCount
+                    icon={<RiShoppingBagLine className="text-2xl" />}
+                    count={totalOrders}
+                    label="Orders"
+                  />
+                  <CardCount
+                    icon={<BsChatSquareText className="text-2xl" />}
+                    count={totalComplaints}
+                    label="Complaints"
+                  />
+                </div>
+              )}
             </section>
-            <section className="flex flex-row">
+            {/* <section className="flex flex-row">
               <div className="basis-1/2">
                 <p>Transaction incoming</p>
                 <div className="flex items-center justify-center">
-                  {isLoading && <SpinnerLoad />}
+                  {isLoading && <LoadingCard />}
                 </div>
                 {!isLoading && (
                   <Table
                     columns={tableIncoming}
-                    data={filteredData}
-                    onEdit={handleEdit}
+                    // data={}
+                    // onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
                 )}
@@ -112,18 +122,18 @@ const DashboardPage = () => {
               <div className="basis-1/2">
                 <p>Transaction incoming</p>
                 <div className="flex items-center justify-center">
-                  {isLoading && <SpinnerLoad />}
+                  {isLoading && <LoadingCard />}
                 </div>
                 {!isLoading && (
                   <Table
                     columns={tableIncoming}
-                    data={filteredData}
-                    onEdit={handleEdit}
+                    // data={}
+                    // onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
                 )}
               </div>
-            </section>
+            </section> */}
           </div>
         </div>
       </div>

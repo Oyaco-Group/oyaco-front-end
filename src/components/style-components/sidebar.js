@@ -14,10 +14,9 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 const SidebarMenu = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -93,7 +92,7 @@ const SidebarMenu = () => {
       icon: <BsBoxSeam className="text-xl" />,
     },
     {
-      href: userId ? `/history-order/${userId}` : "#",
+      href: user ? `/history-order/${user.id}` : "#",
       title: "History Order",
       icon: <TbReport className="text-xl" />,
     },

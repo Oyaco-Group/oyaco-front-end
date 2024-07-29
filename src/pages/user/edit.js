@@ -22,9 +22,6 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   useEffect(() => {
     if (modalEditUser) {
-      // console.log("Received modalEditUser:", modalEditUser);
-      // console.log("Setting User ID:", modalEditUser.id);
-
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
