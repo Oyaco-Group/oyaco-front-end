@@ -3,6 +3,7 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 const EditCategoryModal = ({
   isOpen,
@@ -44,8 +45,10 @@ const EditCategoryModal = ({
       await onSave(tempData.id, tempData.name);
       fetchData();
       onClose();
+      toast.success("Successfully category edited");
     } catch (error) {
       console.error("Error saving category data:", error);
+      toast.error(error.response.data.message);
     }
   };
 
