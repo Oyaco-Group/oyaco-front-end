@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       redirectBasedOnRole(userData.user_role);
       setProfileFetched(true);
-      router.push("/");
     } catch (error) {
       console.error("Failed to fetch user profile after login:", error);
       toast.error("Invalid credential");
@@ -74,4 +73,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

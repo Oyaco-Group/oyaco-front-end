@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "@/components/style-components/modal";
-import InputField from "@/components/style-components/form/input-field";
+import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
@@ -58,25 +58,25 @@ const EditWarehouseModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Warehouse">
+    <Modal isOpen={isOpen} onClose={onClose} title='Edit Warehouse'>
       <InputField
-        id="name"
-        type="text"
+        id='name'
+        type='text'
         value={tempData.name}
         onChange={handleChange}
-        placeholder="Warehouse Name"
-        className="text-gray-400"
+        placeholder='Warehouse Name'
+        className='text-gray-400'
       />
       <InputField
-        id="location"
-        type="text"
+        id='location'
+        type='text'
         value={tempData.location}
         onChange={handleChange}
-        placeholder="Warehouse Location"
-        className="text-gray-400"
+        placeholder='Warehouse Location'
+        className='text-gray-400'
       />
-      <div className="flex justify-center gap-4">
-        <Button type="button" onClick={handleSaveChanges}>
+      <div className='flex justify-center gap-4'>
+        <Button type='button' onClick={handleSaveChanges}>
           Save Changes
         </Button>
       </div>

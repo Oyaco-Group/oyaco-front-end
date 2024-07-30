@@ -36,6 +36,7 @@ export const editWarehouse = async ({ id, name, location }) => {
 export const deleteWarehouse = async (id) => {
   try {
     const response = await instance.delete(`/warehouses/delete/${id}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error deleting warehouses:", error);
