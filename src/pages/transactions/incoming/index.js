@@ -74,7 +74,9 @@ const TransactionIncomingPage = () => {
       await createTransaction(formData);
       setIsModalOpen(false);
       fetchIncomingTransaction(warehouse, page);
+      toast.success("Transaction created successfully!");
     } catch (err) {
+      toast.error(err.response.data.message)
       console.error(err);
     }
   };
