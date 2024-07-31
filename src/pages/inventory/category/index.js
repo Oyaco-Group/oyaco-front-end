@@ -13,6 +13,7 @@ import {
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import PopupConfirmation from "@/components/style-components/popupConfirmation";
 
 const CategoryPage = () => {
   const columns = [
@@ -29,6 +30,8 @@ const CategoryPage = () => {
   const [modalEditCategory, setModalEditCategory] = useState(null);
   const [searchCategory, setSearchCategory] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -83,16 +86,25 @@ const CategoryPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (category) => {
+  const handleDelete = async () => {
     try {
-      await deleteCategory(parseInt(category.id, 10));
+      await deleteCategory(parseInt(categoryToDelete.id, 10));
       fetchData();
-      toast.success("Successfully category deleted");
+      toast.success("Category deleted successfully");
     } catch (error) {
       console.error("Error deleting category:", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error deleting category");
+    } finally {
+      setIsConfirmationOpen(false);
+      setCategoryToDelete(null);
     }
   };
+
+  const openDeleteConfirmation = (category) => {
+    setCategoryToDelete(category);
+    setIsConfirmationOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setModalEditCategory(null);
@@ -135,11 +147,18 @@ const CategoryPage = () => {
               columns={columns}
               data={filteredData}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={openDeleteConfirmation}
             />
           )}
         </div>
       </div>
+      {isConfirmationOpen && (
+        <PopupConfirmation
+          message='Are you sure you want to delete this category?'
+          onConfirm={handleDelete}
+          onCancel={() => setIsConfirmationOpen(false)}
+        />
+      )}
       <EditCategoryModal
         isOpen={isModalOpen}
         onClose={closeModal}

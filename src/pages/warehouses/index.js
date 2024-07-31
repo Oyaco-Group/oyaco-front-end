@@ -13,6 +13,7 @@ import {
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import PopupConfirmation from "@/components/style-components/popupConfirmation"; // Add this import
 
 const TransactionIncomingPage = () => {
   const columns = [
@@ -30,6 +31,8 @@ const TransactionIncomingPage = () => {
   const [modalEditWarehouse, setModalEditWarehouse] = useState(null);
   const [searchWarehouse, setSearchWarehouse] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [warehouseToDelete, setWarehouseToDelete] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -88,15 +91,23 @@ const TransactionIncomingPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (warehouse) => {
+  const handleDelete = async () => {
     try {
-      await deleteWarehouse(parseInt(warehouse.id, 10));
+      await deleteWarehouse(parseInt(warehouseToDelete.id, 10));
       fetchData();
-      toast.success("Successfully warehouse deleted");
+      toast.success("Warehouse deleted successfully");
     } catch (error) {
       console.error("Error deleting warehouse:", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error deleting warehouse");
+    } finally {
+      setIsConfirmationOpen(false);
+      setWarehouseToDelete(null);
     }
+  };
+
+  const openDeleteConfirmation = (warehouse) => {
+    setWarehouseToDelete(warehouse);
+    setIsConfirmationOpen(true);
   };
 
   const closeModal = () => {
@@ -111,16 +122,18 @@ const TransactionIncomingPage = () => {
   const closeAddModal = () => {
     setIsAddModalOpen(false);
   };
+
   const handleSaveChanges = async (id, data) => {
     try {
       await editWarehouse({ id, ...data });
       fetchData();
-      toast.success("Successfully warehouse edited");
+      toast.success("Warehouse edited successfully");
     } catch (error) {
       console.error("Error saving warehouse data:", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error saving data");
     }
   };
+
   return (
     <div className='p-4 sm:ml-64'>
       <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
@@ -150,11 +163,18 @@ const TransactionIncomingPage = () => {
               columns={columns}
               data={filteredData}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={openDeleteConfirmation} // Use openDeleteConfirmation
             />
           )}
         </div>
       </div>
+      {isConfirmationOpen && (
+        <PopupConfirmation
+          message='Are you sure you want to delete this warehouse?'
+          onConfirm={handleDelete}
+          onCancel={() => setIsConfirmationOpen(false)}
+        />
+      )}
       <EditWarehouseModal
         isOpen={isModalOpen}
         onClose={closeModal}
