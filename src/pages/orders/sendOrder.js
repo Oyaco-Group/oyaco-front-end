@@ -7,7 +7,7 @@ import Button from "@/components/style-components/button";
 
 
 
-const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) => {
+const SendOrder = ({isOpen, onClose,data, sendOrderHandler, order_status}) => {
     const [orderStatus, setOrderStatus] = useState(order_status|| ' ');
     const userName = {...data.user};
     const product = data.order_item;
@@ -85,9 +85,13 @@ const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) =
                         }
                         {!product && (<div>AAA</div>)}
                     </div>
+                    <div className="p-2"> 
+                        <h1 className="p-5">{`Are You Sure to Confirm Order with id ${data.id}?`}</h1>
+                        <Button className="bg-blue-400 hover:bg-blue-500" onClick={() => {sendOrderHandler(data)}}>Confirm Send</Button>
+                    </div>
                 </div>
             </Modal>
     )
 }
 
-export default DetailOrder;
+export default SendOrder;
