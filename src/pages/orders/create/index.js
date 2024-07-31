@@ -22,76 +22,71 @@ const OrderCreatePage = () => {
     const[buyerType, setBuyerType] = useState();
     const[minValueProduct, setMinValueProduct] = useState(1);
 
-    const[isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    const [arrayProduct, setArrayProduct] = useState([]);
+  const [arrayProduct, setArrayProduct] = useState([]);
 
-    const[data,setData] = useState({})
+  const [data, setData] = useState({});
 
-    const optionPayment = [
-        {label : 'Cash',},
-        {label : 'Credit'}
-    ]
-    const optionBuyer = [
-        {label : 'Online',},
-        {label : 'Offline'},
-        {label : 'B2B'}
-    ]
+  const optionPayment = [{ label: "Cash" }, { label: "Credit" }];
+  const optionBuyer = [
+    { label: "Online" },
+    { label: "Offline" },
+    { label: "B2B" },
+  ];
 
+  const fetchDataUser = async (page = 1, limit = 10) => {
+    try {
+      const data = await getAllUser(page, limit);
 
-    const fetchDataUser = async(page=1,limit=10) => {
-        try {
-            const data = await getAllUser(page,limit);
-       
-            let user = [];
-            for(const i in data) {
-                user[i] = {
-                    id : data[i].id,
-                    label : data[i].email
-                }
-            }
-            setOptionEmail(user);
-        } catch (err) {
-            console.log(err);
-            toast.error('Failed to fetch User Email');
-        }
+      let user = [];
+      for (const i in data) {
+        user[i] = {
+          id: data[i].id,
+          label: data[i].email,
+        };
+      }
+      setOptionEmail(user);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to fetch User Email");
     }
-        
+  };
 
-    const fetchProduct = async(page=1,limit=20) => {
-        try {
-            const data = await getAllProduct(page,limit);
-    
-            let product = [];
-            for(const i in data) {
-                product[i] = {
-                    id : data[i].id,
-                    label : data[i].name
-                }
-            }
-            setOptionProduct(product);
-            
-        } catch (err) {
-            console.log(err);
-            toast.error('Failed to fetch Product List');
-        }
+  const fetchProduct = async (page = 1, limit = 20) => {
+    try {
+      const data = await getAllProduct(page, limit);
+
+      let product = [];
+      for (const i in data) {
+        product[i] = {
+          id: data[i].id,
+          label: data[i].name,
+        };
+      }
+      setOptionProduct(product);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to fetch Product List");
     }
+  };
 
-    const fetchInventory = async(index) => {
-        const master_product_id = +document.getElementById(`productId${index}`).value;
-        const data = await getInventoryByProductId(master_product_id);
+  const fetchInventory = async (index) => {
+    const master_product_id = +document.getElementById(`productId${index}`)
+      .value;
+    const data = await getInventoryByProductId(master_product_id);
 
-        let item = [];
-        for(const i in data) {
-            item[i] = {
-                id : data[i].id,
-                label : `Warehouse ${data[i].warehouse_id}, (${data[i].quantity})`
-            }
-        }
-        const newArray = [...inventory];
-        newArray[index] = item;
-        setInventory(newArray);
+    let item = [];
+    for (const i in data) {
+      item[i] = {
+        id: data[i].id,
+        label: `Warehouse ${data[i].warehouse_id}, (${data[i].quantity})`,
+      };
     }
+    const newArray = [...inventory];
+    newArray[index] = item;
+    setInventory(newArray);
+  };
 
     const onChangeUserId = async(ev) => {
         try {
@@ -110,50 +105,53 @@ const OrderCreatePage = () => {
         setPaymentType(payment);
     }
 
-    const onChangeBuyer = (ev) => {
-        const buyer = ev.target.value;
-        setBuyerType(buyer);
-    }
+  const onChangeBuyer = (ev) => {
+    const buyer = ev.target.value;
+    setBuyerType(buyer);
+  };
 
-    const onChangeNumberItem = (ev) => {
-        const numberItem = ev.target.value;
-        const notNullLength = arrayShow.filter(item => item !== null).length;
-        setMinValueProduct(notNullLength);
+  const onChangeNumberItem = (ev) => {
+    const numberItem = ev.target.value;
+    const notNullLength = arrayShow.filter((item) => item !== null).length;
+    setMinValueProduct(notNullLength);
 
-        if(notNullLength <= numberItem) {
-            const array = Array(+numberItem).fill(null);
-            const existArray = [...arrayShow];
-            for(const i in array) {
-                if(i < existArray.length) {
-                    array[i] = existArray[i]
-                }
-            }
-            setArrayShow(array);
+    if (notNullLength <= numberItem) {
+      const array = Array(+numberItem).fill(null);
+      const existArray = [...arrayShow];
+      for (const i in array) {
+        if (i < existArray.length) {
+          array[i] = existArray[i];
         }
+      }
+      setArrayShow(array);
     }
+  };
 
-    const isDisableSetting = (index) => {
-        const arrayItem = [...arrayShow];
-        arrayItem[index] = true;
-        setArrayShow(arrayItem)
-    }
+  const isDisableSetting = (index) => {
+    const arrayItem = [...arrayShow];
+    arrayItem[index] = true;
+    setArrayShow(arrayItem);
+  };
 
-    const isUnableSetting = (index) => {
-        const arrayItem = [...arrayShow];
-        arrayItem[index] = false;
-        setArrayShow(arrayItem);
-    }
-    
-    const arrangeArrayProduct = (index) => {
-        const master_product_id = +document.getElementById(`productId${index}`).value;
-        const quantity = +document.getElementById(`quantity${index}`).value;
-        const inventory_id = +document.getElementById(`inventoryId${index}`).value;
-        const newArray= [...arrayProduct];
-        newArray[index] = {
-            master_product_id, quantity, inventory_id
-        }
-        setArrayProduct(newArray);
-    }
+  const isUnableSetting = (index) => {
+    const arrayItem = [...arrayShow];
+    arrayItem[index] = false;
+    setArrayShow(arrayItem);
+  };
+
+  const arrangeArrayProduct = (index) => {
+    const master_product_id = +document.getElementById(`productId${index}`)
+      .value;
+    const quantity = +document.getElementById(`quantity${index}`).value;
+    const inventory_id = +document.getElementById(`inventoryId${index}`).value;
+    const newArray = [...arrayProduct];
+    newArray[index] = {
+      master_product_id,
+      quantity,
+      inventory_id,
+    };
+    setArrayProduct(newArray);
+  };
 
     const arrangeData = () => {
         setData({

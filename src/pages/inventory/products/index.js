@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import { fetchMaster, editProducts, deleteProducts } from "@/fetching/products";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
@@ -11,7 +11,7 @@ import AddProductModal from "@/pages/inventory/products/add";
 const ProductsPage = () => {
   const columns = [
     { field: "no", label: "No" },
-    { field: "image", label: "Image" },
+    { field: "imageMaster", label: "Image" },
     { field: "name", label: "Name" },
     { field: "sku", label: "SKU" },
     { field: "price", label: "Price" },
@@ -54,8 +54,11 @@ const ProductsPage = () => {
         no: index + 1,
         name: masterProduct.name,
         price: masterProduct.price,
+        sku: masterProduct.sku,
         category_name: masterProduct.category.name,
-        image: `http://localhost:8080/api/images/${masterProduct.image}`,
+        imageMaster: masterProduct.image
+          ? `http://localhost:8080/api/images/${masterProduct.image}`
+          : "/no-image.jpg",
       }));
     } else {
       throw new Error("Invalid data format from server");
@@ -99,20 +102,20 @@ const ProductsPage = () => {
     setIsAddModalOpen(false);
   };
   return (
-    <div className='p-4 sm:ml-64'>
-      <div className='mt-14 rounded-lg p-4 dark:border-gray-700'>
-        <h1 className='mt-4 mb-4 text-2xl text-gray-800'>Master Product</h1>
-        <div className='relative overflow-x-auto'>
-          <div className='flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900'>
+    <div className="p-4 sm:ml-64">
+      <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
+        <h1 className="mt-4 mb-4 text-2xl text-gray-800">Master Product</h1>
+        <div className="relative overflow-x-auto">
+          <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div>
               <SearchBar
-                className='w-72'
+                className="w-72"
                 onChange={handleSearchChange}
                 value={searchMaster}
               />
             </div>
             <Button
-              className='bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between'
+              className="bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-0 flex gap-2 items-center justify-between"
               onClick={openAddModal}
             >
               <FaPlus />
@@ -128,12 +131,14 @@ const ProductsPage = () => {
               data={originalData}
               onEdit={handleEdit}
               render={(row, column) => {
-                if (column.field === "image") {
-                  return row.image ? (
+                if (column.field === "imageMaster") {
+                  return row.imageMaster ? (
                     <img
-                      src={row.image}
+                      src={
+                        row.imageMaster ||
+                        "/docs/images/examples/image-1@2x.jpg"
+                      }
                       alt={row.name}
-                      style={{ width: "50px", height: "50px" }}
                     />
                   ) : (
                     "No Image"

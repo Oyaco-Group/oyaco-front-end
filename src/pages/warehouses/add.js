@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Modal from "@/components/style-components/modal";
-import InputField from "@/components/style-components/form/input-field";
+import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { createWarehouse } from "@/fetching/warehouses";
+import { toast } from "react-toastify";
 
 const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -25,35 +26,36 @@ const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
         location: tempData.location,
       });
       console.log("Warehouse created:", tempData);
-      onClose();
       fetchData();
+      toast.success("Successfully warehouse created");
     } catch (error) {
       console.error("Error creating warehouse:", error);
+      toast.error(error.response.data.message);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Add Warehouse'>
+    <Modal isOpen={isOpen} onClose={onClose} title="Add Warehouse">
       <InputField
-        id='name'
-        type='text'
+        id="name"
+        type="text"
         value={tempData.name}
         onChange={handleChange}
-        placeholder='Warehouse Name'
-        className='text-gray-400'
+        placeholder="Warehouse Name"
+        className="text-gray-400"
       />
       <InputField
-        id='location'
-        type='text'
+        id="location"
+        type="text"
         value={tempData.location}
         onChange={handleChange}
-        placeholder='Warehouse Location'
-        className='text-gray-400'
+        placeholder="Warehouse Location"
+        className="text-gray-400"
       />
-      <div className='flex justify-center gap-4'>
+      <div className="flex justify-center gap-4">
         <Button
-          className='bg-green-400 hover:bg-green-500'
-          type='button'
+          className="bg-green-400 hover:bg-green-500"
+          type="button"
           onClick={handleSaveChanges}
         >
           Add Warehouse

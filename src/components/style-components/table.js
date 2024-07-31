@@ -1,18 +1,19 @@
 import React from "react";
 import Button from "@/components/style-components/button";
+import "flowbite/dist/flowbite.css";
 
 const Table = ({ columns, data = [], onEdit, onDelete }) => {
   return (
     <div>
-      <div className="overflow-x-auto overflow-y-auto rounded-lg border shadow-md">
-        <table className="w-full min-w-max text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-          <thead className="bg-blue-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <div className='overflow-x-auto overflow-y-auto rounded-lg border shadow-md'>
+        <table className='w-full min-w-max text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400'>
+          <thead className='bg-blue-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <tr>
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  scope="col"
-                  className="whitespace-nowrap px-6 py-3"
+                  scope='col'
+                  className='whitespace-nowrap px-6 py-3'
                 >
                   {column.label}
                 </th>
@@ -24,32 +25,68 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
               data.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+                  className='border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600'
                 >
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="whitespace-nowrap px-6 py-4">
+                    <td
+                      key={colIndex}
+                      className='whitespace-nowrap px-6 py-4 relative'
+                    >
                       {column.field === "no" ? (
-                        <span>{rowIndex + 1}</span> // Display sequential number
+                        <span>{rowIndex + 1}</span>
                       ) : column.field === "Edit" ? (
                         <Button
-                          className="bg-blue-400 hover:bg-blue-500"
+                          className='bg-blue-400 hover:bg-blue-500'
                           onClick={() => onEdit(row)}
-                          size="sm"
+                          size='sm'
                         >
                           Edit
                         </Button>
                       ) : column.field === "Delete" ? (
                         <Button
-                          className="bg-blue-400 hover:bg-blue-500"
+                          className='bg-red-600 hover:bg-red-700'
                           onClick={() => onDelete(row)}
-                          size="sm"
+                          size='sm'
                         >
                           Delete
                         </Button>
+                      ) : column.field === "imageMaster" ? (
+                        <img
+                          src={row[column.field]}
+                          style={{
+                            height: "120px",
+                            width: "120px",
+                            objectFit: "cover",
+                            borderRadius: "10px",
+                          }}
+                        />
                       ) : column.field === "image" ? (
-                          <img src={row[column.field]} style={{width:'10rem'}}/>
-                      )
-                      : column.render ? (
+                        <img
+                          src={row[column.field]}
+                          style={{ width: "10rem" }}
+                        />
+                      ) : column.field === "address" ? (
+                        <div>
+                          <div
+                            data-tooltip-target={`tooltip-${rowIndex}`}
+                            className='truncate'
+                          >
+                            {row[column.field]}
+                          </div>
+
+                          <div
+                            id={`tooltip-${rowIndex}`}
+                            role='tooltip'
+                            className='absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700'
+                          >
+                            {row[column.field]}
+                            <div
+                              className='tooltip-arrow'
+                              data-popper-arrow
+                            ></div>
+                          </div>
+                        </div>
+                      ) : column.render ? (
                         column.render(row[column.field], row)
                       ) : (
                         row[column.field]
@@ -62,7 +99,7 @@ const Table = ({ columns, data = [], onEdit, onDelete }) => {
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-6 py-6 text-center text-gray-400"
+                  className='px-6 py-6 text-center text-gray-400'
                 >
                   No data available
                 </td>

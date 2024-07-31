@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Modal from "@/components/style-components/modal.js";
-import InputField from "@/components/style-components/form/input-field";
-import TextareaField from "@/components/style-components/form/textarea-field";
+import InputField from "@/components/style-components/form/inputField";
+import TextareaField from "@/components/style-components/form/textareaField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
-import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user"; // Import the new function
+import { fetchUpdateUser, fetchDeleteUser } from "@/fetching/user";
 import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import PopupConfirmation from "@/components/style-components/popupConfirmation";
 
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
@@ -19,12 +20,10 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   useEffect(() => {
     if (modalEditUser) {
-      // console.log("Received modalEditUser:", modalEditUser);
-      // console.log("Setting User ID:", modalEditUser.id);
-
       setTempData({
         id: modalEditUser.id || "",
         image: modalEditUser.image_url || "",
@@ -50,8 +49,8 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      await fetchDeleteUser(tempData.id);
-      toast.success("User deleted successfully");
+      const response = await fetchDeleteUser(tempData.id);
+      toast.success(response.message);
       onClose();
       fetchData();
     } catch (error) {
@@ -85,7 +84,6 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     }
 
     try {
-      //console.log("Updating user with data:", tempData);
       await fetchUpdateUser({
         userId: tempData.id,
         name: tempData.name,
@@ -160,17 +158,29 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       <div className="flex justify-center gap-4">
         <Button
           type="button"
-          className="text-red-important flex items-center bg-red-100 hover:bg-red-600"
+          className="flex items-center bg-red-600 hover:bg-red-700"
           size="md"
-          onClick={handleDelete}
+          onClick={() => setIsConfirmationOpen(true)}
         >
           <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
           Delete
         </Button>
-        <Button type="button" onClick={handleSaveChanges}>
+        <Button
+          className="bg-green-500 hover:bg-green-600"
+          type="button"
+          onClick={handleSaveChanges}
+        >
           Save Changes
         </Button>
       </div>
+
+      {isConfirmationOpen && (
+        <PopupConfirmation
+          message="Are you sure you want to delete this user?"
+          onConfirm={handleDelete}
+          onCancel={() => setIsConfirmationOpen(false)}
+        />
+      )}
     </Modal>
   );
 };

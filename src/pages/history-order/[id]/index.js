@@ -7,13 +7,16 @@ import {
   fetchUpdateOrderStatus,
 } from "@/fetching/orderHistory";
 import OrderCard from "@/components/style-components/orderCard";
+import Pagination from "@/components/style-components/pagination";
 import Link from "next/link";
 import ComplaintModal from "@/components/style-components/complaintModal";
 import ConfirmationModal from "@/components/style-components/updateStatusModal";
+import { useAuth } from "@/context/authContext";
 
 const HistoryOrderPage = ({ initialOrders }) => {
   const router = useRouter();
-  const { id } = router.query;
+  const { user } = useAuth();
+  const id = user ? user.id : null;
 
   const [orders, setOrders] = useState(initialOrders || []);
   const [loading, setLoading] = useState(true);
@@ -23,13 +26,18 @@ const HistoryOrderPage = ({ initialOrders }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         setLoading(true);
         try {
-          const data = await fetchOrderHistoryById(id);
-          setOrders(data);
+          const data = await fetchOrderHistoryById(id, currentPage, pageSize);
+          setOrders(data.data);
+          setTotalPages(data.metadata.totalPages);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching order history:", error);
@@ -37,25 +45,22 @@ const HistoryOrderPage = ({ initialOrders }) => {
         }
       }
     };
-    fetchData();
-  }, [id]);
+    if (user) {
+      fetchData();
+    }
+  }, [id, currentPage, pageSize]);
 
   const handleOrderDetail = (orderId) => {
-    console.log("Order Detail clicked for order ID:", orderId);
     router.push(`/order-item/${orderId}`);
     setClickedOrderId(orderId);
   };
 
   const handleComplaint = (orderId) => {
-    console.log("Complaint clicked for order ID:", orderId);
     setSelectedOrderId(orderId);
     setShowComplaintModal(true);
   };
 
   const handleUpdateStatus = (orderId, status) => {
-    console.log(
-      `Update Status Pesanan clicked for order ID: ${orderId}, with status: ${status}`
-    );
     setSelectedOrderId(orderId);
     setOrderStatus(status);
     setShowConfirmationModal(true);
@@ -79,7 +84,6 @@ const HistoryOrderPage = ({ initialOrders }) => {
         selectedOrderId,
         "delivered"
       );
-      console.log("Order status updated successfully!", response.data);
 
       setLoading(true);
       const updatedOrders = await fetchOrderHistoryById(id);
@@ -89,6 +93,12 @@ const HistoryOrderPage = ({ initialOrders }) => {
       console.error("Error updating order status:", error);
     } finally {
       setShowConfirmationModal(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -127,6 +137,13 @@ const HistoryOrderPage = ({ initialOrders }) => {
                 }
               />
             ))}
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

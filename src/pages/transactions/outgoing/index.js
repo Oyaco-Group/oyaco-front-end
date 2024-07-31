@@ -1,7 +1,7 @@
 import Table from "@/components/style-components/table";
 import { useState, useEffect } from "react";
 import Dropdown from "@/components/style-components/dropdown";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
@@ -13,6 +13,8 @@ import {
   getAllTransactions,
   updateAndCheck,
 } from "@/fetching/outgoingTransaction";
+import { FaPlus } from "react-icons/fa6";
+import Pagination from "@/components/style-components/pagination";
 
 const TransactionOutgoingPage = () => {
   const columns = [
@@ -76,7 +78,9 @@ const TransactionOutgoingPage = () => {
       await createTransaction(formData);
       setIsModalOpen(false);
       fetchOutgoingTransaction(warehouse, page);
+      toast.success("Transaction created successfully!");
     } catch (err) {
+      toast.error(err.response.data.message)
       console.error(err);
     }
   };
@@ -84,10 +88,12 @@ const TransactionOutgoingPage = () => {
   const handleUpdateExpirationStatus = async () => {
     try {
       await updateAndCheck();
-      toast.success("Check & Update success! Removed expired products from inventory")
+      toast.success(
+        "Check & Update success! Removed expired products from inventory"
+      );
       fetchOutgoingTransaction(warehouse, page);
     } catch (err) {
-      toast.error("There is no expired product")
+      toast.error("There is no expired product");
       console.error(err);
     }
   };
@@ -108,6 +114,12 @@ const TransactionOutgoingPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
     }
+  };
+
+  const handleUpdateexpired = () => {
+    // if () {
+    //   toast.error(nsdwuadkja)
+    // }
   };
 
   return (

@@ -1,7 +1,7 @@
 import Table from "@/components/style-components/table";
 import { useState, useEffect } from "react";
 import Dropdown from "@/components/style-components/dropdown";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
@@ -74,7 +74,9 @@ const TransactionIncomingPage = () => {
       await createTransaction(formData);
       setIsModalOpen(false);
       fetchIncomingTransaction(warehouse, page);
+      toast.success("Transaction created successfully!");
     } catch (err) {
+      toast.error(err.response.data.message)
       console.error(err);
     }
   };
@@ -91,7 +93,7 @@ const TransactionIncomingPage = () => {
       console.error(err);
     }
   };
-  
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -134,7 +136,6 @@ const TransactionIncomingPage = () => {
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center"></div>
           <Table columns={columns} data={transaction} />
           <div className="flex justify-between mt-4">
             <Button onClick={handlePreviousPage} disabled={page === 1}>

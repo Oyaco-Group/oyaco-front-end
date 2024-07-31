@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import Dropdown from "@/components/style-components/dropdown";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import { getWarehouses, getStockByWarehouse } from "@/fetching/inventory";
@@ -52,8 +52,8 @@ const InventoryBalancePage = () => {
       const data = await getStockByWarehouse(warehouseId, page);
       const formattedData = data.map((item, index) => ({
         ...item,
-        master_product_name: item.master_product.name,
-        master_product_price: item.master_product.price,
+        master_product_name: item.master_product?.name || "Unknown",
+        master_product_price: item.master_product?.price || 0,
       }));
       setInventory(formattedData);
     } catch (err) {
@@ -64,17 +64,6 @@ const InventoryBalancePage = () => {
     }
   };
 
-  const sortInventory = () => {
-    const sortedInventory = [...inventory].sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.quantity - b.quantity;
-      } else {
-        return b.quantity - a.quantity;
-      }
-    });
-    setInventory(sortedInventory);
-  };
-  
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -85,9 +74,20 @@ const InventoryBalancePage = () => {
     }
   }, [selectedWarehouse, page]);
 
+  const sortInventory = (order) => {
+    const sortedInventory = [...inventory].sort((a, b) => {
+      if (order === "asc") {
+        return a.quantity - b.quantity;
+      } else {
+        return b.quantity - a.quantity;
+      }
+    });
+    setInventory(sortedInventory);
+  };
+
   useEffect(() => {
-    sortInventory();
-  }, [sortOrder, inventory]);
+    sortInventory(sortOrder);
+  }, [sortOrder]);
 
   const handleNextPage = () => {
     setPage((prevPage) => prevPage + 1);
@@ -116,26 +116,35 @@ const InventoryBalancePage = () => {
             </div>
             <div className="flex items-center gap-4">
               <SearchBar className="w-50" />
-              <Button onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")} className="text-sm py-1 px-2 w-60">
-                Sorted by {sortOrder === "asc" ? "Lowest" : "Highest"} Quantity 
+              <Button
+                onClick={() =>
+                  setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                }
+                className="text-sm py-1 px-2 w-60"
+              >
+                Sorted by {sortOrder === "asc" ? "Lowest" : "Highest"} Quantity
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-            {loading ? (
-              <SpinnerLoad />
-            ) : error ? (
-              <p>{error}</p>
-            ) : (
-              <Table columns={columns} data={inventory} />
-            )}
-          </div>
+          {loading ? (
+            <SpinnerLoad />
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <Table className="w-full" columns={columns} data={inventory} />
+          )}
           <div className="flex justify-between mt-4">
-            <Button onClick={handlePreviousPage} disabled={page === 1} className="w-32">
+            <Button
+              onClick={handlePreviousPage}
+              disabled={page === 1}
+              className="w-32"
+            >
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button onClick={handleNextPage} className="w-32">Next</Button>
+            <Button onClick={handleNextPage} className="w-32">
+              Next
+            </Button>
           </div>
         </div>
       </div>
