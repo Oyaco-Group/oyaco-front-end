@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import EditWarehouseModal from "@/pages/warehouses/edit";
 import AddWarehouseModal from "@/pages/warehouses/add";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/fetching/warehouses";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const TransactionIncomingPage = () => {
   const columns = [
@@ -38,6 +39,7 @@ const TransactionIncomingPage = () => {
     try {
       setIsLoading(true);
       const warehouseData = await fetchWarehouse();
+      console.log(warehouseData);
       const processedData = processWarehouseData(warehouseData);
       setOriginalData(processedData);
       setFilteredData(processedData);
@@ -90,8 +92,10 @@ const TransactionIncomingPage = () => {
     try {
       await deleteWarehouse(parseInt(warehouse.id, 10));
       fetchData();
+      toast.success("Successfully warehouse deleted");
     } catch (error) {
       console.error("Error deleting warehouse:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -111,9 +115,10 @@ const TransactionIncomingPage = () => {
     try {
       await editWarehouse({ id, ...data });
       fetchData();
-      onClose();
+      toast.success("Successfully warehouse edited");
     } catch (error) {
       console.error("Error saving warehouse data:", error);
+      toast.error(error.response.data.message);
     }
   };
   return (

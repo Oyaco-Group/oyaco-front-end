@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import { fetchUsers, fetchDeleteUser } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";

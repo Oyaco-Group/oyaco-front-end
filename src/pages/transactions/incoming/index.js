@@ -1,7 +1,7 @@
 import Table from "@/components/style-components/table";
 import { useState, useEffect } from "react";
 import Dropdown from "@/components/style-components/dropdown";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
@@ -10,6 +10,8 @@ import {
   getAllIncomingTransactions,
   getWarehouses,
   createTransaction,
+  getAllIncoming,
+  updateAndCheck
 } from "@/fetching/incomingTransaction";
 
 const TransactionIncomingPage = () => {
@@ -31,7 +33,7 @@ const TransactionIncomingPage = () => {
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
   const [warehouse, setWarehouse] = useState({
-    id: 1,
+    id: null,
     label: "Default Warehouse",
   });
   const [warehouses, setWarehouses] = useState([]);
@@ -55,10 +57,15 @@ const TransactionIncomingPage = () => {
 
   const fetchIncomingTransaction = async (warehouse, page) => {
     try {
-      const data = await getAllIncomingTransactions(warehouse.id, page);
+      let data;
+      if (warehouse.id) {
+        data = await getAllIncomingTransactions(warehouse.id, page);
+      } else {
+        data = await getAllIncoming(page);
+      }
       const transformedData = data.data.map((transaction) => ({
         ...transaction,
-        iscondition_good: transaction.iscondition_good ? "Good" : "Bad",
+        iscondition_good: transaction.iscondition_good ? "Good" : "Damaged",
         expiration_status: transaction.expiration_status
           ? "Expired"
           : "Not Expired",
@@ -74,7 +81,9 @@ const TransactionIncomingPage = () => {
       await createTransaction(formData);
       setIsModalOpen(false);
       fetchIncomingTransaction(warehouse, page);
+      toast.success("Transaction created successfully!");
     } catch (err) {
+      toast.error(err.response.data.message)
       console.error(err);
     }
   };

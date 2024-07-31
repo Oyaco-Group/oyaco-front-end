@@ -11,10 +11,12 @@ import Pagination from "@/components/style-components/pagination";
 import Link from "next/link";
 import ComplaintModal from "@/components/style-components/complaintModal";
 import ConfirmationModal from "@/components/style-components/updateStatusModal";
+import { useAuth } from "@/context/authContext";
 
 const HistoryOrderPage = ({ initialOrders }) => {
   const router = useRouter();
-  const { id } = router.query;
+  const { user } = useAuth();
+  const id = user ? user.id : null;
 
   const [orders, setOrders] = useState(initialOrders || []);
   const [loading, setLoading] = useState(true);
@@ -43,25 +45,22 @@ const HistoryOrderPage = ({ initialOrders }) => {
         }
       }
     };
-    fetchData();
+    if (user) {
+      fetchData();
+    }
   }, [id, currentPage, pageSize]);
 
   const handleOrderDetail = (orderId) => {
-    console.log("Order Detail clicked for order ID:", orderId);
     router.push(`/order-item/${orderId}`);
     setClickedOrderId(orderId);
   };
 
   const handleComplaint = (orderId) => {
-    console.log("Complaint clicked for order ID:", orderId);
     setSelectedOrderId(orderId);
     setShowComplaintModal(true);
   };
 
   const handleUpdateStatus = (orderId, status) => {
-    console.log(
-      `Update Status Pesanan clicked for order ID: ${orderId}, with status: ${status}`
-    );
     setSelectedOrderId(orderId);
     setOrderStatus(status);
     setShowConfirmationModal(true);
@@ -85,7 +84,6 @@ const HistoryOrderPage = ({ initialOrders }) => {
         selectedOrderId,
         "delivered"
       );
-      console.log("Order status updated successfully!", response.data);
 
       setLoading(true);
       const updatedOrders = await fetchOrderHistoryById(id);

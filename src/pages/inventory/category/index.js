@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import EditCategoryModal from "@/pages/inventory/category/edit";
 import AddCategoryModal from "@/pages/inventory/category/add";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/fetching/category";
 import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const CategoryPage = () => {
   const columns = [
@@ -86,8 +87,10 @@ const CategoryPage = () => {
     try {
       await deleteCategory(parseInt(category.id, 10));
       fetchData();
+      toast.success("Successfully category deleted");
     } catch (error) {
       console.error("Error deleting category:", error);
+      toast.error(error.response.data.message);
     }
   };
   const closeModal = () => {

@@ -49,7 +49,16 @@ const getAllUser = async(page,limit) => {
         url : `user?page=${page}&limit=${limit}`
     })
 
-    return response.data.data;
+    return response.data.data.users;
+}
+
+const getUserByEmail = async(email) => {
+    const response = await instance({
+        method : 'GET',
+        url : `user/email/${email}`
+    })
+
+    return response.data;
 }
 
 const getAllProduct = async(page,limit) => {
@@ -58,6 +67,14 @@ const getAllProduct = async(page,limit) => {
         url : `masterProduct/?page=${page}&limit=${limit}`
     })
 
+    return response.data.data;
+}
+
+const getInventoryByProductId = async(id) => {
+    const response = await instance({
+        method : 'GET',
+        url : `/inventory/product/${id}`
+    })
     return response.data.data;
 }
 
@@ -89,9 +106,11 @@ export {
     getAllOrder,
     getOrderById,
     getOrderByUserId,
+    getInventoryByProductId,
     updateOrderStatus,
     updateOrderItem,
     getAllUser,
+    getUserByEmail,
     getAllProduct,
     createOrder,
     sendOrder

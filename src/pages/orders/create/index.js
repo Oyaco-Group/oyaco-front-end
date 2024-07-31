@@ -1,19 +1,15 @@
-import TableOrder from "@/components/style-components/TableOrder";
-import Dropdown from "@/components/style-components/dropdown";
-import CheckboxField from "@/components/style-components/form/checkbox-field";
-import InputField from "@/components/style-components/form/input-field";
-import SelectField from "@/components/style-components/form/select-field";
-import TextareaField from "@/components/style-components/form/textarea-field";
-import { createOrder, getAllProduct, getAllUser } from "@/fetching/order";
+import InputField from "@/components/style-components/form/inputField";
+import SelectField from "@/components/style-components/form/selectField";
+import { createOrder, getAllProduct, getAllUser, getInventoryByProductId, getUserByEmail } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SelectFieldOrder from "./selectFieldOrderEmail";
 import Button from "@/components/style-components/button";
-import { getInventoryByProductId } from "@/fetching/inventory";
 import Modal from "@/components/style-components/modal";
 import { toast } from "react-toastify";
 
 const OrderCreatePage = () => {
     const[optionEmail,setOptionEmail] = useState([]);
+    const[oneUser, setOneUser] = useState([]);
     const[optionProduct, setOptionProduct] = useState([]);
     const[inventory, setInventory] = useState([]);
     const[arrayShow,setArrayShow] = useState([]);
@@ -22,81 +18,82 @@ const OrderCreatePage = () => {
     const[buyerType, setBuyerType] = useState();
     const[minValueProduct, setMinValueProduct] = useState(1);
 
-    const[isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    const [arrayProduct, setArrayProduct] = useState([]);
+  const [arrayProduct, setArrayProduct] = useState([]);
 
-    const[data,setData] = useState({})
+  const [data, setData] = useState({});
 
-    const optionPayment = [
-        {label : 'Cash',},
-        {label : 'Credit'}
-    ]
-    const optionBuyer = [
-        {label : 'Online',},
-        {label : 'Offline'},
-        {label : 'B2B'}
-    ]
+  const optionPayment = [{ label: "Cash" }, { label: "Credit" }];
+  const optionBuyer = [
+    { label: "Online" },
+    { label: "Offline" },
+    { label: "B2B" },
+  ];
 
+  const fetchDataUser = async (page = 1, limit = 10) => {
+    try {
+      const data = await getAllUser(page, limit);
 
-    const fetchDataUser = async(page=1,limit=10) => {
+      let user = [];
+      for (const i in data) {
+        user[i] = {
+          id: data[i].id,
+          label: data[i].email,
+        };
+      }
+      setOptionEmail(user);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to fetch User Email");
+    }
+  };
+
+  const fetchProduct = async (page = 1, limit = 20) => {
+    try {
+      const data = await getAllProduct(page, limit);
+
+      let product = [];
+      for (const i in data) {
+        product[i] = {
+          id: data[i].id,
+          label: data[i].name,
+        };
+      }
+      setOptionProduct(product);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to fetch Product List");
+    }
+  };
+
+  const fetchInventory = async (index) => {
+    const master_product_id = +document.getElementById(`productId${index}`)
+      .value;
+    const data = await getInventoryByProductId(master_product_id);
+
+    let item = [];
+    for (const i in data) {
+      item[i] = {
+        id: data[i].id,
+        label: `Warehouse ${data[i].warehouse_id}, (${data[i].quantity})`,
+      };
+    }
+    const newArray = [...inventory];
+    newArray[index] = item;
+    setInventory(newArray);
+  };
+
+    const onChangeUserId = async(ev) => {
         try {
-            const data = await getAllUser(page,limit);
-       
-            let user = [];
-            for(const i in data) {
-                user[i] = {
-                    id : data[i].id,
-                    label : data[i].email
-                }
-            }
-            setOptionEmail(user);
-        } catch (err) {
+            const email = document.getElementById('email').value;
+            const user = await getUserByEmail(email);
+            setUserId(user.data.id);
+            toast.success(user.message);
+        } catch(err) {
             console.log(err);
-            toast.error('Failed to fetch User Email');
+            toast.error(err.response.data.message);
         }
-    }
-        
-
-    const fetchProduct = async(page=1,limit=20) => {
-        try {
-            const data = await getAllProduct(page,limit);
-    
-            let product = [];
-            for(const i in data) {
-                product[i] = {
-                    id : data[i].id,
-                    label : data[i].name
-                }
-            }
-            setOptionProduct(product);
-            
-        } catch (err) {
-            console.log(err);
-            toast.error('Failed to fetch Product List');
-        }
-    }
-
-    const fetchInventory = async(index) => {
-        const master_product_id = +document.getElementById(`productId${index}`).value;
-        const data = await getInventoryByProductId(master_product_id);
-
-        let item = [];
-        for(const i in data) {
-            item[i] = {
-                id : data[i].id,
-                label : `Warehouse ${data[i].warehouse_id}, (${data[i].quantity})`
-            }
-        }
-        const newArray = [...inventory];
-        newArray[index] = item;
-        setInventory(newArray);
-    }
-
-    const onChangeUserId = (ev) => {
-        const id = ev.target.value;
-        setUserId(id);
-
     }
     
     const onChangePayment = (ev) => {
@@ -104,50 +101,53 @@ const OrderCreatePage = () => {
         setPaymentType(payment);
     }
 
-    const onChangeBuyer = (ev) => {
-        const buyer = ev.target.value;
-        setBuyerType(buyer);
-    }
+  const onChangeBuyer = (ev) => {
+    const buyer = ev.target.value;
+    setBuyerType(buyer);
+  };
 
-    const onChangeNumberItem = (ev) => {
-        const numberItem = ev.target.value;
-        const notNullLength = arrayShow.filter(item => item !== null).length;
-        setMinValueProduct(notNullLength);
+  const onChangeNumberItem = (ev) => {
+    const numberItem = ev.target.value;
+    const notNullLength = arrayShow.filter((item) => item !== null).length;
+    setMinValueProduct(notNullLength);
 
-        if(notNullLength <= numberItem) {
-            const array = Array(+numberItem).fill(null);
-            const existArray = [...arrayShow];
-            for(const i in array) {
-                if(i < existArray.length) {
-                    array[i] = existArray[i]
-                }
-            }
-            setArrayShow(array);
+    if (notNullLength <= numberItem) {
+      const array = Array(+numberItem).fill(null);
+      const existArray = [...arrayShow];
+      for (const i in array) {
+        if (i < existArray.length) {
+          array[i] = existArray[i];
         }
+      }
+      setArrayShow(array);
     }
+  };
 
-    const isDisableSetting = (index) => {
-        const arrayItem = [...arrayShow];
-        arrayItem[index] = true;
-        setArrayShow(arrayItem)
-    }
+  const isDisableSetting = (index) => {
+    const arrayItem = [...arrayShow];
+    arrayItem[index] = true;
+    setArrayShow(arrayItem);
+  };
 
-    const isUnableSetting = (index) => {
-        const arrayItem = [...arrayShow];
-        arrayItem[index] = false;
-        setArrayShow(arrayItem);
-    }
-    
-    const arrangeArrayProduct = (index) => {
-        const master_product_id = +document.getElementById(`productId${index}`).value;
-        const quantity = +document.getElementById(`quantity${index}`).value;
-        const inventory_id = +document.getElementById(`inventoryId${index}`).value;
-        const newArray= [...arrayProduct];
-        newArray[index] = {
-            master_product_id, quantity, inventory_id
-        }
-        setArrayProduct(newArray);
-    }
+  const isUnableSetting = (index) => {
+    const arrayItem = [...arrayShow];
+    arrayItem[index] = false;
+    setArrayShow(arrayItem);
+  };
+
+  const arrangeArrayProduct = (index) => {
+    const master_product_id = +document.getElementById(`productId${index}`)
+      .value;
+    const quantity = +document.getElementById(`quantity${index}`).value;
+    const inventory_id = +document.getElementById(`inventoryId${index}`).value;
+    const newArray = [...arrayProduct];
+    newArray[index] = {
+      master_product_id,
+      quantity,
+      inventory_id,
+    };
+    setArrayProduct(newArray);
+  };
 
     const arrangeData = () => {
         setData({
@@ -157,6 +157,7 @@ const OrderCreatePage = () => {
             order_status : 'Confirmed Yet',
             products : arrayProduct
         })
+        console.log(data);
     }
 
     const createOrderItem = async() => {
@@ -184,24 +185,21 @@ const OrderCreatePage = () => {
                 <p className="mb-6 text-sm font-light text-gray-400">
                     Please input order item or product
                 </p>
-                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5">
-                    <form className="w-full min-w-max flex justify-around text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5 text-center">
+                    <div className="w-full min-w-max flex justify-center text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                         <div className="bg-blue-400 p-4 rounded-lg">
-                            <div className="flex justify-between gap-2 mx-5 text-gray-900 text-white font-semibold">
+                            <div className="flex flex-wrap justify-between gap-2 mx-5 text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3">
                                 <label>User Email</label>
-                                <span>:</span>
-                                <SelectFieldOrder options={optionEmail} placeholder={'User Email'} 
-                                    onChange={(ev) => {onChangeUserId(ev)}}/>
+                                <InputField type={'email'} placeholder={'User Email'} id={'email'} />
+                                <Button size="sm" className="bg-red-500 hover:bg-red-600 w-full" onClick={(ev) => {onChangeUserId(ev)}}>Lock User</Button>
                             </div>
-                            <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 text-white font-semibold">
+                            <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3   ">
                                 <label>Payment Type</label>
-                                <span>:</span>
                                 <SelectField options={optionPayment} placeholder={'Payment_Type'} 
                                     onChange={(ev) => {onChangePayment(ev)}}/>
                             </div>
-                            <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 text-white font-semibold">
+                            <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 text-white font-semibold border rounded-sm p-4">
                                 <label>Buyer_Status</label>
-                                <span>:</span>
                                 <SelectField options={optionBuyer} placeholder={'Buyer_Status'}
                                     onChange={(ev) => {onChangeBuyer(ev)}}/>
                             </div>
@@ -270,26 +268,25 @@ const OrderCreatePage = () => {
                             
                         </div>
                         
-                    </form>
-                        <Button 
-                            onClick={() => {
-                                arrangeData();
-                                setIsOpen(true);
-                                // document.getElementById('user_email').value = ''
-                                }}>
-                            Add Order
+                    </div>
+                    <Button className="bg-green-400 hover:bg-green-500 mt-8"
+                        onClick={() => {
+                            arrangeData();
+                            setIsOpen(true);
+                            }}>
+                        Add Order
+                    </Button>
+                    <Modal title={'Confirm Order'} onClose={()=>{setIsOpen(false)}} isOpen={isOpen} >
+                        <p>Are You Sure to Order ?</p>
+                        <Button onClick={() => 
+                            {
+                                setIsOpen(false)
+                                arrangeData()
+                                createOrderItem();
+                            }}>
+                            CheckOut
                         </Button>
-                        <Modal title={'Confirm Order'} onClose={()=>{setIsOpen(false)}} isOpen={isOpen} >
-                            <p>Are You Sure to Order ?</p>
-                            <Button onClick={() => 
-                                {
-                                    setIsOpen(false)
-                                    arrangeData()
-                                    createOrderItem();
-                                }}>
-                                CheckOut
-                            </Button>
-                        </Modal>
+                    </Modal>
                 </div>
             </div>
 

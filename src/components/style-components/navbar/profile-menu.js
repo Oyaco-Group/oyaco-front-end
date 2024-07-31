@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Modal from "@/components/style-components/modal"; // Import komponen Modal
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import InputField from "../form/input-field";
-import TextareaField from "../form/textarea-field";
+import InputField from "../form/inputField";
+import TextareaField from "../form/textareaField";
 import Button from "../button";
 import { fetchUpdateUser } from "@/fetching/user";
 
@@ -55,27 +55,26 @@ const ProfileMenu = ({ onClose }) => {
 
   const handleSaveChanges = async () => {
     if (!tempData.name) {
-      toast.error("Nama diperlukan");
+      toast.error("Name is required");
       return;
     }
     if (!tempData.email) {
-      toast.error("Email diperlukan");
+      toast.error("Email is requiredn");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(tempData.email)) {
-      toast.error("Format email tidak valid");
+      toast.error("Format email is not valid");
       return;
     }
 
     if (!tempData.address) {
-      toast.error("Alamat diperlukan");
+      toast.error("Address is required");
       return;
     }
 
     try {
-      console.log("Memperbarui pengguna dengan data:", tempData);
       await fetchUpdateUser({
         userId: user?.id,
         name: tempData.name,
@@ -83,13 +82,13 @@ const ProfileMenu = ({ onClose }) => {
         password: tempData.password,
         address: tempData.address,
       });
-      toast.success("Pengguna berhasil diperbarui");
+      toast.success("Successfully profile edited");
       handleCloseModal();
-      fetchData();
+      // fetchData();
     } catch (error) {
-      console.error("Terjadi kesalahan saat memperbarui data pengguna:", error);
+      console.error("Error message :", error);
       const errorMessage =
-        error.response?.data?.message || "Gagal memperbarui pengguna";
+        error.response?.data?.message || "Failed to profile edited";
       toast.error(errorMessage);
     }
   };
