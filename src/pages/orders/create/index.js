@@ -4,16 +4,16 @@ import CheckboxField from "@/components/style-components/form/checkbox-field";
 import InputField from "@/components/style-components/form/input-field";
 import SelectField from "@/components/style-components/form/select-field";
 import TextareaField from "@/components/style-components/form/textarea-field";
-import { createOrder, getAllProduct, getAllUser } from "@/fetching/order";
+import { createOrder, getAllProduct, getAllUser, getInventoryByProductId, getUserByEmail } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SelectFieldOrder from "./selectFieldOrderEmail";
 import Button from "@/components/style-components/button";
-import { getInventoryByProductId } from "@/fetching/inventory";
 import Modal from "@/components/style-components/modal";
 import { toast } from "react-toastify";
 
 const OrderCreatePage = () => {
     const[optionEmail,setOptionEmail] = useState([]);
+    const[oneUser, setOneUser] = useState([]);
     const[optionProduct, setOptionProduct] = useState([]);
     const[inventory, setInventory] = useState([]);
     const[arrayShow,setArrayShow] = useState([]);
@@ -93,10 +93,16 @@ const OrderCreatePage = () => {
         setInventory(newArray);
     }
 
-    const onChangeUserId = (ev) => {
-        const id = ev.target.value;
-        setUserId(id);
-
+    const onChangeUserId = async(ev) => {
+        try {
+            const email = document.getElementById('email').value;
+            const user = await getUserByEmail(email);
+            setUserId(user.data.id);
+            toast.success(user.message);
+        } catch(err) {
+            console.log(err);
+            toast.error(err.response.data.message);
+        }
     }
     
     const onChangePayment = (ev) => {
@@ -157,6 +163,7 @@ const OrderCreatePage = () => {
             order_status : 'Confirmed Yet',
             products : arrayProduct
         })
+        console.log(data);
     }
 
     const createOrderItem = async() => {
@@ -184,24 +191,21 @@ const OrderCreatePage = () => {
                 <p className="mb-6 text-sm font-light text-gray-400">
                     Please input order item or product
                 </p>
-                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5">
-                    <form className="w-full min-w-max flex justify-around text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5 text-center">
+                    <div className="w-full min-w-max flex justify-center text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                         <div className="bg-blue-400 p-4 rounded-lg">
-                            <div className="flex justify-between gap-2 mx-5 text-gray-900 text-white font-semibold">
+                            <div className="flex flex-wrap justify-between gap-2 mx-5 text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3">
                                 <label>User Email</label>
-                                <span>:</span>
-                                <SelectFieldOrder options={optionEmail} placeholder={'User Email'} 
-                                    onChange={(ev) => {onChangeUserId(ev)}}/>
+                                <InputField type={'email'} placeholder={'User Email'} id={'email'} />
+                                <Button size="sm" className="bg-red-500 hover:bg-red-600 w-full" onClick={(ev) => {onChangeUserId(ev)}}>Lock User</Button>
                             </div>
-                            <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 text-white font-semibold">
+                            <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3   ">
                                 <label>Payment Type</label>
-                                <span>:</span>
                                 <SelectField options={optionPayment} placeholder={'Payment_Type'} 
                                     onChange={(ev) => {onChangePayment(ev)}}/>
                             </div>
-                            <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 text-white font-semibold">
+                            <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 text-white font-semibold border rounded-sm p-4">
                                 <label>Buyer_Status</label>
-                                <span>:</span>
                                 <SelectField options={optionBuyer} placeholder={'Buyer_Status'}
                                     onChange={(ev) => {onChangeBuyer(ev)}}/>
                             </div>
@@ -270,26 +274,25 @@ const OrderCreatePage = () => {
                             
                         </div>
                         
-                    </form>
-                        <Button 
-                            onClick={() => {
-                                arrangeData();
-                                setIsOpen(true);
-                                // document.getElementById('user_email').value = ''
-                                }}>
-                            Add Order
+                    </div>
+                    <Button className="bg-green-400 hover:bg-green-500 mt-8"
+                        onClick={() => {
+                            arrangeData();
+                            setIsOpen(true);
+                            }}>
+                        Add Order
+                    </Button>
+                    <Modal title={'Confirm Order'} onClose={()=>{setIsOpen(false)}} isOpen={isOpen} >
+                        <p>Are You Sure to Order ?</p>
+                        <Button onClick={() => 
+                            {
+                                setIsOpen(false)
+                                arrangeData()
+                                createOrderItem();
+                            }}>
+                            CheckOut
                         </Button>
-                        <Modal title={'Confirm Order'} onClose={()=>{setIsOpen(false)}} isOpen={isOpen} >
-                            <p>Are You Sure to Order ?</p>
-                            <Button onClick={() => 
-                                {
-                                    setIsOpen(false)
-                                    arrangeData()
-                                    createOrderItem();
-                                }}>
-                                CheckOut
-                            </Button>
-                        </Modal>
+                    </Modal>
                 </div>
             </div>
 

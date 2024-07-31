@@ -9,7 +9,7 @@ import { getOrderById, updateOrderItem } from "@/fetching/order";
 import Table from "@/components/style-components/table";
 import Modal from "@/components/style-components/modal";
 import SelectFieldOrder from "../create/selectFieldOrderEmail";
-import { getInventoryByProductId } from "@/fetching/inventory";
+import { getInventoryByProductId } from "@/fetching/order";
 import InputField from "@/components/style-components/form/input-field";
 import { toast } from "react-toastify";
 
@@ -29,7 +29,7 @@ const EditOrder = () => {
     const fetchingDetailOrder = async(id) => {
         try {
             const data = await getOrderById(id);
-            setDetailOrder(data.data);
+            setDetailOrder(data.data)
         } catch (err) {
             console.log(err);
         }
@@ -61,10 +61,13 @@ const EditOrder = () => {
             }
             console.log(id,data);
             const orderItem = await updateOrderItem(id, data);
+            if(!orderItem.data) {
+                toast.error(orderItem.message);
+            }
             toast.success(orderItem.message);
         } catch (err) {
             console.log(err);
-            toast.error(err.message);
+            toast.error(err.response.data.message);
         }
 
     }
