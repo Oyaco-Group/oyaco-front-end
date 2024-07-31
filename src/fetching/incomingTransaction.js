@@ -8,6 +8,14 @@ const getAllIncomingTransactions = async (warehouse, page) => {
   return response.data;
 };
 
+const getAllIncoming = async (page) => {
+  const response = await instance({
+    method: "GET",
+    url: `/transactions/incomingTransactions?page=${page}`,
+  });
+  return response.data;
+};
+
 const getWarehouses = async () => {
   const response = await instance({
     method: "GET",
@@ -28,6 +36,15 @@ const createTransaction = async (transactionData) => {
   return response.data.data;
 };
 
+const updateAndCheck = async () => {
+  const response = await instance({
+    method: "PUT",
+    url: `/transactions/expStatus`,
+  });
+  return response.data;
+};
+
+
 // const getUser = async (page, limit) => {
 //   const response = await instance({
 //     method: "GET",
@@ -36,4 +53,4 @@ const createTransaction = async (transactionData) => {
 //   return response.data.data;
 // };
 
-export { getAllIncomingTransactions, getWarehouses, createTransaction };
+export { getAllIncomingTransactions, getWarehouses, createTransaction, getAllIncoming, updateAndCheck };
