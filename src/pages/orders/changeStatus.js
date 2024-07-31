@@ -1,4 +1,3 @@
-import Dropdown from "@/components/style-components/dropdown";
 import Modal from "@/components/style-components/modal";
 import { getInventoryByProductId } from "@/fetching/inventory";
 import { useEffect, useState } from "react";

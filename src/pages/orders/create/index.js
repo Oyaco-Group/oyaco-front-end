@@ -1,9 +1,5 @@
-import TableOrder from "@/components/style-components/TableOrder";
-import Dropdown from "@/components/style-components/dropdown";
-import CheckboxField from "@/components/style-components/form/checkbox-field";
-import InputField from "@/components/style-components/form/input-field";
-import SelectField from "@/components/style-components/form/select-field";
-import TextareaField from "@/components/style-components/form/textarea-field";
+import InputField from "@/components/style-components/form/inputField";
+import SelectField from "@/components/style-components/form/selectField";
 import { createOrder, getAllProduct, getAllUser, getInventoryByProductId, getUserByEmail } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SelectFieldOrder from "./selectFieldOrderEmail";
