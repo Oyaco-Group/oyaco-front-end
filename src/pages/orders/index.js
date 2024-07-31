@@ -11,13 +11,15 @@ import DetailOrder from "./detail";
 import FormOrder from "./formOrder";
 import { useRouter } from "next/router";
 import Pagination from "@/components/style-components/pagination";
+import ChangeStatus from "./changeStatus";
+import SendOrder from "./sendOrder";
 
 
 const OrderPage = () => {
   const [order, setOrder] = useState([]);
-  const [loading,setLoading] = useState(false);
   const [isOpen1, setisOpen1] = useState(false);
   const [isOpen2, setisOpen2] = useState(false);
+  const [isOpen3, setisOpen3] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -25,23 +27,11 @@ const OrderPage = () => {
   const [detailOrder, setDetailOrder] = useState({});
   const router = useRouter();
 
-  const optionDropDown = [
-    {
-      label : 'A',
-      icon : 'AA'
-    },
-    {
-      label : 'B',
-      icon : 'BB'
-    }
-  ]
-
   const fetchOrder = async() => {
     try {
       const data = await getAllOrder(page,limit);
       setOrder(data.data);
       setTotalPages(data.metadata.totalPages);
-      setLoading(false)
 
     } catch(err) {
       console.log(err);
@@ -63,27 +53,41 @@ const OrderPage = () => {
     setId(id);
     fetchDetail(id);
   }
+
   function closeModal1() {
     setisOpen1(false);
   }
+
   function openModal2(id) {
+    setId(id);
     setisOpen2(true);
     fetchDetail(id);
-    console.log(detailOrder)
   }
+
   function closeModal2() {
     setisOpen2(false);
+  }
+
+  function openModal3(id) {
+    setId(id);
+    setisOpen3(true);
+    fetchDetail(id);
+  }
+
+  function closeModal3() {
+    setisOpen3(false);
   }
 
   const sendOrderHandler = async (params) => {
     try {
       const {id} = params;
       const order = await sendOrder(id,params);
+      setisOpen2(false);
       toast.success(order.message);
 
     } catch (err) {
       console.log(err.message);
-      toast.error(err.message);
+      toast.error(err.response.data.message);
     }
   }
 
@@ -96,11 +100,11 @@ const OrderPage = () => {
         const order_status = 'Confirmed';
         const order = await updateOrderStatus(detailOrder.id,order_status);
         toast.success(order.message);
-        setisOpen1(false);
+        setisOpen3(false);
 
     } catch (err) {
         console.log(err);
-        toast.error(err.message);
+        toast.error(err.response.data.message);
     }
   }
 
@@ -110,8 +114,7 @@ const OrderPage = () => {
 
   useEffect(() => {
     fetchOrder();
-    setLoading(true);
-  }, [page,limit,isOpen1,isOpen2])
+  }, [page,limit,isOpen1,isOpen2,isOpen3])
 
   const columns = [
     // {label : 'No', field : "no"},
@@ -133,7 +136,6 @@ const OrderPage = () => {
             </p>
             <div className="relative overflow-x-auto">
                 <div className="flex flex-wrap items-center justify-around space-y-4 bg-white py-3 md:flex-row md:space-y-0 dark:bg-gray-900">
-                  <Dropdown options={optionDropDown}/>
                   <button className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                     onClick={() => {
                       router.push('/orders/create');
@@ -144,6 +146,7 @@ const OrderPage = () => {
                     columns={columns} 
                     data={order} 
                     onDetail={openModal1} 
+                    onChange={openModal3}
                     onEdit={onEdit}
                     sendOrder={openModal2}
                 />
@@ -156,19 +159,10 @@ const OrderPage = () => {
                   onPageChange={handlePageChange}
                 />
             </div>
-
-          <DetailOrder onClose={closeModal1} isOpen={isOpen1} data={detailOrder} statusOrderChanger={statusOrderChanger} order_status={detailOrder.order_status}/>
-          <Modal isOpen={isOpen2} onClose={closeModal2} >
-                    <h1 className="p-5">Are You Sure to Confirm Order ?</h1>
-                    <Button onClick={() => 
-                      {
-                        sendOrderHandler(detailOrder);
-                        setisOpen2(false);
-                      }}
-                    >
-                      Confirm Send
-                    </Button>
-          </Modal>
+          <ChangeStatus onClose={closeModal3} isOpen={isOpen3} data={detailOrder} statusOrderChanger={statusOrderChanger} />
+          <DetailOrder onClose={closeModal1} isOpen={isOpen1} data={detailOrder}  order_status={detailOrder.order_status}/>
+          <SendOrder onClose={closeModal2} isOpen={isOpen2} data={detailOrder} sendOrderHandler={sendOrderHandler} />
+          
         </div>
 
 

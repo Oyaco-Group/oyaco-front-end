@@ -130,7 +130,7 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
                 className="h-5 w-5"
               />
 
-              <span className="ml-2">Bad</span>
+              <span className="ml-2">Damaged</span>
             </label>
           </div>
         </div>

@@ -10,7 +10,7 @@ import {
   getAllOutgoingTransactions,
   getWarehouses,
   createTransaction,
-  getAllTransactions,
+  getAllOutgoing,
   updateAndCheck,
 } from "@/fetching/outgoingTransaction";
 import { FaPlus } from "react-icons/fa6";
@@ -35,7 +35,7 @@ const TransactionOutgoingPage = () => {
   const [transaction, setTransaction] = useState([]);
   const [page, setPage] = useState(1);
   const [warehouse, setWarehouse] = useState({
-    id: 1,
+    id: null,
     label: "Default Warehouse",
   });
   const [warehouses, setWarehouses] = useState([]);
@@ -59,10 +59,15 @@ const TransactionOutgoingPage = () => {
 
   const fetchOutgoingTransaction = async (warehouse, page) => {
     try {
-      const data = await getAllOutgoingTransactions(warehouse.id, page);
+      let data;
+      if (warehouse.id) {
+        data = await getAllOutgoingTransactions(warehouse.id, page);
+      } else {
+        data = await getAllOutgoing(page);
+      }
       const transformedData = data.data.map((transaction) => ({
         ...transaction,
-        iscondition_good: transaction.iscondition_good ? "Good" : "Bad",
+        iscondition_good: transaction.iscondition_good ? "Good" : "Damaged",
         expiration_status: transaction.expiration_status
           ? "Expired"
           : "Not Expired",
@@ -78,7 +83,9 @@ const TransactionOutgoingPage = () => {
       await createTransaction(formData);
       setIsModalOpen(false);
       fetchOutgoingTransaction(warehouse, page);
+      toast.success("Transaction created successfully!");
     } catch (err) {
+      toast.error(err.response.data.message)
       console.error(err);
     }
   };
@@ -112,12 +119,6 @@ const TransactionOutgoingPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
     }
-  };
-
-  const handleUpdateexpired = () => {
-    // if () {
-    //   toast.error(nsdwuadkja)
-    // }
   };
 
   return (
