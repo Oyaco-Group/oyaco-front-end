@@ -3,7 +3,7 @@ import LoginPage from "@/pages/login/index";
 
 describe("Login page", () => {
   it("renders login page correctly", () => {
-    const { container } = render(<LoginPage />);
-    expect(container).toMatchSnapshot();
+    const { page } = render(<LoginPage />);
+    expect(page).toMatchSnapshot();
   });
 });
