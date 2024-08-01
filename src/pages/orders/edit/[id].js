@@ -10,7 +10,7 @@ import Table from "@/components/style-components/table";
 import Modal from "@/components/style-components/modal";
 import SelectFieldOrder from "../create/selectFieldOrderEmail";
 import { getInventoryByProductId } from "@/fetching/order";
-import InputField from "@/components/style-components/form/input-field";
+import InputField from "@/components/style-components/form/inputField";
 import { toast } from "react-toastify";
 
 const EditOrder = () => {

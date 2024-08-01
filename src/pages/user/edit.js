@@ -26,13 +26,14 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     if (modalEditUser) {
       setTempData({
         id: modalEditUser.id || "",
-        image: modalEditUser.image_url || "",
+        image: `http://localhost:8080/api/images/${modalEditUser.image_url}` || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
         password: "",
         address: modalEditUser.address || "",
       });
-    }
+    } 
+    setIsConfirmationOpen(false);
   }, [modalEditUser]);
 
   const togglePasswordVisibility = () => {
@@ -51,6 +52,7 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     try {
       const response = await fetchDeleteUser(tempData.id);
       toast.success(response.message);
+      setIsConfirmationOpen(false); // Reset confirmation state after delete
       onClose();
       fetchData();
     } catch (error) {
@@ -103,7 +105,14 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Profile">
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setIsConfirmationOpen(false);
+      }}
+      title="Edit Profile"
+    >
       <img
         className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
         src={tempData.image || "/avatar.png"}
