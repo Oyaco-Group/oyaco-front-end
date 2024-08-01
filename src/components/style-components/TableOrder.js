@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/components/style-components/button";
 
-const TableOrder = ({ columns, data = [], onDetail, onEdit, sendOrder }) => {
+const TableOrder = ({ columns, data = [], onDetail, onChange ,onEdit, sendOrder }) => {
   const totalData = data.length;
 
   return (
@@ -42,11 +42,11 @@ const TableOrder = ({ columns, data = [], onDetail, onEdit, sendOrder }) => {
                           } */}
                         
                         {order.order_status.toLowerCase() === 'confirmed yet' ? 
-                          <Button className="bg-green-400 hover:bg-green-500" size="sm" onClick={() => onDetail(order.id)}>Confirm</Button> 
+                          <Button className="bg-green-400 hover:bg-green-500" size="sm" onClick={() => onChange(order.id)}>Confirm</Button> 
                           : order.order_status.toLowerCase() === 'confirmed' ?
                           <Button className="bg-orange-400 hover:bg-orange-500" size="sm" onClick={() => onEdit(order.id)}>Edit</Button>
                           : order.order_status.toLowerCase() === 'on delivery' ?
-                          <Button className="bg-blue-400 hover:bg-blue-500" size="sm" onClick={() => onDetail(order.id)}>Wait</Button>
+                          <Button className="bg-blue-400 hover:bg-blue-500" size="sm" onClick={() => onDetail(order.id)}>Detail</Button>
                           : 
                           <Button className="bg-red-500 hover:bg-red-600" size="sm" onClick={() => onDetail(order.id)}>Complaint</Button>
                         }

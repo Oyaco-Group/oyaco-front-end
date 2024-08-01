@@ -3,12 +3,12 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-auto"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md rounded-2xl bg-white shadow dark:bg-gray-700"
+        className="relative w-full max-w-md max-h-[90vh] rounded-2xl bg-white shadow dark:bg-gray-700 overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button

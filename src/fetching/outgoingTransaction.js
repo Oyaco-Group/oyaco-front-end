@@ -8,6 +8,14 @@ const getAllOutgoingTransactions = async (warehouse, page) => {
   return response.data;
 };
 
+const getAllOutgoing = async (page) => {
+  const response = await instance({
+    method: "GET",
+    url: `/transactions/outgoingTransactions?page=${page}`,
+  });
+  return response.data;
+};
+
 const getWarehouses = async () => {
   const response = await instance({
     method: "GET",
@@ -52,4 +60,4 @@ const createTransaction = async (transactionData) => {
 //   return response.data.data;
 // };
 
-export { getAllOutgoingTransactions, getWarehouses, createTransaction, getAllTransactions, updateAndCheck };
+export { getAllOutgoingTransactions, getWarehouses, createTransaction, getAllTransactions, updateAndCheck, getAllOutgoing };

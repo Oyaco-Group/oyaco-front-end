@@ -4,7 +4,7 @@ import Dropdown from "@/components/style-components/dropdown";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
-import { getWarehouses, getStockByWarehouse } from "@/fetching/inventory";
+import { getWarehouses, getStockByWarehouse, getAllStock } from "@/fetching/inventory";
 
 const InventoryBalancePage = () => {
   const columns = [
@@ -99,6 +99,11 @@ const InventoryBalancePage = () => {
     }
   };
 
+  const sortOptions = [
+    { id: "asc", label: "Lowest Quantity" },
+    { id: "desc", label: "Highest Quantity" },
+  ];
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
@@ -113,17 +118,14 @@ const InventoryBalancePage = () => {
                 onSelect={(option) => setSelectedWarehouse(option)}
                 defaultValue={selectedWarehouse}
               />
+              <Dropdown
+                options={sortOptions}
+                onSelect={(option) => setSortOrder(option.id)}
+                defaultValue={sortOptions.find(option => option.id === sortOrder)}
+              />
             </div>
             <div className="flex items-center gap-4">
               <SearchBar className="w-50" />
-              <Button
-                onClick={() =>
-                  setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-                }
-                className="text-sm py-1 px-2 w-60"
-              >
-                Sorted by {sortOrder === "asc" ? "Lowest" : "Highest"} Quantity
-              </Button>
             </div>
           </div>
           {loading ? (
