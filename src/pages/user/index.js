@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
-import SpinnerLoad from "@/components/style-components/loading-indicator/spinner-load";
-import { fetchUserData, deleteUser } from "@/utils/dataTest";
+import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
+import { fetchUsers, fetchDeleteUser } from "@/fetching/user";
 import EditProfileModal from "@/pages/user/edit";
 import { toast } from "react-toastify";
+import Pagination from "@/components/style-components/pagination";
 
 const UserPage = () => {
   const columns = [
@@ -12,7 +13,7 @@ const UserPage = () => {
     { field: "name", label: "Name" },
     { field: "address", label: "Address" },
     { field: "user_role", label: "Role" },
-    { field: "action", label: "Action" },
+    { field: "Edit", label: "Action" },
   ];
 
   const [originalData, setOriginalData] = useState([]);
@@ -21,55 +22,50 @@ const UserPage = () => {
   const [modalEditUser, setModalEditUser] = useState(null);
   const [searchUser, setSearchUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
-  const [lengthSearch, setLengthSearch] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page, limit);
+  }, [page, limit]);
 
   useEffect(() => {
     filterUsers(searchUser);
   }, [searchUser, originalData]);
 
-  const fetchData = async () => {
+  const fetchData = async (page, limit) => {
     try {
       setIsLoading(true);
-      const userData = await fetchUserData();
-      const roleUserData = userData.filter((user) => user.user_role === "user");
-      setOriginalData(roleUserData);
-      setIsLoading(false);
+      const response = await fetchUsers(page, limit);
+      setOriginalData(response.data);
+      setFilteredUser(response.data);
+      setTotalUsers(response.totalUsers);
+      setTotalPages(response.totalPages);
     } catch (error) {
+      toast.error("Failed to fetch user data");
+      console.error(error);
+    } finally {
       setIsLoading(false);
-      console.error("Error fetching user data:", error);
     }
   };
 
   const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchUser(value);
+    setSearchUser(event.target.value);
   };
 
   const filterUsers = (valueSearch) => {
-    let filteredUsers = originalData;
-
-    if (lengthSearch > valueSearch.length) {
-      filteredUsers = originalData;
-    }
-
     if (valueSearch) {
-      filteredUsers = originalData.filter(
+      const filteredUsers = originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
           user.address.toLowerCase().includes(valueSearch.toLowerCase())
       );
       setFilteredUser(filteredUsers);
-      setLengthSearch(valueSearch.length);
     } else {
       setFilteredUser(originalData);
     }
-
-    setFilteredUser(filteredUsers);
   };
 
   const handleEdit = (user) => {
@@ -79,21 +75,32 @@ const UserPage = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await deleteUser(userId);
+      await fetchDeleteUser(userId);
       toast.success("User deleted successfully");
 
       const updatedData = originalData.filter((user) => user.id !== userId);
       setOriginalData(updatedData);
+      setFilteredUser(updatedData);
+      setTotalUsers((prevTotal) => prevTotal - 1);
 
-      filterUsers(searchUser);
+      // Handle pagination if needed
+      if (updatedData.length === 0 && page > 1) {
+        setPage(page - 1);
+      }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Failed to delete user");
+      console.error("Error deleting user:", error);
     }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setModalEditUser(null);
+    fetchData(page, limit);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
   return (
@@ -107,6 +114,7 @@ const UserPage = () => {
           <div className="flex flex-wrap items-center justify-between space-y-4 bg-white py-4 md:flex-row md:space-y-0 dark:bg-gray-900">
             <div>
               <SearchBar
+                id="search-user"
                 className="ml-2 w-72"
                 onChange={handleSearchChange}
                 value={searchUser}
@@ -122,7 +130,6 @@ const UserPage = () => {
               data={filteredUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              fetchData={fetchData}
             />
           )}
         </div>
@@ -131,8 +138,18 @@ const UserPage = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         modalEditUser={modalEditUser}
-        fetchData={fetchData}
+        fetchData={() => fetchData(page, limit)}
       />
+      <div className="flex justify-between pr-4 pl-4">
+        <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
+          Total: {totalUsers}
+        </p>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

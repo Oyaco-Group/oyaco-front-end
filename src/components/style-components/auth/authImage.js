@@ -4,7 +4,7 @@ const AuthImage = () => {
       <div className="mt-[-150px] h-40">
         <img src="/logo.png" alt="Logo" width={500} height={100} />
       </div>
-      <p className="mt-4 tracking-[1px] text-sky-300">
+      <p className="mt-4 tracking-[1px] text-sky-400">
         Efficiently manage your product stock with ease
       </p>
       <div className="mt-10">

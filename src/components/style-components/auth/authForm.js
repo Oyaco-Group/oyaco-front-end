@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "@/context/auth-context";
-import InputField from "@/components/style-components/form/input-field";
-import TextareaField from "@/components/style-components/form/textarea-field";
-import CheckboxField from "@/components/style-components/form/checkbox-field";
+import { useAuth } from "@/context/authContext";
+import InputField from "@/components/style-components/form/inputField";
+import TextareaField from "@/components/style-components/form/textareaField";
+import CheckboxField from "@/components/style-components/form/checkboxField";
 import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 import { register, login } from "@/fetching/auth";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Link from "next/link";
 
 const AuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -14,10 +16,10 @@ const AuthForm = ({ type }) => {
     email: "",
     password: "",
     address: "",
-    user_role: "",
     agree: false,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const { login: loginUser } = useAuth();
   const router = useRouter();
 
@@ -32,20 +34,18 @@ const AuthForm = ({ type }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Jika tipe adalah "register", tambahkan user_role ke formData
-    const submitData =
-      type === "register" ? { ...formData, user_role: "user" } : formData;
-
     if (type === "register") {
       try {
-        const response = await register(submitData); // Kirim submitData yang sudah diubah
+        const response = await register({
+          ...formData,
+          user_role: "user",
+        });
         toast.success(response.message);
         setFormData({
           name: "",
           email: "",
           password: "",
           address: "",
-          user_role: "user", // Reset ke default value
           agree: false,
         });
         router.push("/login");
@@ -67,17 +67,19 @@ const AuthForm = ({ type }) => {
           throw new Error("Please input both email and password");
         }
         const response = await login({ email, password });
-        const { token, user } = response.data;
+        const { access_token } = response.data;
 
-        // Simpan token dan data pengguna ke context dan localStorage
-        loginUser(user, token);
+        loginUser(access_token);
 
         toast.success(response.message);
-        router.push("/dashboard");
       } catch (error) {
         toast.error(error.message);
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -106,13 +108,26 @@ const AuthForm = ({ type }) => {
         onChange={handleChange}
         placeholder="Email"
       />
-      <InputField
-        id="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="Password"
-      />
+      <div className="relative">
+        <InputField
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Password"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500" />
+          )}
+        </button>
+      </div>
       {type === "register" && (
         <>
           <TextareaField
@@ -129,11 +144,15 @@ const AuthForm = ({ type }) => {
             label="I agree with the"
             link="#"
           />
+          <div className="flex gap-2 w-full justify-center my-6 text-white font-normal">
+            <p>Already have an account?</p>
+            <Link href="/login" className="text-blue-700">
+              Login
+            </Link>
+          </div>
         </>
       )}
-      <div
-        className={`flex ${type === "login" ? "justify-center" : "justify-end"}`}
-      >
+      <div className="flex justify-center">
         <Button type="submit">{type === "login" ? "LOGIN" : "REGISTER"}</Button>
       </div>
     </form>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 const Menu = ({ href, title, icon, className, onClick }) => {
@@ -14,7 +15,7 @@ const Menu = ({ href, title, icon, className, onClick }) => {
 
   return (
     <li>
-      <a
+      <Link
         href={href}
         onClick={handleClick}
         className={`group my-2 flex items-center rounded-lg p-2 text-gray-600 hover:bg-blue-50 ${className}`}
@@ -23,7 +24,7 @@ const Menu = ({ href, title, icon, className, onClick }) => {
           <span className="mr-2 text-xl font-bold text-blue-400">{icon}</span>
         )}
         <span className="ms-3">{title}</span>
-      </a>
+      </Link>
     </li>
   );
 };
