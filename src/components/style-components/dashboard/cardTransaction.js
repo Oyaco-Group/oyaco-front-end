@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { FaArrowRightToBracket } from "react-icons/fa6";
-import TransactionModal from "@/components/style-components/dashboard/transactionModal.js"; // Ensure this path is correct
+import TransactionModal from "@/components/style-components/dashboard/transactionModal.js";
 
 const formatDate = (dateString) => {
   const options = { day: "numeric", month: "short", year: "numeric" };
@@ -28,6 +28,8 @@ const CardTransaction = ({ transactions, title }) => {
     setIsModalOpen(false);
   };
 
+  const limitedTransactions = transactions.slice(0, 5);
+
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (scrollTop + clientHeight >= scrollHeight && !loading) {
@@ -41,8 +43,6 @@ const CardTransaction = ({ transactions, title }) => {
       }, 1000);
     }
   };
-
-  const limitedTransactions = transactions.slice(0, 5);
 
   return (
     <div className="w-1/2 max-w-md p-4 h-[32rem] bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">

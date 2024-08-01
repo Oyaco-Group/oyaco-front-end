@@ -15,10 +15,6 @@ const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState({});
   const { user } = useAuth();
 
-  useEffect(() => {
-    getDashboardData();
-  }, []);
-
   const getDashboardData = async () => {
     try {
       setIsLoading(true);
@@ -30,6 +26,10 @@ const DashboardPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    getDashboardData();
+  }, []);
 
   const {
     total_users = 0,

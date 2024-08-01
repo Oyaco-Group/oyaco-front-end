@@ -9,6 +9,11 @@ const formatDate = (dateString) => {
   return new Intl.DateTimeFormat("en-GB", options).format(new Date(dateString));
 };
 
+const getImageUrl = (imagePath) => {
+  const baseUrl = "http://localhost:8080/api/images/";
+  return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
+};
+
 const TransactionModal = ({
   isOpen,
   onClose,
@@ -19,11 +24,6 @@ const TransactionModal = ({
   loading,
 }) => {
   if (!isOpen) return null;
-
-  const getImageUrl = (imagePath) => {
-    const baseUrl = "http://localhost:8080/api/images/";
-    return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
