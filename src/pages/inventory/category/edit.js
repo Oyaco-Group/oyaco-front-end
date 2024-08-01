@@ -63,7 +63,11 @@ const EditCategoryModal = ({
         className="text-gray-400"
       />
       <div className="flex justify-center gap-4">
-        <Button type="button" onClick={handleSaveChanges}>
+        <Button
+          type="button"
+          onClick={handleSaveChanges}
+          className="bg-green-500 hover:bg-green-600"
+        >
           Save Changes
         </Button>
       </div>
