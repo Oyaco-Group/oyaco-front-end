@@ -67,7 +67,7 @@ const getAllProduct = async(page,limit) => {
         url : `masterProduct/?page=${page}&limit=${limit}`
     })
 
-    return response.data.data;
+    return response.data.data.masterProduct;
 }
 
 const getInventoryByProductId = async(id) => {
@@ -93,11 +93,11 @@ const createOrder = async(params) => {
     return response.data;
 }
 
-const sendOrder = async(id,params) => {
+const sendOrder = async(id,params,admin_id) => {
     const response = await instance({
         method : 'POST',
         url : `order/sendorder/${id}`,
-        data : {...params}
+        data : {...params, admin_id}
     })
     return response.data;
 }

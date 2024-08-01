@@ -35,7 +35,7 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
       await createProducts(productData);
       console.log("Product created:", productData);
       onClose();
-      fetchData(); // Fetch updated product list
+      fetchData();
     } catch (error) {
       console.error("Error creating product:", error);
       if (error.response && error.response.status === 404) {
@@ -86,8 +86,12 @@ const AddProductModal = ({ isOpen, onClose, fetchData }) => {
           onChange={handleFileChange}
         />
       </div>
-      <div className='flex justify-center gap-4'>
-        <Button type='button' onClick={handleSaveProduct}>
+      <div className="flex justify-center gap-4 mt-6">
+        <Button
+          type="button"
+          onClick={handleSaveProduct}
+          className="bg-green-500 hover:bg-green-600"
+        >
           Add Product
         </Button>
       </div>
