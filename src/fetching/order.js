@@ -78,14 +78,6 @@ const getInventoryByProductId = async(id) => {
     return response.data.data;
 }
 
-const getInventoryByProductId = async(id) => {
-    const response = await instance({
-        method : 'GET',
-        url : `/inventory/product/${id}`
-    })
-    return response.data.data;
-}
-
 const createOrder = async(params) => {
     const response = await instance({
         method : 'POST',
