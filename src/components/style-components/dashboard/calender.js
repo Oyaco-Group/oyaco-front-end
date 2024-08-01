@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CalendarComponent = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(
+    today.toLocaleString("default", { month: "long" })
+  );
+
+  useEffect(() => {
+    const newDate = new Date(currentYear, currentMonth);
+    setDisplayMonth(newDate.toLocaleString("default", { month: "long" }));
+  }, [currentMonth, currentYear]);
 
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
@@ -13,17 +21,21 @@ const CalendarComponent = () => {
   const daysInCurrentMonth = daysInMonth(currentMonth, currentYear);
 
   const handlePrevMonth = () => {
-    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
-    if (currentMonth === 0) {
-      setCurrentYear((prev) => prev - 1);
-    }
+    setCurrentMonth((prevMonth) => {
+      const newMonth = prevMonth === 0 ? 11 : prevMonth - 1;
+      setCurrentYear((prevYear) => (prevMonth === 0 ? prevYear - 1 : prevYear));
+      return newMonth;
+    });
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
-    if (currentMonth === 11) {
-      setCurrentYear((prev) => prev + 1);
-    }
+    setCurrentMonth((prevMonth) => {
+      const newMonth = prevMonth === 11 ? 0 : prevMonth + 1;
+      setCurrentYear((prevYear) =>
+        prevMonth === 11 ? prevYear + 1 : prevYear
+      );
+      return newMonth;
+    });
   };
 
   const renderCalendarDays = () => {
@@ -86,7 +98,7 @@ const CalendarComponent = () => {
               tabIndex="0"
               className="focus:outline-none text-md font-semibold dark:text-gray-100 text-blue-400 mb-4"
             >
-              {`${today.toLocaleString("default", { month: "long" })} ${currentYear}`}
+              {`${displayMonth} ${currentYear}`}
             </span>
             <div className="flex items-center">
               <button

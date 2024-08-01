@@ -15,6 +15,7 @@ const ProfileMenu = ({ onClose }) => {
   const { user, logout } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [tempData, setTempData] = useState({
+    image_url: user?.image_url,
     name: user?.name || "",
     email: user?.email || "",
     password: "",
@@ -77,6 +78,7 @@ const ProfileMenu = ({ onClose }) => {
     try {
       await fetchUpdateUser({
         userId: user?.id,
+        image_url: tempData.image_url,
         name: tempData.name,
         email: tempData.email,
         password: tempData.password,
@@ -106,7 +108,7 @@ const ProfileMenu = ({ onClose }) => {
             <span className="sr-only">Open profile menu</span>
             <img
               className="h-10 w-10 rounded-full"
-              src={`http://localhost:8080/api/images/${user?.image_url}` || "/avatar.png"}
+              src={user?.image_url || "/avatar.png"}
               alt="foto profil"
             />
             <div className="ms-3 space-y-0.5 text-left font-medium text-gray-500 rtl:text-right">
