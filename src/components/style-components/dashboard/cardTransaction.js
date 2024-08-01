@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { FaArrowRightToBracket } from "react-icons/fa6";
+import TransactionModal from "@/components/style-components/dashboard/transactionModal.js"; // Ensure this path is correct
 
 const formatDate = (dateString) => {
   const options = { day: "numeric", month: "short", year: "numeric" };
@@ -8,66 +9,113 @@ const formatDate = (dateString) => {
 };
 
 const CardTransaction = ({ transactions, title }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [displayedTransactions, setDisplayedTransactions] = useState(
+    transactions.slice(0, 5)
+  );
+  const [loading, setLoading] = useState(false);
+
+  const getImageUrl = (imagePath) => {
+    const baseUrl = "http://localhost:8080/api/images/";
+    return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollTop + clientHeight >= scrollHeight && !loading) {
+      setLoading(true);
+      setTimeout(() => {
+        setDisplayedTransactions((prev) => [
+          ...prev,
+          ...transactions.slice(prev.length, prev.length + 5),
+        ]);
+        setLoading(false);
+      }, 1000);
+    }
+  };
+
+  const limitedTransactions = transactions.slice(0, 5);
+
   return (
-    <div className="w-1/2 max-w-md p-4 h-[32rem] bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 overflow-y-auto">
+    <div className="w-1/2 max-w-md p-4 h-[32rem] bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-md font-semibold leading-none text-gray-900 dark:text-white">
           {title}
         </h3>
-        <a
-          href="#"
+        <button
           className="text-sm font-medium text-blue-400 dark:text-blue-500"
+          onClick={openModal}
         >
           Detail
-        </a>
+        </button>
       </div>
       <div className="flow-root">
-        {transactions.length > 0 ? (
+        {limitedTransactions.length > 0 ? (
           <ul
             role="list"
             className="divide-y divide-gray-200 dark:divide-gray-700"
           >
-            {transactions.map((transaction) => (
-              <li key={transaction.id} className="py-3 sm:py-4">
-                <div className="flex items-center">
-                  <img
-                    src="/defaultproducts.png"
-                    alt={transaction.master_product?.name || "Product"}
-                    width={50}
-                    height={50}
-                  />
-                  <div className="flex-1 min-w-0 ms-4">
-                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                      {transaction.master_product?.name || "Product"}
-                    </p>
-                    <div className="flex gap-2">
-                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                        {transaction.origin}
+            {limitedTransactions.map((transaction) => {
+              const isExpiredOrRemove =
+                transaction.expiration_status ||
+                transaction.movement_type.toLowerCase() === "remove";
+              return (
+                <li key={transaction.id} className="py-3 sm:py-4">
+                  <div className="flex items-center">
+                    <img
+                      src={getImageUrl(transaction.master_product?.image)}
+                      alt={transaction.master_product?.name || "Product"}
+                      width={50}
+                      height={50}
+                      onError={(e) => (e.target.src = "/defaultproducts.png")}
+                    />
+                    <div className="flex-1 min-w-0 ms-4">
+                      <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {transaction.master_product?.name || "Product"}
                       </p>
-                      <FaArrowRightToBracket
-                        className={
-                          transaction.movement_type.toLowerCase() === "in"
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }
-                      />
-                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                        {transaction.destination}
+                      <div className="flex gap-2">
+                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                          {transaction.origin}
+                        </p>
+                        <FaArrowRightToBracket
+                          className={
+                            transaction.movement_type.toLowerCase() === "in"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
+                        />
+                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                          {transaction.destination}
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        Date: {formatDate(transaction.arrival_date)}
                       </p>
                     </div>
-                    <p className="text-xs text-gray-400">
-                      Date: {formatDate(transaction.arrival_date)}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <p className="text-xs">Stock</p>
-                    <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                      {transaction.quantity}
+                    <div className="flex flex-col items-center">
+                      <p
+                        className={`text-xs ${isExpiredOrRemove ? "text-red-500" : ""}`}
+                      >
+                        {isExpiredOrRemove ? "" : "Stock"}
+                      </p>
+                      <div
+                        className={`inline-flex items-center text-base font-semibold ${isExpiredOrRemove ? "text-red-500 font-semibold" : "text-gray-900 dark:text-white"}`}
+                      >
+                        {isExpiredOrRemove ? "exp" : transaction.quantity}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <div className="flex flex-col gap-4 items-center justify-center h-[24rem] text-gray-400 p-20 bg-gray-50 rounded-xl">
@@ -76,6 +124,16 @@ const CardTransaction = ({ transactions, title }) => {
           </div>
         )}
       </div>
+
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={`List of ${title}`}
+        transactions={transactions}
+        handleScroll={handleScroll}
+        displayedTransactions={displayedTransactions}
+        loading={loading}
+      />
     </div>
   );
 };

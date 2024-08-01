@@ -86,7 +86,6 @@ const ProfileMenu = ({ onClose }) => {
       });
       toast.success("Successfully profile edited");
       handleCloseModal();
-      // fetchData();
     } catch (error) {
       console.error("Error message :", error);
       const errorMessage =
