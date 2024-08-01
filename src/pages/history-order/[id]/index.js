@@ -87,7 +87,7 @@ const HistoryOrderPage = ({ initialOrders }) => {
 
       setLoading(true);
       const updatedOrders = await fetchOrderHistoryById(id);
-      setOrders(updatedOrders);
+      setOrders(updatedOrders.data);
       setLoading(false);
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -106,7 +106,7 @@ const HistoryOrderPage = ({ initialOrders }) => {
     try {
       setLoading(true);
       const updatedOrders = await fetchOrderHistoryById(id);
-      setOrders(updatedOrders);
+      setOrders(updatedOrders.data);
       setLoading(false);
     } catch (error) {
       console.error("Error refreshing data:", error);
@@ -124,7 +124,7 @@ const HistoryOrderPage = ({ initialOrders }) => {
     <div>
       <div className="p-4 sm:ml-64">
         <div className="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
-          <h1 className="text-4xl mt-10 mb-10">History Order Page</h1>
+          <h1 className="text-4xl mt-10 mb-10">Order History Page</h1>
           <div className="grid grid-cols-1 gap-4">
             {orders.map((order) => (
               <OrderCard

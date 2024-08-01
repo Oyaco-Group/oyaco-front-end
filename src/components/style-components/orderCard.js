@@ -69,19 +69,19 @@ const OrderCard = ({ order, onOrderDetail, onComplaint, onUpdateStatus }) => {
       </div>
       <div className="p-4 flex items-center space-x-4 mr-6">
         <button
-          className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-600 transition duration-300 ease-in-out"
+          className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-600 transition duration-300 ease-in-out"
           onClick={handleOrderDetail}
         >
           Detail
         </button>
         <button
-          className="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 transition duration-300 ease-in-out"
+          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 transition duration-300 ease-in-out"
           onClick={handleComplaint}
         >
           Complaint
         </button>
         <button
-          className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 ease-in-out"
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 ease-in-out"
           onClick={handleUpdateStatus}
         >
           Status
