@@ -54,14 +54,13 @@ const OrderInfoCard = ({ order }) => {
 
 const ProductInfoCard = ({ product }) => {
   const { name, image, sku, price } = product;
-  const placeholderImageUrl = "https://via.placeholder.com/150x150";
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 mb-4">
       <div className="p-4 flex items-center">
         <div className="flex-shrink-0">
           <img
-            src={placeholderImageUrl}
+            src={image}
             className="h-24 w-24 object-cover rounded"
             alt={name}
           />

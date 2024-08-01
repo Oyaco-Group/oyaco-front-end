@@ -7,6 +7,7 @@ import Button from "@/components/style-components/button";
 import { FaPlus } from "react-icons/fa6";
 import EditProductsModal from "@/pages/inventory/products/edit";
 import AddProductModal from "@/pages/inventory/products/add";
+import Pagination from "@/components/style-components/pagination";
 
 const ProductsPage = () => {
   const columns = [
@@ -27,14 +28,17 @@ const ProductsPage = () => {
   const [searchMaster, setSearchMaster] = useState("");
   const [modalEditProducts, setModalEditProducts] = useState(null);
   const [page, setPage] = useState(1); // for pagination
-  const [limit, setLimit] = useState(15); // items per page
+  const [limit, setLimit] = useState(5); // items per page
+  const [totalPages, setTotalPages] = useState(0);
+
 
   const Products = async () => {
     try {
       const data = await fetchMaster(page, limit);
-      const processMasterData = MasterData(data);
+      const processMasterData = MasterData(data.masterProduct);
       setOriginalData(processMasterData);
       setFilteredData(processMasterData);
+      setTotalPages(data.totalPages);
       console.log("Fetched data:", data);
     } catch (error) {
       console.error("Error fetching master product data:", error);
@@ -71,6 +75,10 @@ const ProductsPage = () => {
     filterMaser(value);
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  }
+
   const filterMaser = (valueSearch) => {
     let filteredMaster = originalData;
 
@@ -96,6 +104,7 @@ const ProductsPage = () => {
 
   const openAddModal = () => {
     setIsAddModalOpen(true);
+    console.log(originalData)
   };
 
   const closeAddModal = () => {
@@ -162,6 +171,11 @@ const ProductsPage = () => {
         isOpen={isAddModalOpen}
         onClose={closeAddModal}
         fetchData={Products}
+      />
+      <Pagination 
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
     </div>
   );

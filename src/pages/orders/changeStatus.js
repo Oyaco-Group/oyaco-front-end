@@ -1,4 +1,3 @@
-import Dropdown from "@/components/style-components/dropdown";
 import Modal from "@/components/style-components/modal";
 import { getInventoryByProductId } from "@/fetching/inventory";
 import { useEffect, useState } from "react";
@@ -7,7 +6,7 @@ import Button from "@/components/style-components/button";
 
 
 
-const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) => {
+const ChangeStatus= ({isOpen, onClose,data, statusOrderChanger, order_status}) => {
     const [orderStatus, setOrderStatus] = useState(order_status|| ' ');
     const userName = {...data.user};
     const product = data.order_item;
@@ -85,9 +84,12 @@ const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) =
                         }
                         {!product && (<div>AAA</div>)}
                     </div>
+                    <div className="p-2"> 
+                        <Button onClick={statusOrderChanger}>Confirmed Order</Button>
+                    </div>
                 </div>
             </Modal>
     )
 }
 
-export default DetailOrder;
+export default ChangeStatus;
