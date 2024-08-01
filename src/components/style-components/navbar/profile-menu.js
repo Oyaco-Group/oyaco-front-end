@@ -106,7 +106,7 @@ const ProfileMenu = ({ onClose }) => {
             <span className="sr-only">Open profile menu</span>
             <img
               className="h-10 w-10 rounded-full"
-              src={user?.image_url || "/avatar.png"}
+              src={`http://localhost:8080/api/images/${user?.image_url}` || "/avatar.png"}
               alt="foto profil"
             />
             <div className="ms-3 space-y-0.5 text-left font-medium text-gray-500 rtl:text-right">

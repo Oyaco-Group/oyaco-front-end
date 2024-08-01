@@ -13,9 +13,11 @@ import { useRouter } from "next/router";
 import Pagination from "@/components/style-components/pagination";
 import ChangeStatus from "./changeStatus";
 import SendOrder from "./sendOrder";
+import { useAuth } from "@/context/authContext";
 
 
 const OrderPage = () => {
+  const {user} = useAuth();
   const [order, setOrder] = useState([]);
   const [isOpen1, setisOpen1] = useState(false);
   const [isOpen2, setisOpen2] = useState(false);
@@ -81,7 +83,9 @@ const OrderPage = () => {
   const sendOrderHandler = async (params) => {
     try {
       const {id} = params;
-      const order = await sendOrder(id,params);
+      const admin_id = user.id;
+      // console.log(params, admin_id);
+      const order = await sendOrder(id,params,admin_id);
       setisOpen2(false);
       toast.success(order.message);
 
@@ -136,11 +140,11 @@ const OrderPage = () => {
             </p>
             <div className="relative overflow-x-auto">
                 <div className="flex flex-wrap items-center justify-around space-y-4 bg-white py-3 md:flex-row md:space-y-0 dark:bg-gray-900">
-                  <button className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                  <Button className="bg-green-500 hover:bg-green-600"
                     onClick={() => {
                       router.push('/orders/create');
                     }}>Add Order
-                  </button>
+                  </Button>
                 </div>
                 <TableOrder 
                     columns={columns} 

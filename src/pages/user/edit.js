@@ -26,7 +26,7 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
     if (modalEditUser) {
       setTempData({
         id: modalEditUser.id || "",
-        image: modalEditUser.image_url || "",
+        image: `http://localhost:8080/api/images/${modalEditUser.image_url}` || "",
         name: modalEditUser.name || "",
         email: modalEditUser.email || "",
         password: "",
