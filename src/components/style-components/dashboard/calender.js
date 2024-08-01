@@ -65,7 +65,6 @@ const CalendarComponent = () => {
         </td>
       );
     }
-
     return days;
   };
 
