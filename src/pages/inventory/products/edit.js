@@ -3,6 +3,7 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
+import { fetchCategory } from "@/fetching/category";
 import PopupConfirmation from "@/components/style-components/popupConfirmation";
 import { toast } from "react-toastify";
 
@@ -25,6 +26,7 @@ const EditProductsModal = ({
   });
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (modalEditProducts) {
@@ -49,6 +51,20 @@ const EditProductsModal = ({
       });
     }
   }, [modalEditProducts]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await fetchCategory();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("Failed to fetch categories. Please try again later.");
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -76,11 +92,11 @@ const EditProductsModal = ({
       }
 
       await onSave(tempData.id, tempData);
-      console.log("Success saving product data:", tempData);
+      toast.success("Successfully product edited");
       fetchData();
       onClose();
     } catch (error) {
-      console.error("Error saving product data:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -103,67 +119,75 @@ const EditProductsModal = ({
         onClose();
         setIsConfirmationOpen(false);
       }}
-      title='Edit Product'
+      title="Edit Product"
     >
       <InputField
-        id='name'
-        type='text'
+        id="name"
+        type="text"
         value={tempData.name}
         onChange={handleChange}
-        placeholder='Product Name'
-        className='text-gray-400'
+        placeholder="Product Name"
+        className="text-gray-400"
       />
+
+      <div className="mb-4">
+        <select
+          id="category_id"
+          value={tempData.category_id}
+          onChange={handleChange}
+          className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        >
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <InputField
-        id='category_id'
-        type='number'
-        value={tempData.category_id}
-        onChange={handleChange}
-        placeholder='Category ID'
-        className='text-gray-400'
-        min={1}
-      />
-      <InputField
-        id='price'
-        type='number'
+        id="price"
+        type="number"
         value={tempData.price}
         onChange={handleChange}
-        placeholder='Price'
-        className='text-gray-400'
+        placeholder="Price"
+        className="text-gray-400"
         min={0}
       />
       <InputField
-        id='sku'
-        type='text'
+        id="sku"
+        type="text"
         value={tempData.sku}
         onChange={handleChange}
-        placeholder='SKU'
-        className='text-gray-400'
+        placeholder="SKU"
+        className="text-gray-400"
       />
-      <div className='mb-4'>
+      <div className="mb-4">
         <input
-          id='image'
-          type='file'
-          accept='image/*'
+          id="image"
+          type="file"
+          accept="image/*"
           onChange={handleFileChange}
-          className='text-gray-400'
+          className="text-gray-400"
         />
       </div>
-      <div className='flex justify-center gap-4'>
-        <Button type='button' onClick={handleSaveChanges}>
+      <div className="flex justify-center gap-4">
+        <Button type="button" onClick={handleSaveChanges}>
           Save Changes
         </Button>
         <Button
-          type='button'
+          type="button"
           onClick={() => setIsConfirmationOpen(true)}
-          className='bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-0 flex items-center gap-2'
+          className="bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-0 flex items-center gap-2"
         >
-          <AiOutlineDelete className='mr-2 h-4 w-4 flex-shrink-0' />
+          <AiOutlineDelete className="mr-2 h-4 w-4 flex-shrink-0" />
           Delete
         </Button>
       </div>
       {isConfirmationOpen && (
         <PopupConfirmation
-          message='Are you sure you want to delete this product?'
+          message="Are you sure you want to delete this product?"
           onConfirm={handleDelete}
           onCancel={() => setIsConfirmationOpen(false)}
         />

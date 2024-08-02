@@ -4,7 +4,11 @@ import Dropdown from "@/components/style-components/dropdown";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import Button from "@/components/style-components/button";
-import { getWarehouses, getStockByWarehouse, getAllStock } from "@/fetching/inventory";
+import {
+  getWarehouses,
+  getStockByWarehouse,
+  getAllStock,
+} from "@/fetching/inventory";
 
 const InventoryBalancePage = () => {
   const columns = [
@@ -49,7 +53,7 @@ const InventoryBalancePage = () => {
       const formattedData = data.map((item, index) => ({
         ...item,
         master_product_name: item.master_product?.name || "Unknown",
-        master_product_price: item.master_product?.price || 0,
+        master_product_price: formatPrice(item.master_product?.price || 0),
       }));
       setInventory(formattedData);
     } catch (err) {
@@ -67,7 +71,7 @@ const InventoryBalancePage = () => {
       const formattedData = data.map((item, index) => ({
         ...item,
         master_product_name: item.master_product?.name || "Unknown",
-        master_product_price: item.master_product?.price || 0,
+        master_product_price: formatPrice(item.master_product?.price || 0),
       }));
       setInventory(formattedData);
     } catch (err) {
@@ -89,6 +93,13 @@ const InventoryBalancePage = () => {
       fetchAllInventory(page);
     }
   }, [selectedWarehouse, page]);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(price);
+  };
 
   const sortInventory = (order) => {
     const sortedInventory = [...inventory].sort((a, b) => {
@@ -147,11 +158,13 @@ const InventoryBalancePage = () => {
               <Dropdown
                 options={sortOptions}
                 onSelect={(option) => setSortOrder(option.id)}
-                defaultValue={sortOptions.find(option => option.id === sortOrder)}
+                defaultValue={sortOptions.find(
+                  (option) => option.id === sortOrder
+                )}
               />
             </div>
             <div className="flex items-center gap-4">
-              <SearchBar className="w-50" onChange={handleSearchInputChange}/>
+              <SearchBar className="w-50" onChange={handleSearchInputChange} />
             </div>
           </div>
           {loading ? (
@@ -159,7 +172,11 @@ const InventoryBalancePage = () => {
           ) : error ? (
             <p>{error}</p>
           ) : (
-            <Table className="w-full" columns={columns} data={filteredInventory} />
+            <Table
+              className="w-full"
+              columns={columns}
+              data={filteredInventory}
+            />
           )}
           <div className="flex justify-between mt-4">
             <Button
@@ -170,7 +187,10 @@ const InventoryBalancePage = () => {
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button onClick={handleNextPage} className="w-32 bg-blue-400 hover:bg-blue-500">
+            <Button
+              onClick={handleNextPage}
+              className="w-32 bg-blue-400 hover:bg-blue-500"
+            >
               Next
             </Button>
           </div>

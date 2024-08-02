@@ -30,7 +30,7 @@ const ProductsPage = () => {
   const [page, setPage] = useState(1); // for pagination
   const [limit, setLimit] = useState(5); // items per page
   const [totalPages, setTotalPages] = useState(0);
-
+  const [totalProducts, setTotalProducts] = useState(0);
 
   const Products = async () => {
     try {
@@ -39,7 +39,7 @@ const ProductsPage = () => {
       setOriginalData(processMasterData);
       setFilteredData(processMasterData);
       setTotalPages(data.totalPages);
-      console.log("Fetched data:", data);
+      setTotalProducts(processMasterData.length);
     } catch (error) {
       console.error("Error fetching master product data:", error);
     } finally {
@@ -57,7 +57,7 @@ const ProductsPage = () => {
         id: masterProduct.id,
         no: index + 1,
         name: masterProduct.name,
-        price: masterProduct.price,
+        price: formatPrice(masterProduct.price),
         sku: masterProduct.sku,
         category_name: masterProduct.category.name,
         imageMaster: masterProduct.image
@@ -69,6 +69,13 @@ const ProductsPage = () => {
     }
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(price);
+  };
+
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchMaster(value);
@@ -77,7 +84,7 @@ const ProductsPage = () => {
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
-  }
+  };
 
   const filterMaser = (valueSearch) => {
     let filteredMaster = originalData;
@@ -104,7 +111,7 @@ const ProductsPage = () => {
 
   const openAddModal = () => {
     setIsAddModalOpen(true);
-    console.log(originalData)
+    console.log(originalData);
   };
 
   const closeAddModal = () => {
@@ -134,28 +141,39 @@ const ProductsPage = () => {
           {isLoading ? (
             <SpinnerLoad />
           ) : (
-            <Table
-              columns={columns}
-              fetchData={fetchMaster}
-              data={filteredData}
-              onEdit={handleEdit}
-              render={(row, column) => {
-                if (column.field === "imageMaster") {
-                  return row.imageMaster ? (
-                    <img
-                      src={
-                        row.imageMaster ||
-                        "/docs/images/examples/image-1@2x.jpg"
-                      }
-                      alt={row.name}
-                    />
-                  ) : (
-                    "No Image"
-                  );
-                }
-                return row[column.field];
-              }}
-            />
+            <>
+              {" "}
+              <Table
+                columns={columns}
+                fetchData={fetchMaster}
+                data={originalData}
+                onEdit={handleEdit}
+                render={(row, column) => {
+                  if (column.field === "imageMaster") {
+                    return row.imageMaster ? (
+                      <img
+                        src={
+                          row.imageMaster ||
+                          "/docs/images/examples/image-1@2x.jpg"
+                        }
+                        alt={row.name}
+                      />
+                    ) : (
+                      "No Image"
+                    );
+                  }
+                  return row[column.field];
+                }}
+              />
+              <div className="flex justify-between mt-4">
+                <span>Total: {totalProducts}</span>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -171,11 +189,6 @@ const ProductsPage = () => {
         isOpen={isAddModalOpen}
         onClose={closeAddModal}
         fetchData={Products}
-      />
-      <Pagination 
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
       />
     </div>
   );

@@ -8,11 +8,21 @@ const getImageUrl = (imagePath) => {
   return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
 };
 
+const formatRupiah = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+};
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchProduct, setSearchProduct] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(100);
+  const [originalData, setOriginalData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +31,8 @@ const Products = () => {
         const products = data.data?.masterProduct;
         if (products) {
           setProducts(products);
+          setOriginalData(products);
+          setFilteredData(products);
         } else {
           console.log("Data tidak ditemukan");
         }
@@ -32,6 +44,27 @@ const Products = () => {
     fetchData();
   }, [page, limit]);
 
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchProduct(value);
+    filterProduct(value);
+  };
+
+  const filterProduct = (valueSearch) => {
+    let filteredMaster = originalData;
+
+    if (valueSearch) {
+      filteredMaster = filteredMaster.filter(
+        (product) =>
+          product.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          product.category.name
+            .toLowerCase()
+            .includes(valueSearch.toLowerCase())
+      );
+    }
+    setFilteredData(filteredMaster);
+  };
+
   const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
@@ -40,7 +73,7 @@ const Products = () => {
     setSelectedProduct(null);
   };
 
-  const groupedProducts = products.reduce((acc, product) => {
+  const groupedProducts = filteredData.reduce((acc, product) => {
     const category = product.category.name || "Uncategorized";
     if (!acc[category]) {
       acc[category] = [];
@@ -53,7 +86,11 @@ const Products = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 p-4 dark:border-gray-700">
         <h1 className="text-4xl mt-10 mb-10">Product List</h1>
-        <SearchBar className="w-full" />
+        <SearchBar
+          className="w-3/4"
+          onChange={handleSearchInputChange}
+          value={searchProduct}
+        />
         {Object.keys(groupedProducts).map((category) => (
           <div key={category}>
             <h2 className="text-xl my-8">{category}</h2>
@@ -70,32 +107,31 @@ const Products = () => {
                     height={200}
                     onError={(e) => (e.target.src = "/defaultproducts.png")}
                   />
-                  <div className="flex justify-between">
+                  <div className="flex justify-between mt-4">
                     <h2>{product.name}</h2>
-                    <p>{product.price}</p>
+                    <p className="text-blue-400">
+                      {formatRupiah(product.price)}
+                    </p>
                   </div>
-                  <Button
-                    className=""
-                    onClick={() => handleProductClick(product)}
-                  >
-                    See more detail
-                  </Button>
+                  <div className="flex justify-center mt-10">
+                    <Button onClick={() => handleProductClick(product)}>
+                      See more detail
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
-        {selectedProduct && (
+        {/* {selectedProduct && (
           <div className="product-details">
             <button onClick={handleCloseDetails}>X</button>
             <h2>Product Details</h2>
             <img src={selectedProduct.image} alt={selectedProduct.name} />
             <p>{selectedProduct.name}</p>
             <p>{selectedProduct.price}</p>
-            {/* Tambahan properti yang lain */}
-            {/* <p>{selectedProduct.description}</p> */}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
