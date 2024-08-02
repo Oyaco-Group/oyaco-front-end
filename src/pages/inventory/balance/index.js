@@ -23,6 +23,7 @@ const InventoryBalancePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchWarehouses = async () => {
     setLoading(true);
@@ -33,11 +34,6 @@ const InventoryBalancePage = () => {
         label: warehouse.name,
       }));
       setWarehouses(formattedWarehouses);
-      if (formattedWarehouses.length > 0) {
-        setSelectedWarehouse(formattedWarehouses[0]);
-      } else {
-        setError("No warehouses available");
-      }
     } catch (err) {
       console.error(err);
       setError("Failed to load warehouses");
@@ -64,6 +60,24 @@ const InventoryBalancePage = () => {
     }
   };
 
+  const fetchAllInventory = async (page) => {
+    setLoading(true);
+    try {
+      const data = await getAllStock(page);
+      const formattedData = data.map((item, index) => ({
+        ...item,
+        master_product_name: item.master_product?.name || "Unknown",
+        master_product_price: item.master_product?.price || 0,
+      }));
+      setInventory(formattedData);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load inventory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -71,6 +85,8 @@ const InventoryBalancePage = () => {
   useEffect(() => {
     if (selectedWarehouse) {
       fetchInventory(selectedWarehouse.id, page);
+    } else {
+      fetchAllInventory(page);
     }
   }, [selectedWarehouse, page]);
 
@@ -89,6 +105,10 @@ const InventoryBalancePage = () => {
     sortInventory(sortOrder);
   }, [sortOrder]);
 
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const handleNextPage = () => {
     setPage((prevPage) => prevPage + 1);
   };
@@ -103,6 +123,12 @@ const InventoryBalancePage = () => {
     { id: "asc", label: "Lowest Quantity" },
     { id: "desc", label: "Highest Quantity" },
   ];
+
+  const filteredInventory = inventory.filter((txn) => {
+    return Object.values(txn).some((val) =>
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   return (
     <div className="p-4 sm:ml-64">
@@ -125,7 +151,7 @@ const InventoryBalancePage = () => {
               />
             </div>
             <div className="flex items-center gap-4">
-              <SearchBar className="w-50" />
+              <SearchBar className="w-50" onChange={handleSearchInputChange}/>
             </div>
           </div>
           {loading ? (
@@ -133,18 +159,18 @@ const InventoryBalancePage = () => {
           ) : error ? (
             <p>{error}</p>
           ) : (
-            <Table className="w-full" columns={columns} data={inventory} />
+            <Table className="w-full" columns={columns} data={filteredInventory} />
           )}
           <div className="flex justify-between mt-4">
             <Button
               onClick={handlePreviousPage}
               disabled={page === 1}
-              className="w-32"
+              className="w-32 bg-blue-400 hover:bg-blue-500"
             >
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button onClick={handleNextPage} className="w-32">
+            <Button onClick={handleNextPage} className="w-32 bg-blue-400 hover:bg-blue-500">
               Next
             </Button>
           </div>
