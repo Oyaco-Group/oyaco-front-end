@@ -163,7 +163,7 @@ const TransactionIncomingPage = () => {
               columns={columns}
               data={filteredData}
               onEdit={handleEdit}
-              onDelete={openDeleteConfirmation} // Use openDeleteConfirmation
+              onDelete={openDeleteConfirmation}
             />
           )}
         </div>
