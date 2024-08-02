@@ -9,6 +9,11 @@ import TextareaField from "../form/textareaField";
 import Button from "../button";
 import { fetchUpdateUser } from "@/fetching/user";
 
+const getImageUrl = (imagePath) => {
+  const baseUrl = "http://localhost:8080/api/images/";
+  return imagePath ? `${baseUrl}${imagePath}` : "/avatar.png";
+};
+
 const ProfileMenu = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -106,9 +111,11 @@ const ProfileMenu = ({ onClose }) => {
           >
             <span className="sr-only">Open profile menu</span>
             <img
-              className="h-10 w-10 rounded-full"
-              src={user?.image_url || "/avatar.png"}
-              alt="foto profil"
+              src={getImageUrl(user?.image_url)}
+              alt={user?.name || "Product"}
+              width={40}
+              height={40}
+              onError={(e) => (e.target.src = "/avatar.png")}
             />
             <div className="ms-3 space-y-0.5 text-left font-medium text-gray-500 rtl:text-right">
               <div className="mt-2">| {user?.user_role}</div>
@@ -158,9 +165,12 @@ const ProfileMenu = ({ onClose }) => {
           title="Edit Profile"
         >
           <img
+            src={getImageUrl(user?.image_url)}
+            alt={user?.name || "Product"}
+            width={40}
+            height={40}
+            onError={(e) => (e.target.src = "/avatar.png")}
             className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
-            src={"/avatar.png"}
-            alt={user?.name}
           />
           <h1 className="mb-4 flex items-start font-normal">Personal</h1>
           <InputField

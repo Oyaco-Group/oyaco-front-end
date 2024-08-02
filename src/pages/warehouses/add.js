@@ -27,6 +27,7 @@ const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
       });
       console.log("Warehouse created:", tempData);
       fetchData();
+      onClose();
       toast.success("Successfully warehouse created");
     } catch (error) {
       console.error("Error creating warehouse:", error);
