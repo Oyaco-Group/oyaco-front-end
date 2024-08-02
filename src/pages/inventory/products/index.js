@@ -30,6 +30,7 @@ const ProductsPage = () => {
   const [page, setPage] = useState(1); // for pagination
   const [limit, setLimit] = useState(5); // items per page
   const [totalPages, setTotalPages] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   const Products = async () => {
     try {
@@ -38,7 +39,7 @@ const ProductsPage = () => {
       setOriginalData(processMasterData);
       setFilteredData(processMasterData);
       setTotalPages(data.totalPages);
-      console.log("Fetched data:", data);
+      setTotalProducts(processMasterData.length);
     } catch (error) {
       console.error("Error fetching master product data:", error);
     } finally {
@@ -140,28 +141,39 @@ const ProductsPage = () => {
           {isLoading ? (
             <SpinnerLoad />
           ) : (
-            <Table
-              columns={columns}
-              fetchData={fetchMaster}
-              data={originalData}
-              onEdit={handleEdit}
-              render={(row, column) => {
-                if (column.field === "imageMaster") {
-                  return row.imageMaster ? (
-                    <img
-                      src={
-                        row.imageMaster ||
-                        "/docs/images/examples/image-1@2x.jpg"
-                      }
-                      alt={row.name}
-                    />
-                  ) : (
-                    "No Image"
-                  );
-                }
-                return row[column.field];
-              }}
-            />
+            <>
+              {" "}
+              <Table
+                columns={columns}
+                fetchData={fetchMaster}
+                data={originalData}
+                onEdit={handleEdit}
+                render={(row, column) => {
+                  if (column.field === "imageMaster") {
+                    return row.imageMaster ? (
+                      <img
+                        src={
+                          row.imageMaster ||
+                          "/docs/images/examples/image-1@2x.jpg"
+                        }
+                        alt={row.name}
+                      />
+                    ) : (
+                      "No Image"
+                    );
+                  }
+                  return row[column.field];
+                }}
+              />
+              <div className="flex justify-between mt-4">
+                <span>Total: {totalProducts}</span>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -177,11 +189,6 @@ const ProductsPage = () => {
         isOpen={isAddModalOpen}
         onClose={closeAddModal}
         fetchData={Products}
-      />
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
       />
     </div>
   );
