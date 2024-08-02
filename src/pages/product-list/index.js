@@ -107,7 +107,9 @@ const Products = () => {
                   />
                   <div className="flex justify-between">
                     <h2>{product.name}</h2>
-                    <p>{formatRupiah(product.price)}</p>
+                    <p className="text-blue-400">
+                      {formatRupiah(product.price)}
+                    </p>
                   </div>
                   <div className="flex justify-center mt-4">
                     <Button onClick={() => handleProductClick(product)}>

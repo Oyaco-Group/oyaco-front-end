@@ -31,7 +31,6 @@ const ProductsPage = () => {
   const [limit, setLimit] = useState(5); // items per page
   const [totalPages, setTotalPages] = useState(0);
 
-
   const Products = async () => {
     try {
       const data = await fetchMaster(page, limit);
@@ -57,7 +56,7 @@ const ProductsPage = () => {
         id: masterProduct.id,
         no: index + 1,
         name: masterProduct.name,
-        price: masterProduct.price,
+        price: formatPrice(masterProduct.price),
         sku: masterProduct.sku,
         category_name: masterProduct.category.name,
         imageMaster: masterProduct.image
@@ -69,6 +68,13 @@ const ProductsPage = () => {
     }
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(price);
+  };
+
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchMaster(value);
@@ -77,7 +83,7 @@ const ProductsPage = () => {
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
-  }
+  };
 
   const filterMaser = (valueSearch) => {
     let filteredMaster = originalData;
@@ -104,7 +110,7 @@ const ProductsPage = () => {
 
   const openAddModal = () => {
     setIsAddModalOpen(true);
-    console.log(originalData)
+    console.log(originalData);
   };
 
   const closeAddModal = () => {
@@ -172,7 +178,7 @@ const ProductsPage = () => {
         onClose={closeAddModal}
         fetchData={Products}
       />
-      <Pagination 
+      <Pagination
         currentPage={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
