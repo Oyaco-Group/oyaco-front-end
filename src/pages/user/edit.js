@@ -9,6 +9,11 @@ import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import PopupConfirmation from "@/components/style-components/popupConfirmation";
 
+const getImageUrl = (imagePath) => {
+  const baseUrl = "http://localhost:8080/api/images/";
+  return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
+};
+
 const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
   const [tempData, setTempData] = useState({
     id: "",
@@ -116,9 +121,12 @@ const EditProfileModal = ({ isOpen, onClose, modalEditUser, fetchData }) => {
       title="Edit Profile"
     >
       <img
+        src={getImageUrl(tempData?.image)}
+        alt={tempData?.name || "Product"}
+        width={50}
+        height={50}
+        onError={(e) => (e.target.src = "/avatar.png")}
         className="mx-auto mb-8 h-24 w-24 rounded-full border-4 border-blue-400 shadow-sm"
-        src={tempData.image || "/avatar.png"}
-        alt={tempData.name}
       />
       <h1 className="mb-4 flex items-start font-normal">Personal</h1>
       <InputField
