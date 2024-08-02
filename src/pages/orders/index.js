@@ -80,6 +80,21 @@ const OrderPage = () => {
     setFilteredOrder(filteredOrder);
   };
 
+  const filterOrder = (valueSearch) => {
+    let filteredOrder = order;
+
+    if (valueSearch) {
+      filteredOrder = filteredOrder.filter(
+        (order) =>
+          order.order_status.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          order.buyer_status.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          order.payment_type.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          order.created_at.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+    }
+    setFilteredOrder(filteredOrder);
+  };
+
   function openModal1(id) {
     setisOpen1(true);
     setId(id);
