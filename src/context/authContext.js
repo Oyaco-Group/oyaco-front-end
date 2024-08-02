@@ -25,12 +25,13 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
+        toast.error("Failed to fetch user profile. Please try again.");
         router.push("/login");
       }
     };
 
     fetchData();
-  }, []);
+  }, [user, profileFetched]);
 
   const login = async (token) => {
     try {
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       setProfileFetched(true);
     } catch (error) {
       console.error("Failed to fetch user profile after login:", error);
-      toast.error("Invalid credential");
+      toast.error("Invalid credential. Please try again.");
     }
   };
 
@@ -53,15 +54,14 @@ export const AuthProvider = ({ children }) => {
       router.push("/login");
     } catch (error) {
       console.error("Failed to logout:", error);
-      toast.error("Failed to logout");
+      toast.error("Failed to logout. Please try again.");
     }
   };
 
   const redirectBasedOnRole = (role) => {
     if (role === "admin") {
       router.push("/dashboard");
-    }
-    if (role === "user") {
+    } else if (role === "user") {
       router.push("/product-list");
     }
   };

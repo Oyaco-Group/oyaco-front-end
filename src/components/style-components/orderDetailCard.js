@@ -60,7 +60,7 @@ const ProductInfoCard = ({ product }) => {
       <div className="p-4 flex items-center">
         <div className="flex-shrink-0">
           <img
-            src={image}
+            src={`http://localhost:8080/api/images/${image}`}
             className="h-24 w-24 object-cover rounded"
             alt={name}
           />
