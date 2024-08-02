@@ -5,7 +5,7 @@ import Button from "@/components/style-components/button";
 import { toast } from "react-toastify";
 
 const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     user_id: "",
     master_product_id: "",
     origin: "",
@@ -13,7 +13,9 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
     quantity: "",
     iscondition_good: true,
     expiration_status: false,
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -39,6 +41,9 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
       }
 
       onSubmit(formDataToSend);
+
+      // Reset the form data after submission
+      setFormData(initialFormData);
     } catch (error) {
       toast.error(error.message);
       console.log(error);
@@ -164,9 +169,9 @@ const OutgoingTransactionModal = ({ isOpen, onClose, onSubmit }) => {
         <div className="flex justify-end">
           <Button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded"
+            className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded"
           >
-            Submit
+            Create
           </Button>
         </div>
       </form>

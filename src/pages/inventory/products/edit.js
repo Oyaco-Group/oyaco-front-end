@@ -89,6 +89,7 @@ const EditProductsModal = ({
       await onDelete(tempData.id);
       fetchData();
       toast.success("Product deleted successfully");
+      setIsConfirmationOpen(false);
       onClose();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -96,7 +97,14 @@ const EditProductsModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Edit Product'>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setIsConfirmationOpen(false);
+      }}
+      title='Edit Product'
+    >
       <InputField
         id='name'
         type='text'
