@@ -115,7 +115,6 @@ const InventoryBalancePage = () => {
     );
   });
 
-
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">

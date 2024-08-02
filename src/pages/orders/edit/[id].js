@@ -9,7 +9,7 @@ import { getOrderById, updateOrderItem } from "@/fetching/order";
 import Table from "@/components/style-components/table";
 import Modal from "@/components/style-components/modal";
 import SelectFieldOrder from "../create/selectFieldOrderEmail";
-import { getInventoryByProductId } from "@/fetching/inventory";
+import { getInventoryByProductId } from "@/fetching/order";
 import InputField from "@/components/style-components/form/inputField";
 import { toast } from "react-toastify";
 
@@ -26,14 +26,14 @@ const EditOrder = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  const fetchingDetailOrder = async (id) => {
-    try {
-      const data = await getOrderById(id);
-      setDetailOrder(data.data);
-    } catch (err) {
-      console.log(err);
+    const fetchingDetailOrder = async(id) => {
+        try {
+            const data = await getOrderById(id);
+            setDetailOrder(data.data)
+        } catch (err) {
+            console.log(err);
+        }
     }
-  };
 
   const fetchInventory = async (index) => {
     try {
@@ -51,39 +51,43 @@ const EditOrder = () => {
     }
   };
 
-  const updateOrder = async (id) => {
-    try {
-      const data = {
-        order_id: +detailOrder.id,
-        master_product_id: +productId,
-        inventory_id: +inventoryId,
-        quantity: +quantity,
-      };
-      console.log(id, data);
-      const orderItem = await updateOrderItem(id, data);
-      toast.success(orderItem.message);
-    } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+    const updateOrder = async (id) => {
+        try {
+            const data = {
+                order_id : +detailOrder.id,
+                master_product_id : +productId,
+                inventory_id : +inventoryId,
+                quantity : +quantity 
+            }
+            console.log(id,data);
+            const orderItem = await updateOrderItem(id, data);
+            if(!orderItem.data) {
+                toast.error(orderItem.message);
+            }
+            toast.success(orderItem.message);
+        } catch (err) {
+            console.log(err);
+            toast.error(err.response.data.message);
+        }
+
     }
-  };
-  const arrangeColumn = () => {
-    let array = [];
-    const data = detailOrder.order_item;
-    for (const i in data) {
-      array[i] = {
-        payment_type: detailOrder.payment_type,
-        quantity: data[i].quantity,
-        master_product_name: data[i].master_product.name,
-        image: `http://localhost:8080/api/images/${data[i].master_product.image}`,
-        price: data[i].master_product.price,
-        inventory: `${data[i].inventory.warehouse.name} (${data[i].inventory.quantity})`,
-        productId: data[i].master_product.id,
-        orderItemId: data[i].id,
-      };
+    const arrangeColumn = () => {
+        let array = [];
+        const data = detailOrder.order_item;
+        for (const i in data) {
+            array[i] = {
+                payment_type : detailOrder.payment_type,
+                quantity : data[i].quantity,
+                master_product_name : data[i].master_product.name,
+                image : `http://localhost:8080/api/images/${data[i].master_product.image}`,
+                price : data[i].master_product.price,
+                inventory : `${data[i].inventory.warehouse.name} (${data[i].inventory.quantity})`,
+                productId : data[i].master_product.id,
+                orderItemId : data[i].id
+            }
+        }
+        setProducts(array);
     }
-    setProducts(array);
-  };
 
   const openModal = (row) => {
     setIsOpen(true);
