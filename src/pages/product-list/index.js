@@ -1,20 +1,26 @@
 import { useState, useEffect } from "react";
-import fetchMaster from "../../fetching/products"; // Pastikan path ini benar
+import { fetchMasterProduct } from "../../fetching/products";
 import SearchBar from "@/components/style-components/navbar/searchbar";
+import Button from "@/components/style-components/button";
+
+const getImageUrl = (imagePath) => {
+  const baseUrl = "http://localhost:8080/api/images/";
+  return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
+};
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(100);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchMaster(page, limit);
-        console.log("Fetched data:", data); // Debug log
-        if (data && data.products) {
-          setProducts(data.products); // Set produk setelah data diterima
+        const data = await fetchMasterProduct(page, limit);
+        const products = data.data?.masterProduct;
+        if (products) {
+          setProducts(products);
         } else {
           console.log("Data tidak ditemukan");
         }
@@ -34,58 +40,62 @@ const Products = () => {
     setSelectedProduct(null);
   };
 
+  const groupedProducts = products.reduce((acc, product) => {
+    const category = product.category.name || "Uncategorized";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 p-4 dark:border-gray-700">
         <h1 className="text-4xl mt-10 mb-10">Product List</h1>
-        <div className="grid grid-cols-1 gap-4">
-          <SearchBar className="w-full" />
-          <div className="product-list">
-            {products.map((product) => (
-              <div key={product.id} className="product-card">
-                <img src={product.image} alt={product.name} />
-                <h2>{product.name}</h2>
-                <p>{product.price}</p>
-                <button onClick={() => handleProductClick(product)}>
-                  See more detail
-                </button>
-              </div>
-            ))}
-          </div>
-          {selectedProduct && (
-            <div className="product-details">
-              <button onClick={handleCloseDetails}>X</button>
-              <h2>Product Details</h2>
-              <img src={selectedProduct.image} alt={selectedProduct.name} />
-              <p>{selectedProduct.name}</p>
-              <p>{selectedProduct.price}</p>
-              {/* Tambahan properti yang lain */}
-              {/* <p>{selectedProduct.description}</p> */}
+        <SearchBar className="w-full" />
+        {Object.keys(groupedProducts).map((category) => (
+          <div key={category}>
+            <h2 className="text-xl my-8">{category}</h2>
+            <div className="grid grid-cols-5 gap-4">
+              {groupedProducts[category].map((product) => (
+                <div
+                  key={product.id}
+                  className="product-card rounded-lg border-2 p-4"
+                >
+                  <img
+                    src={getImageUrl(product?.image)}
+                    alt={product?.name || "Product"}
+                    width={200}
+                    height={200}
+                    onError={(e) => (e.target.src = "/defaultproducts.png")}
+                  />
+                  <div className="flex justify-between">
+                    <h2>{product.name}</h2>
+                    <p>{product.price}</p>
+                  </div>
+                  <Button
+                    className=""
+                    onClick={() => handleProductClick(product)}
+                  >
+                    See more detail
+                  </Button>
+                </div>
+              ))}
             </div>
-          )}
-          <style jsx>{`
-            .product-list {
-              display: flex;
-              flex-wrap: wrap;
-            }
-            .product-card {
-              border: 1px solid #ccc;
-              padding: 10px;
-              margin: 10px;
-              width: calc(25% - 40px);
-              box-sizing: border-box;
-            }
-            .product-details {
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              background: #fff;
-              padding: 20px;
-              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-          `}</style>
-        </div>
+          </div>
+        ))}
+        {selectedProduct && (
+          <div className="product-details">
+            <button onClick={handleCloseDetails}>X</button>
+            <h2>Product Details</h2>
+            <img src={selectedProduct.image} alt={selectedProduct.name} />
+            <p>{selectedProduct.name}</p>
+            <p>{selectedProduct.price}</p>
+            {/* Tambahan properti yang lain */}
+            {/* <p>{selectedProduct.description}</p> */}
+          </div>
+        )}
       </div>
     </div>
   );
