@@ -11,6 +11,7 @@ const getImageUrl = (imagePath) => {
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchProduct, setSearchProduct] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(100);
 
@@ -32,6 +33,10 @@ const Products = () => {
     fetchData();
   }, [page, limit]);
 
+  const handleSearchInputChange = (e) => {
+    setSearchProduct(e.target.value);
+  };
+
   const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
@@ -39,6 +44,12 @@ const Products = () => {
   const handleCloseDetails = () => {
     setSelectedProduct(null);
   };
+
+  const filteredProduct = product.filter((txn) => {
+    return Object.values(txn).some((val) =>
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   const groupedProducts = products.reduce((acc, product) => {
     const category = product.category.name || "Uncategorized";
