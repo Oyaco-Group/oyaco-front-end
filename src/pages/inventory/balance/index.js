@@ -34,11 +34,6 @@ const InventoryBalancePage = () => {
         label: warehouse.name,
       }));
       setWarehouses(formattedWarehouses);
-      if (formattedWarehouses.length > 0) {
-        setSelectedWarehouse(formattedWarehouses[0]);
-      } else {
-        setError("No warehouses available");
-      }
     } catch (err) {
       console.error(err);
       setError("Failed to load warehouses");
@@ -65,6 +60,24 @@ const InventoryBalancePage = () => {
     }
   };
 
+  const fetchAllInventory = async (page) => {
+    setLoading(true);
+    try {
+      const data = await getAllStock(page);
+      const formattedData = data.map((item, index) => ({
+        ...item,
+        master_product_name: item.master_product?.name || "Unknown",
+        master_product_price: item.master_product?.price || 0,
+      }));
+      setInventory(formattedData);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load inventory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -72,6 +85,8 @@ const InventoryBalancePage = () => {
   useEffect(() => {
     if (selectedWarehouse) {
       fetchInventory(selectedWarehouse.id, page);
+    } else {
+      fetchAllInventory(page);
     }
   }, [selectedWarehouse, page]);
 
@@ -114,7 +129,6 @@ const InventoryBalancePage = () => {
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-
 
   return (
     <div className="p-4 sm:ml-64">

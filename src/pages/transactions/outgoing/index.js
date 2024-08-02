@@ -19,9 +19,10 @@ import Pagination from "@/components/style-components/pagination";
 const TransactionOutgoingPage = () => {
   const columns = [
     { field: "no", label: "No" },
-    { field: "user_id", label: "Admin ID" },
-    { field: "master_product_id", label: "Product ID" },
+    { field: "user_name", label: "Created By" },
     { field: "inventory_id", label: "Inventory ID" },
+    { field: "master_product_id", label: "Product ID" },
+    { field: "master_product_name", label: "Product Name" },
     { field: "origin", label: "Warehouse" },
     { field: "movement_type", label: "Movement Type" },
     { field: "destination", label: "Delivered to" },
@@ -41,8 +42,11 @@ const TransactionOutgoingPage = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const fetchWarehouses = async () => {
+    setLoading(true);
     try {
       const data = await getWarehouses();
       let warehouse = [];
@@ -55,10 +59,14 @@ const TransactionOutgoingPage = () => {
       setWarehouses(warehouse);
     } catch (err) {
       console.error(err);
+      setError("Failed to load warehouses")
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchOutgoingTransaction = async (warehouse, page) => {
+    setLoading(true);
     try {
       let data;
       if (warehouse.id) {
@@ -68,6 +76,8 @@ const TransactionOutgoingPage = () => {
       }
       const transformedData = data.data.map((transaction) => ({
         ...transaction,
+        user_name: transaction.user?.name || "Unknown",
+        master_product_name: transaction.master_product?.name || "Unknown",
         iscondition_good: transaction.iscondition_good ? "Good" : "Damaged",
         expiration_status: transaction.expiration_status
           ? "Expired"
@@ -76,6 +86,9 @@ const TransactionOutgoingPage = () => {
       setTransaction(transformedData);
     } catch (err) {
       console.error(err);
+      setError("Failed to load outgoing transaction data")
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -158,7 +171,13 @@ const TransactionOutgoingPage = () => {
               </Button>
             </div>
           </div>
+          {loading ? (
+            <SpinnerLoad />
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
           <Table columns={columns} data={filteredTransactions} />
+          )}
           <div className="flex justify-between mt-4">
             <Button onClick={handlePreviousPage} disabled={page === 1} className="mr-4 bg-blue-400 hover:bg-blue-500">
               Previous
