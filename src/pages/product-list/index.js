@@ -1,50 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchMasterProduct } from "../../fetching/products";
+import SearchBar from "@/components/style-components/navbar/searchbar";
+import Button from "@/components/style-components/button";
 
-const ProductListPage = () => {
+const getImageUrl = (imagePath) => {
+  const baseUrl = "http://localhost:8080/api/images/";
+  return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
+};
+
+const Products = () => {
+  const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(100);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchMasterProduct(page, limit);
+        const products = data.data?.masterProduct;
+        if (products) {
+          setProducts(products);
+        } else {
+          console.log("Data tidak ditemukan");
+        }
+      } catch (error) {
+        console.error("Error fetching master product data:", error);
+      }
+    };
+
+    fetchData();
+  }, [page, limit]);
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedProduct(null);
+  };
+
+  const groupedProducts = products.reduce((acc, product) => {
+    const category = product.category.name || "Uncategorized";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
 
   return (
     <div className="p-4 sm:ml-64">
-      <div className="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
-        <h1 className="text-2xl mb-4">Product List</h1>
-        <input
-          type="text"
-          placeholder="Search..."
-          className="mb-4 p-2 border rounded w-full"
-        />
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {products.map((product) => (
-            <div key={product.id} className="border p-4 rounded">
-              <img src={product.image} alt={product.name} className="mb-2" />
-              <h2 className="text-xl">{product.name}</h2>
-              <p className="text-gray-500">{product.price}</p>
-              <button
-                className="mt-2 p-2 bg-blue-500 text-white rounded"
-                onClick={() => setSelectedProduct(product)}
-              >
-                See more detail
-              </button>
+      <div className="mt-14 p-4 dark:border-gray-700">
+        <h1 className="text-4xl mt-10 mb-10">Product List</h1>
+        <SearchBar className="w-full" />
+        {Object.keys(groupedProducts).map((category) => (
+          <div key={category}>
+            <h2 className="text-xl my-8">{category}</h2>
+            <div className="grid grid-cols-5 gap-4">
+              {groupedProducts[category].map((product) => (
+                <div
+                  key={product.id}
+                  className="product-card rounded-lg border-2 p-4"
+                >
+                  <img
+                    src={getImageUrl(product?.image)}
+                    alt={product?.name || "Product"}
+                    width={200}
+                    height={200}
+                    onError={(e) => (e.target.src = "/defaultproducts.png")}
+                  />
+                  <div className="flex justify-between">
+                    <h2>{product.name}</h2>
+                    <p>{product.price}</p>
+                  </div>
+                  <Button
+                    className=""
+                    onClick={() => handleProductClick(product)}
+                  >
+                    See more detail
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div> */}
+          </div>
+        ))}
         {selectedProduct && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-4 rounded shadow-lg relative w-11/12 md:w-1/2">
-              <button
-                className="absolute top-2 right-2 text-gray-500"
-                onClick={() => setSelectedProduct(null)}
-              >
-                X
-              </button>
-              <img
-                src={selectedProduct.image}
-                alt={selectedProduct.name}
-                className="mb-2"
-              />
-              <h2 className="text-2xl">{selectedProduct.name}</h2>
-              <p className="text-gray-500">{selectedProduct.price}</p>
-              <p>{selectedProduct.description}</p>
-            </div>
+          <div className="product-details">
+            <button onClick={handleCloseDetails}>X</button>
+            <h2>Product Details</h2>
+            <img src={selectedProduct.image} alt={selectedProduct.name} />
+            <p>{selectedProduct.name}</p>
+            <p>{selectedProduct.price}</p>
+            {/* Tambahan properti yang lain */}
+            {/* <p>{selectedProduct.description}</p> */}
           </div>
         )}
       </div>
@@ -52,4 +101,4 @@ const ProductListPage = () => {
   );
 };
 
-export default ProductListPage;
+export default Products;

@@ -1,10 +1,23 @@
 import instance from "@/lib/axios";
 
+export const fetchMasterProduct = async (page, limit) => {
+  try {
+    const response = await instance.get("/masterProduct", {
+      params: { page, limit },
+    });
+    return response?.data
+  } catch (error) {
+     console.error("Error fetching master products data:", error);
+     throw error;
+  }
+};
+
 export const fetchMaster = async (page = 1, limit = 10) => {
   try {
     const response = await instance.get("/masterProduct", {
       params: { page, limit },
     });
+    console.log(response, "<<<<<<<<<<<<<");
     return response.data.data;
   } catch (error) {
     console.error("Error fetching master products data:", error);
@@ -59,4 +72,3 @@ export const deleteProducts = async (id) => {
     throw error;
   }
 };
-
