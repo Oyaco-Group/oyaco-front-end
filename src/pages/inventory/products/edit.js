@@ -3,6 +3,8 @@ import Modal from "@/components/style-components/modal";
 import InputField from "@/components/style-components/form/inputField";
 import Button from "@/components/style-components/button";
 import { AiOutlineDelete } from "react-icons/ai";
+import PopupConfirmation from "@/components/style-components/popupConfirmation";
+import { toast } from "react-toastify";
 
 const EditProductsModal = ({
   isOpen,
@@ -21,6 +23,8 @@ const EditProductsModal = ({
     image: null,
     isdelete: false,
   });
+
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   useEffect(() => {
     if (modalEditProducts) {
@@ -81,75 +85,89 @@ const EditProductsModal = ({
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await onDelete(tempData.id);
-        fetchData();
-        onClose();
-      } catch (error) {
-        console.error("Error deleting product:", error);
-      }
+    try {
+      await onDelete(tempData.id);
+      fetchData();
+      toast.success("Product deleted successfully");
+      setIsConfirmationOpen(false);
+      onClose();
+    } catch (error) {
+      console.error("Error deleting product:", error);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Product">
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setIsConfirmationOpen(false);
+      }}
+      title='Edit Product'
+    >
       <InputField
-        id="name"
-        type="text"
+        id='name'
+        type='text'
         value={tempData.name}
         onChange={handleChange}
-        placeholder="Product Name"
-        className="text-gray-400"
+        placeholder='Product Name'
+        className='text-gray-400'
       />
       <InputField
-        id="category_id"
-        type="number"
+        id='category_id'
+        type='number'
         value={tempData.category_id}
         onChange={handleChange}
-        placeholder="Category ID"
-        className="text-gray-400"
+        placeholder='Category ID'
+        className='text-gray-400'
         min={1}
       />
       <InputField
-        id="price"
-        type="number"
+        id='price'
+        type='number'
         value={tempData.price}
         onChange={handleChange}
-        placeholder="Price"
-        className="text-gray-400"
+        placeholder='Price'
+        className='text-gray-400'
         min={0}
       />
       <InputField
-        id="sku"
-        type="text"
+        id='sku'
+        type='text'
         value={tempData.sku}
         onChange={handleChange}
-        placeholder="SKU"
-        className="text-gray-400"
+        placeholder='SKU'
+        className='text-gray-400'
       />
-      <div className="mb-4">
+      <div className='mb-4'>
         <input
-          id="image"
-          type="file"
-          accept="image/*"
+          id='image'
+          type='file'
+          accept='image/*'
           onChange={handleFileChange}
-          className="text-gray-400"
+          className='text-gray-400'
         />
       </div>
-      <div className="flex justify-center gap-4">
-        <Button type="button" onClick={handleSaveChanges}>
+      <div className='flex justify-center gap-4'>
+        <Button type='button' onClick={handleSaveChanges}>
           Save Changes
         </Button>
         <Button
-          type="button"
-          onClick={handleDelete}
-          className="bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-0 flex items-center gap-2"
+          type='button'
+          onClick={() => setIsConfirmationOpen(true)}
+          className='bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-0 flex items-center gap-2'
         >
-          <AiOutlineDelete />
+          <AiOutlineDelete className='mr-2 h-4 w-4 flex-shrink-0' />
           Delete
         </Button>
       </div>
+      {isConfirmationOpen && (
+        <PopupConfirmation
+          message='Are you sure you want to delete this product?'
+          onConfirm={handleDelete}
+          onCancel={() => setIsConfirmationOpen(false)}
+        />
+      )}
     </Modal>
   );
 };

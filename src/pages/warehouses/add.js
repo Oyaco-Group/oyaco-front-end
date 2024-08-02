@@ -54,7 +54,7 @@ const AddWarehouseModal = ({ isOpen, onClose, fetchData }) => {
       />
       <div className="flex justify-center gap-4">
         <Button
-          className="bg-green-400 hover:bg-green-500"
+          className="bg-green-500 hover:bg-green-600"
           type="button"
           onClick={handleSaveChanges}
         >
