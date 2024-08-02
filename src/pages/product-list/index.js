@@ -14,6 +14,8 @@ const Products = () => {
   const [searchProduct, setSearchProduct] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(100);
+  const [originalData, setOriginalData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +24,8 @@ const Products = () => {
         const products = data.data?.masterProduct;
         if (products) {
           setProducts(products);
+          setOriginalData(products);
+          setFilteredData(products);
         } else {
           console.log("Data tidak ditemukan");
         }
@@ -34,7 +38,22 @@ const Products = () => {
   }, [page, limit]);
 
   const handleSearchInputChange = (e) => {
-    setSearchProduct(e.target.value);
+    const value = e.target.value;
+    setSearchProduct(value);
+    filterProduct(value);
+  };
+
+  const filterProduct = (valueSearch) => {
+    let filteredMaster = originalData;
+
+    if (valueSearch) {
+      filteredMaster = filteredMaster.filter(
+        (product) =>
+          product.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
+          product.sku.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+    }
+    setFilteredData(filteredMaster);
   };
 
   const handleProductClick = (product) => {
@@ -45,13 +64,7 @@ const Products = () => {
     setSelectedProduct(null);
   };
 
-  const filteredProduct = product.filter((txn) => {
-    return Object.values(txn).some((val) =>
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
-
-  const groupedProducts = products.reduce((acc, product) => {
+  const groupedProducts = filteredData.reduce((acc, product) => {
     const category = product.category.name || "Uncategorized";
     if (!acc[category]) {
       acc[category] = [];
@@ -64,7 +77,11 @@ const Products = () => {
     <div className="p-4 sm:ml-64">
       <div className="mt-14 p-4 dark:border-gray-700">
         <h1 className="text-4xl mt-10 mb-10">Product List</h1>
-        <SearchBar className="w-full" />
+        <SearchBar
+          className="w-full"
+          onChange={handleSearchInputChange}
+          value={searchProduct}
+        />
         {Object.keys(groupedProducts).map((category) => (
           <div key={category}>
             <h2 className="text-xl my-8">{category}</h2>
@@ -85,28 +102,25 @@ const Products = () => {
                     <h2>{product.name}</h2>
                     <p>{product.price}</p>
                   </div>
-                  <Button
-                    className=""
-                    onClick={() => handleProductClick(product)}
-                  >
-                    See more detail
-                  </Button>
+                  <div className="flex justify-center mt-4">
+                    <Button onClick={() => handleProductClick(product)}>
+                      See more detail
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
-        {selectedProduct && (
+        {/* {selectedProduct && (
           <div className="product-details">
             <button onClick={handleCloseDetails}>X</button>
             <h2>Product Details</h2>
             <img src={selectedProduct.image} alt={selectedProduct.name} />
             <p>{selectedProduct.name}</p>
             <p>{selectedProduct.price}</p>
-            {/* Tambahan properti yang lain */}
-            {/* <p>{selectedProduct.description}</p> */}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
