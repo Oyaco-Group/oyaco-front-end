@@ -185,29 +185,31 @@ const OrderCreatePage = () => {
                 <p className="mb-6 text-sm font-light text-gray-400">
                     Please input order item or product
                 </p>
-                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md bg-blue-200 p-5 text-center">
-                    <div className="w-full min-w-max flex justify-center text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                        <div className="bg-blue-400 p-4 rounded-lg">
-                            <div className="flex flex-wrap justify-between gap-2 mx-5 text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3">
-                                <label>User Email</label>
-                                <InputField type={'email'} placeholder={'User Email'} id={'email'} />
-                                <Button size="sm" className="bg-red-500 hover:bg-red-600 w-full" onClick={(ev) => {onChangeUserId(ev)}}>Lock User</Button>
-                            </div>
-                            <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 text-white font-semibold border rounded-sm p-4 mb-3   ">
-                                <label>Payment Type</label>
-                                <SelectField options={optionPayment} placeholder={'Payment_Type'} 
-                                    onChange={(ev) => {onChangePayment(ev)}}/>
-                            </div>
-                            <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 text-white font-semibold border rounded-sm p-4">
-                                <label>Buyer_Status</label>
-                                <SelectField options={optionBuyer} placeholder={'Buyer_Status'}
-                                    onChange={(ev) => {onChangeBuyer(ev)}}/>
-                            </div>
-                        </div>
-                        <div className="w-2/3 mx-5 text-center text-gray-900 text-white font-semibold bg-blue-400 p-4 rounded-lg">
-                            <div className="w-full flex mx-5 justify-center text-gray-900 text-white font-semibold">
-                                <label>Product Item</label>
-                                <span>:</span>
+                <div className="relative overflow-x-auto overflow-y-auto rounded-lg border shadow-md p-5">
+                    <div className="w-full min-w-max flex justify-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                      <div className="flex justify-start">
+                        <div className="max-w-lg p-4 rounded-lg mb-5">
+                              <div className="flex flex-wrap justify-between gap-2 mx-5 text-gray-900 font-semibold border rounded-sm p-4 mb-3">
+                                  <label>User Email</label>
+                                  <InputField type={'email'} placeholder={'User Email'} id={'email'} className={''} />
+                                  <Button size="sm" className="w-full" onClick={(ev) => {onChangeUserId(ev)}}>Lock User</Button>
+                              </div>
+                              <div className="flex justify-between gap-2 mx-5 text-center text-gray-900 font-semibold border rounded-sm p-4 mb-3   ">
+                                  <label>Payment Type</label>
+                                  <SelectField options={optionPayment} placeholder={'Payment_Type'} 
+                                      onChange={(ev) => {onChangePayment(ev)}}/>
+                              </div>
+                              <div className="flex mx-5 justify-between gap-2 text-center text-gray-900 font-semibold border rounded-sm p-4">
+                                  <label>Buyer_Status</label>
+                                  <SelectField options={optionBuyer} placeholder={'Buyer_Status'}
+                                      onChange={(ev) => {onChangeBuyer(ev)}}/>
+                              </div>
+                          </div>
+                      </div>
+                       
+                        <div className="w-full text-gray-900 font-semibold p-4 rounded-lg">
+                            <div className="w-full flex mx-5 justify-start gap-2 text-gray-900 font-semibold">
+                                <label className="mt-2">Product Item : </label>
                                 <InputField type={'number'} minValue={minValueProduct} onChange={(ev) => {onChangeNumberItem(ev)}}/>
                             </div>
 
@@ -240,7 +242,7 @@ const OrderCreatePage = () => {
                                                         </td>
                                                         <td className="px-2 text-center">
                                                             {!arr && (
-                                                                <Button size="sm" onClick={(ev) => 
+                                                                <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={(ev) => 
                                                                     {
                                                                         isDisableSetting(index);
                                                                         arrangeArrayProduct(index);
@@ -248,7 +250,7 @@ const OrderCreatePage = () => {
                                                                 >Create Data</Button>
                                                             )}
                                                             {arr && (
-                                                                 <Button size="sm" onClick={(ev) => 
+                                                                 <Button size="sm" className="bg-blue-400 hover:bg-blue-500" onClick={(ev) => 
                                                                     {
                                                                         isUnableSetting(index);
                                                                     }}
@@ -269,7 +271,7 @@ const OrderCreatePage = () => {
                         </div>
                         
                     </div>
-                    <Button className="bg-green-400 hover:bg-green-500 mt-8"
+                    <Button className="bg-green-500 hover:bg-green-600 mt-8 ml-10"
                         onClick={() => {
                             arrangeData();
                             setIsOpen(true);

@@ -57,7 +57,7 @@ const SendOrder = ({isOpen, onClose,data, sendOrderHandler, order_status}) => {
                                         <div className="font-semibold">{obj.master_product.name}</div>
                                         <img src={`http://localhost:8080/api/images/${obj.master_product.image}`} style={{width:'10rem'}}/>
                                     </div>
-                                    <div className="text-xs text-left rounded-lg border shadow-md m-1 min-w-52">
+                                    <div className="text-xs text-left rounded-lg border shadow-md m-1 pt-7 pl-4 min-w-52">
                                         <div className="px-1 py-1">
                                             <span className="font-medium">SKU : </span>
                                             {obj.master_product.sku}
