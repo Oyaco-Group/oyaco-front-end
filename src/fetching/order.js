@@ -102,6 +102,16 @@ const sendOrder = async(id,params,admin_id) => {
     return response.data;
 }
 
+const getComplaint = async(order_id) => {
+    // const response = await instance.get(`/complaint/${order_id}`);
+    const response = await instance({
+        method : 'GET',
+        url : `/complaint/${order_id}`
+    })
+
+    return response.data.data;
+}
+
 export {
     getAllOrder,
     getOrderById,
@@ -113,5 +123,6 @@ export {
     getUserByEmail,
     getAllProduct,
     createOrder,
-    sendOrder
+    sendOrder,
+    getComplaint
 }

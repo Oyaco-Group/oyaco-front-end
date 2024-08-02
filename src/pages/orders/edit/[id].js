@@ -134,7 +134,7 @@ const EditOrder = () => {
           </p>
           <div className="relative overflow-x-auto">
             <div className="flex flex-wrap items-center justify-around space-y-4 bg-white py-3 md:flex-row md:space-y-0 dark:bg-gray-900">
-              <table className="w-1/3 min-w-max text-left text-md text-gray-500 rtl:text-right dark:text-gray-400 bg-blue-200 border rounded-lg p-2">
+              <table className="w-1/3 min-w-max text-left text-md text-gray-500 rtl:text-right dark:text-gray-400 bg-blue-50 border-5 rounded-lg">
                 <tbody>
                   <tr>
                     <td className="font-medium text-md text-black">Order Id</td>

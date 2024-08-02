@@ -1,5 +1,5 @@
 import TableOrder from "@/components/style-components/TableOrder";
-import { getAllOrder, getOrderById, sendOrder } from "@/fetching/order";
+import { getAllOrder, getComplaint, getOrderById, sendOrder } from "@/fetching/order";
 import { updateOrderAdmin, updateOrderStatus } from "@/fetching/order";
 import { useEffect, useState } from "react";
 import SearchBar from "@/components/style-components/navbar/searchbar";
@@ -15,15 +15,18 @@ import ChangeStatus from "./changeStatus";
 import SendOrder from "./sendOrder";
 import { useAuth } from "@/context/authContext";
 import { FaPlus } from "react-icons/fa6";
+import ComplaintOrder from "./complaint";
 
 
 const OrderPage = () => {
   const {user} = useAuth();
   const [order, setOrder] = useState([]);
   const [filteredOrder, setFilteredOrder] = useState([]);
+  const [complaint, setComplaint] = useState({});
   const [isOpen1, setisOpen1] = useState(false);
   const [isOpen2, setisOpen2] = useState(false);
   const [isOpen3, setisOpen3] = useState(false);
+  const [isOpen4, setisOpen4] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -51,6 +54,16 @@ const OrderPage = () => {
 
     } catch(err) {
       console.log(err);
+    }
+  }
+
+  const fetchComplaint = async(id) => {
+    try {
+      const data = await getComplaint(id);
+      setComplaint(data);
+      console.log(data);
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -97,6 +110,17 @@ const OrderPage = () => {
 
   function closeModal3() {
     setisOpen3(false);
+  }
+
+  function openModal4(id) {
+    setId(id);
+    setisOpen4(true);
+    fetchDetail(id);
+    fetchComplaint(id);
+  }
+
+  function closeModal4() {
+    setisOpen4(false);
   }
 
   const sendOrderHandler = async (params) => {
@@ -186,6 +210,7 @@ const OrderPage = () => {
                     onChange={openModal3}
                     onEdit={onEdit}
                     sendOrder={openModal2}
+                    onComplaint={openModal4}
                 />
             </div>
           </div>
@@ -199,6 +224,7 @@ const OrderPage = () => {
           <ChangeStatus onClose={closeModal3} isOpen={isOpen3} data={detailOrder} statusOrderChanger={statusOrderChanger} />
           <DetailOrder onClose={closeModal1} isOpen={isOpen1} data={detailOrder}  order_status={detailOrder.order_status}/>
           <SendOrder onClose={closeModal2} isOpen={isOpen2} data={detailOrder} sendOrderHandler={sendOrderHandler} />
+          <ComplaintOrder onClose={closeModal4} isOpen={isOpen4} data={detailOrder} complaintText={complaint}/>
           
         </div>
 
