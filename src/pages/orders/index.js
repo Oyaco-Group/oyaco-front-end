@@ -16,9 +16,8 @@ import SendOrder from "./sendOrder";
 import { useAuth } from "@/context/authContext";
 import { FaPlus } from "react-icons/fa6";
 
-
 const OrderPage = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [order, setOrder] = useState([]);
   const [filteredOrder, setFilteredOrder] = useState([]);
   const [isOpen1, setisOpen1] = useState(false);
@@ -32,27 +31,25 @@ const OrderPage = () => {
   const [searchOrder, setSearchOrder] = useState("");
   const router = useRouter();
 
-  const fetchOrder = async() => {
+  const fetchOrder = async () => {
     try {
-      const data = await getAllOrder(page,limit);
+      const data = await getAllOrder(page, limit);
       setOrder(data.data);
       setFilteredOrder(data.data);
       setTotalPages(data.metadata.totalPages);
-
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
-  const fetchDetail = async(id) => {
+  const fetchDetail = async (id) => {
     try {
       const data = await getOrderById(id);
       setDetailOrder(data.data);
-
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const filterOrder = (valueSearch) => {
     let filteredOrder = order;
@@ -106,12 +103,12 @@ const OrderPage = () => {
       const order = await sendOrder(id,params,admin_id);
       setisOpen2(false);
       toast.success(order.message);
-
+      
     } catch (err) {
       console.log(err.message);
       toast.error(err.response.data.message);
     }
-  }
+  };
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
@@ -123,37 +120,36 @@ const OrderPage = () => {
     setPage(newPage);
   };
 
-  const statusOrderChanger = async() => {
+  const statusOrderChanger = async () => {
     try {
-        const order_status = 'Confirmed';
-        const order = await updateOrderStatus(detailOrder.id,order_status);
-        toast.success(order.message);
-        setisOpen3(false);
-
+      const order_status = "Confirmed";
+      const order = await updateOrderStatus(detailOrder.id, order_status);
+      toast.success(order.message);
+      setisOpen3(false);
     } catch (err) {
-        console.log(err);
-        toast.error(err.response.data.message);
+      console.log(err);
+      toast.error(err.response.data.message);
     }
-  }
+  };
 
   const onEdit = (id) => {
     router.push(`/orders/edit/${id}`);
-  }
+  };
 
   useEffect(() => {
     fetchOrder();
-  }, [page,limit,isOpen1,isOpen2,isOpen3])
+  }, [page, limit, isOpen1, isOpen2, isOpen3]);
 
   const columns = [
     // {label : 'No', field : "no"},
-    {label : 'No', field : 'no'},
-    {label : 'Date', field : 'created_at'},
-    {label : 'Order Status', field : 'order_status'},
-    {label : 'Order Type', field : 'buyer_status'},
-    {label : 'Payment Type', field : 'payment_type'},
-    {label : 'Action', field : 'action'},
-    {label : 'Send', field : 'action'},
-  ]
+    { label: "No", field: "no" },
+    { label: "Date", field: "created_at" },
+    { label: "Order Status", field: "order_status" },
+    { label: "Order Type", field: "buyer_status" },
+    { label: "Payment Type", field: "payment_type" },
+    { label: "Action", field: "action" },
+    { label: "Send", field: "action" },
+  ];
 
   return (
       <div className="p-4 sm:ml-64">
@@ -189,24 +185,43 @@ const OrderPage = () => {
                 />
             </div>
           </div>
-            <div className="flex justify-end px-5">
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-            </div>
-          <ChangeStatus onClose={closeModal3} isOpen={isOpen3} data={detailOrder} statusOrderChanger={statusOrderChanger} />
-          <DetailOrder onClose={closeModal1} isOpen={isOpen1} data={detailOrder}  order_status={detailOrder.order_status}/>
-          <SendOrder onClose={closeModal2} isOpen={isOpen2} data={detailOrder} sendOrderHandler={sendOrderHandler} />
-          
+          <TableOrder
+            columns={columns}
+            data={order}
+            onDetail={openModal1}
+            onChange={openModal3}
+            onEdit={onEdit}
+            sendOrder={openModal2}
+          />
         </div>
-
-
-
+      </div>
+      <div className="flex justify-end px-5">
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+      <ChangeStatus
+        onClose={closeModal3}
+        isOpen={isOpen3}
+        data={detailOrder}
+        statusOrderChanger={statusOrderChanger}
+      />
+      <DetailOrder
+        onClose={closeModal1}
+        isOpen={isOpen1}
+        data={detailOrder}
+        order_status={detailOrder.order_status}
+      />
+      <SendOrder
+        onClose={closeModal2}
+        isOpen={isOpen2}
+        data={detailOrder}
+        sendOrderHandler={sendOrderHandler}
+      />
+    </div>
   );
-
-
 };
 
 export default OrderPage;

@@ -15,10 +15,6 @@ const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState({});
   const { user } = useAuth();
 
-  useEffect(() => {
-    getDashboardData();
-  }, []);
-
   const getDashboardData = async () => {
     try {
       setIsLoading(true);
@@ -31,13 +27,20 @@ const DashboardPage = () => {
     }
   };
 
+  useEffect(() => {
+    getDashboardData();
+  }, []);
+
   const {
-    totalUsers = 0,
-    totalMasterProducts = 0,
-    totalOrders = 0,
-    totalComplaints = 0,
-    productMovements = [],
+    total_users = 0,
+    total_products = 0,
+    total_orders = 0,
+    total_complaints = 0,
+    transactions_incoming = [],
+    transactions_outgoing = [],
   } = dashboardData;
+
+  
 
   return (
     <>
@@ -77,22 +80,22 @@ const DashboardPage = () => {
                 <div className="flex justify-center text-center">
                   <CardCount
                     icon={<BsBoxSeam className="text-2xl" />}
-                    count={totalMasterProducts}
+                    count={total_products}
                     label="Products"
                   />
                   <CardCount
                     icon={<FiUsers className="text-2xl" />}
-                    count={totalUsers}
+                    count={total_users}
                     label="Users"
                   />
                   <CardCount
                     icon={<RiShoppingBagLine className="text-2xl" />}
-                    count={totalOrders}
+                    count={total_orders}
                     label="Orders"
                   />
                   <CardCount
                     icon={<BsChatSquareText className="text-2xl" />}
-                    count={totalComplaints}
+                    count={total_complaints}
                     label="Complaints"
                   />
                 </div>
@@ -100,7 +103,16 @@ const DashboardPage = () => {
             </section>
             <section className="flex flex-row gap-10">
               {!isLoading && (
-                <CardTransaction transactions={productMovements} />
+                <>
+                  <CardTransaction
+                    transactions={transactions_incoming}
+                    title="Transactions Incoming"
+                  />
+                  <CardTransaction
+                    transactions={transactions_outgoing}
+                    title="Transactions Outgoing"
+                  />
+                </>
               )}
             </section>
           </div>
