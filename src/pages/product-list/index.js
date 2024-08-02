@@ -57,7 +57,9 @@ const Products = () => {
       filteredMaster = filteredMaster.filter(
         (product) =>
           product.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
-          product.sku.toLowerCase().includes(valueSearch.toLowerCase())
+          product.category.name
+            .toLowerCase()
+            .includes(valueSearch.toLowerCase())
       );
     }
     setFilteredData(filteredMaster);
@@ -105,13 +107,13 @@ const Products = () => {
                     height={200}
                     onError={(e) => (e.target.src = "/defaultproducts.png")}
                   />
-                  <div className="flex justify-between">
+                  <div className="flex justify-between mt-4">
                     <h2>{product.name}</h2>
                     <p className="text-blue-400">
                       {formatRupiah(product.price)}
                     </p>
                   </div>
-                  <div className="flex justify-center mt-4">
+                  <div className="flex justify-center mt-10">
                     <Button onClick={() => handleProductClick(product)}>
                       See more detail
                     </Button>
