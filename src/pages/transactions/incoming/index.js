@@ -38,6 +38,7 @@ const TransactionIncomingPage = () => {
   });
   const [warehouses, setWarehouses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchWarehouses = async () => {
     try {
@@ -119,6 +120,17 @@ const TransactionIncomingPage = () => {
     }
   };
 
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredTransactions = transaction.filter((txn) => {
+    return Object.values(txn).some((val) =>
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="mt-14 rounded-lg p-4 dark:border-gray-700">
@@ -132,24 +144,24 @@ const TransactionIncomingPage = () => {
               <Dropdown options={warehouses} onSelect={setWarehouse} />
             </div>
             <div>
-              <SearchBar className="w-50" />
+              <SearchBar className="w-50" onChange={handleSearchInputChange}/>
             </div>
             <div>
-              <Button className="mr-4" onClick={handleUpdateExpirationStatus}>
+              <Button className="mr-4 bg-blue-400 hover:bg-blue-500" onClick={handleUpdateExpirationStatus}>
                 Check & Update
               </Button>
-              <Button onClick={() => setIsModalOpen(true)}>
+              <Button onClick={() => setIsModalOpen(true)} className=" bg-green-500 hover:bg-green-600">
                 Create Transaction
               </Button>
             </div>
           </div>
-          <Table columns={columns} data={transaction} />
+          <Table columns={columns} data={filteredTransactions} />
           <div className="flex justify-between mt-4">
-            <Button onClick={handlePreviousPage} disabled={page === 1}>
+            <Button onClick={handlePreviousPage} disabled={page === 1} className="mr-4 bg-blue-400 hover:bg-blue-500">
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button onClick={handleNextPage}>Next</Button>
+            <Button onClick={handleNextPage} className="mr-4 bg-blue-400 hover:bg-blue-500">Next</Button>
           </div>
         </div>
       </div>
