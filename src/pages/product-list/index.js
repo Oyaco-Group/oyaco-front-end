@@ -8,6 +8,13 @@ const getImageUrl = (imagePath) => {
   return imagePath ? `${baseUrl}${imagePath}` : "/defaultproducts.png";
 };
 
+const formatRupiah = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+};
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -78,7 +85,7 @@ const Products = () => {
       <div className="mt-14 p-4 dark:border-gray-700">
         <h1 className="text-4xl mt-10 mb-10">Product List</h1>
         <SearchBar
-          className="w-full"
+          className="w-3/4"
           onChange={handleSearchInputChange}
           value={searchProduct}
         />
@@ -100,7 +107,7 @@ const Products = () => {
                   />
                   <div className="flex justify-between">
                     <h2>{product.name}</h2>
-                    <p>{product.price}</p>
+                    <p>{formatRupiah(product.price)}</p>
                   </div>
                   <div className="flex justify-center mt-4">
                     <Button onClick={() => handleProductClick(product)}>
