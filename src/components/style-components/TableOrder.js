@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/components/style-components/button";
 
-const TableOrder = ({ columns, data = [], onDetail, onChange ,onEdit, sendOrder }) => {
+const TableOrder = ({ columns, data = [], onDetail, onChange ,onEdit, sendOrder, onComplaint }) => {
   const totalData = data.length;
 
   return (
@@ -48,7 +48,7 @@ const TableOrder = ({ columns, data = [], onDetail, onChange ,onEdit, sendOrder 
                           : order.order_status.toLowerCase() === 'on delivery' ?
                           <Button className="bg-blue-400 hover:bg-blue-500" size="sm" onClick={() => onDetail(order.id)}>Detail</Button>
                           : 
-                          <Button className="bg-red-500 hover:bg-red-600" size="sm" onClick={() => onDetail(order.id)}>Complaint</Button>
+                          <Button className="bg-red-500 hover:bg-red-600" size="sm" onClick={() => onComplaint(order.id)}>Complaint</Button>
                         }
                       </td>
                       <td>
