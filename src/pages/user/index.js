@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Table from "@/components/style-components/table";
 import SearchBar from "@/components/style-components/navbar/searchbar";
 import SpinnerLoad from "@/components/style-components/loading-indicator/spinnerLoad";
@@ -16,61 +16,78 @@ const UserPage = () => {
     { field: "Edit", label: "Action" },
   ];
 
-  const [originalData, setOriginalData] = useState([]);
-  const [filteredUser, setFilteredUser] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalEditUser, setModalEditUser] = useState(null);
-  const [searchUser, setSearchUser] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [limit] = useState(5);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [userState, setUserState] = useState({
+    originalData: [],
+    filteredUser: [],
+    isModalOpen: false,
+    modalEditUser: null,
+    searchUser: "",
+    isLoading: true,
+    page: 1,
+    limit: 5,
+    totalUsers: 0,
+    totalPages: 0,
+  });
 
   useEffect(() => {
-    fetchData(page, limit);
-  }, [page, limit]);
+    fetchData(userState.page, userState.limit);
+  }, [userState.page, userState.limit]);
 
   useEffect(() => {
-    filterUsers(searchUser);
-  }, [searchUser, originalData]);
+    filterUsers(userState.searchUser);
+  }, [userState.searchUser, userState.originalData]);
 
   const fetchData = async (page, limit) => {
     try {
-      setIsLoading(true);
+      setUserState((prevState) => ({ ...prevState, isLoading: true }));
       const response = await fetchUsers(page, limit);
-      setOriginalData(response.data);
-      setFilteredUser(response.data);
-      setTotalUsers(response.totalUsers);
-      setTotalPages(response.totalPages);
+      setUserState({
+        originalData: response.data,
+        filteredUser: response.data,
+        isLoading: false,
+        totalUsers: response.totalUsers,
+        totalPages: response.totalPages,
+        page,
+        limit,
+      });
     } catch (error) {
       toast.error("Failed to fetch user data");
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const handleSearchChange = (event) => {
-    setSearchUser(event.target.value);
-  };
+  const handleSearchChange = useCallback((event) => {
+    setUserState((prevState) => ({
+      ...prevState,
+      searchUser: event.target.value,
+    }));
+  }, []);
 
   const filterUsers = (valueSearch) => {
     if (valueSearch) {
-      const filteredUsers = originalData.filter(
+      const filteredUsers = userState.originalData.filter(
         (user) =>
           user.name.toLowerCase().includes(valueSearch.toLowerCase()) ||
           user.address.toLowerCase().includes(valueSearch.toLowerCase())
       );
-      setFilteredUser(filteredUsers);
+      setUserState((prevState) => ({
+        ...prevState,
+        filteredUser: filteredUsers,
+      }));
     } else {
-      setFilteredUser(originalData);
+      setUserState((prevState) => ({
+        ...prevState,
+        filteredUser: userState.originalData,
+      }));
     }
   };
 
   const handleEdit = (user) => {
-    setModalEditUser(user);
-    setIsModalOpen(true);
+    setUserState((prevState) => ({
+      ...prevState,
+      modalEditUser: user,
+      isModalOpen: true,
+    }));
   };
 
   const handleDelete = async (userId) => {
@@ -78,14 +95,21 @@ const UserPage = () => {
       await fetchDeleteUser(userId);
       toast.success("User deleted successfully");
 
-      const updatedData = originalData.filter((user) => user.id !== userId);
-      setOriginalData(updatedData);
-      setFilteredUser(updatedData);
-      setTotalUsers((prevTotal) => prevTotal - 1);
+      const updatedData = userState.originalData.filter(
+        (user) => user.id !== userId
+      );
+      setUserState((prevState) => ({
+        ...prevState,
+        originalData: updatedData,
+        filteredUser: updatedData,
+        totalUsers: prevState.totalUsers - 1,
+      }));
 
-      // Handle pagination if needed
-      if (updatedData.length === 0 && page > 1) {
-        setPage(page - 1);
+      if (updatedData.length === 0 && userState.page > 1) {
+        setUserState((prevState) => ({
+          ...prevState,
+          page: prevState.page - 1,
+        }));
       }
     } catch (error) {
       toast.error("Failed to delete user");
@@ -94,13 +118,16 @@ const UserPage = () => {
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    setModalEditUser(null);
-    fetchData(page, limit);
+    setUserState((prevState) => ({
+      ...prevState,
+      isModalOpen: false,
+      modalEditUser: null,
+    }));
+    fetchData(userState.page, userState.limit);
   };
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
+    setUserState((prevState) => ({ ...prevState, page: newPage }));
   };
 
   return (
@@ -117,17 +144,17 @@ const UserPage = () => {
                 id="search-user"
                 className="ml-2 w-72"
                 onChange={handleSearchChange}
-                value={searchUser}
+                value={userState.searchUser}
               />
             </div>
           </div>
           <div className="flex items-center justify-center">
-            {isLoading && <SpinnerLoad />}
+            {userState.isLoading && <SpinnerLoad />}
           </div>
-          {!isLoading && (
+          {!userState.isLoading && (
             <Table
               columns={columns}
-              data={filteredUser}
+              data={userState.filteredUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
@@ -135,18 +162,18 @@ const UserPage = () => {
         </div>
       </div>
       <EditProfileModal
-        isOpen={isModalOpen}
+        isOpen={userState.isModalOpen}
         onClose={closeModal}
-        modalEditUser={modalEditUser}
-        fetchData={() => fetchData(page, limit)}
+        modalEditUser={userState.modalEditUser}
+        fetchData={() => fetchData(userState.page, userState.limit)}
       />
       <div className="flex justify-between pr-4 pl-4">
         <p className="text-md ml-4 mt-2 font-semibold text-gray-500">
-          Total: {totalUsers}
+          Total: {userState.totalUsers}
         </p>
         <Pagination
-          currentPage={page}
-          totalPages={totalPages}
+          currentPage={userState.page}
+          totalPages={userState.totalPages}
           onPageChange={handlePageChange}
         />
       </div>

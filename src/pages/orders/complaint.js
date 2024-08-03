@@ -7,7 +7,7 @@ import Button from "@/components/style-components/button";
 
 
 
-const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) => {
+const ComplaintOrder = ({isOpen, onClose,data, statusOrderChanger, order_status, complaintText}) => {
     const [orderStatus, setOrderStatus] = useState(order_status|| ' ');
     const userName = {...data.user};
     const product = data.order_item;
@@ -85,9 +85,13 @@ const DetailOrder = ({isOpen, onClose,data, statusOrderChanger, order_status}) =
                         }
                         {!product && (<div>AAA</div>)}
                     </div>
+                    <div className="p-4 border-2 rounded-lg mt-2 text-start w-">
+                        <h1 className="font-semibold">Complaint : </h1>
+                        <p className="text-sm">{complaintText.text}</p>
+                    </div>
                 </div>
             </Modal>
     )
 }
 
-export default DetailOrder;
+export default ComplaintOrder;

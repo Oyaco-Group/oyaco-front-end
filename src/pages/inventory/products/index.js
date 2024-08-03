@@ -146,7 +146,7 @@ const ProductsPage = () => {
               <Table
                 columns={columns}
                 fetchData={fetchMaster}
-                data={originalData}
+                data={filteredData}
                 onEdit={handleEdit}
                 render={(row, column) => {
                   if (column.field === "imageMaster") {
